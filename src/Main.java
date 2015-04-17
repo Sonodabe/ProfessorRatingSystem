@@ -1,3 +1,6 @@
+import graphics.PRSFrame;
+import javax.swing.JFrame;
+
 /**
  * Implements a driver of the program
  * 
@@ -6,6 +9,8 @@
  */
 public class Main {
 	public static void main(String[] args) {
-
+		PRSFrame frame = new PRSFrame(true);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }
