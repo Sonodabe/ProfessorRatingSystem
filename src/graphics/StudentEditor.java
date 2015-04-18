@@ -136,7 +136,13 @@ public class StudentEditor extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			switch (operationSelector.getSelectedIndex()) {
 			case ADD:
-				// TODO SQL staements
+				String cmd = ADD_STATEMENT;
+				cmd += " (\"" + studentName.getText() + "\", \""
+						+ major.getText() + "\")";
+				if (PRSFrame.JDBC) {
+
+				}
+				else System.out.println(cmd + ";");
 				break;
 			case MODIFY:
 				// TODO SQL staements
