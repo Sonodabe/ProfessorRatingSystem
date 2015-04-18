@@ -30,7 +30,7 @@ public class StudentManager extends JPanel {
 		setLayout(new GridLayout(1, 1));
 
 		if (PRSFrame.JDBC) {
-			// Query the database and get the data.
+			// TODO Query the database and get the data.
 			String colNames[] = { "Name", "Major", "ID" };
 			Object test[][] = new Object[1][1];
 			studentListing = new JTable(new PRSTableModel(test,

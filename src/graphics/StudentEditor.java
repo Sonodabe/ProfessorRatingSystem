@@ -140,7 +140,7 @@ public class StudentEditor extends JPanel {
 				cmd += " (\"" + studentName.getText() + "\", \""
 						+ major.getText() + "\")";
 				if (PRSFrame.JDBC) {
-
+					// TODO Handle null input
 				}
 				else System.out.println(cmd + ";");
 				break;
