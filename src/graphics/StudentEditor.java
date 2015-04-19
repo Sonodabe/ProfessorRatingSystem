@@ -62,7 +62,7 @@ public class StudentEditor extends JPanel {
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.gridwidth = 1;
+		gbc.gridwidth = 2;
 
 		add(operationSelector, gbc);
 
@@ -136,9 +136,10 @@ public class StudentEditor extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			switch (operationSelector.getSelectedIndex()) {
 			case ADD:
-				String cmd = ADD_STATEMENT;
-				cmd += " (\"" + studentName.getText() + "\", \""
-						+ major.getText() + "\")";
+				String cmd = buildAdd();
+				if (cmd.equals("")) {
+					break;
+				}
 				if (PRSFrame.JDBC) {
 					// TODO Handle null input
 				}
@@ -152,6 +153,24 @@ public class StudentEditor extends JPanel {
 				break;
 			}
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	public String buildAdd() {
+		String cmd = ADD_STATEMENT;
+		if (studentName.getText().trim().isEmpty()) {
+			return "";
+		}
+		if (!PRSFrame.JDBC) {
+			cmd += " (\"" + studentName.getText() + "\"";
+			if (major.getText().trim().isEmpty()) {
+				cmd += ", NULL)";
+			}
+			else cmd += ", \"" + major.getText().trim() + "\")";
+		}
+		return cmd;
 	}
 
 }
