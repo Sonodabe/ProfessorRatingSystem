@@ -13,6 +13,7 @@ public class PRSFrame extends JFrame {
 
 	private StudentManager sm;
 	private ProfessorManager pm;
+	private CourseManager cm;
 
 	public PRSFrame(boolean admin) {
 		super("Profressor Rating System");
@@ -28,9 +29,10 @@ public class PRSFrame extends JFrame {
 			adminTabs = new JTabbedPane();
 			sm = new StudentManager();
 			pm = new ProfessorManager();
+			cm = new CourseManager();
 			adminTabs.addTab("Students", sm);
 			adminTabs.addTab("Professors", pm);
-
+			adminTabs.addTab("Courses", cm);
 			add(adminTabs);
 		}
 	}
