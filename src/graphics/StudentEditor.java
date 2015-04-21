@@ -71,20 +71,20 @@ public class StudentEditor extends JPanel {
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		add(new JLabel("Student Name"), gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		// gbc.gridwidth = 1;
-		add(studentSelector, gbc);
+		add(new JLabel("Existing Student :"), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		add(new JLabel("Major"), gbc);
+		// gbc.gridwidth = 1;
+		add(studentSelector, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		add(new JLabel("Major :"), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -96,13 +96,20 @@ public class StudentEditor extends JPanel {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 3;
+		gbc.gridy = 2;
+
+		add(new JLabel("Student Name: "), gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 1;
+		gbc.gridy = 2;
 
 		add(studentName, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
-		gbc.gridx = 0;
+		gbc.gridx = 1;
 		gbc.gridy = 4;
 		gbc.gridwidth = 2;
 
