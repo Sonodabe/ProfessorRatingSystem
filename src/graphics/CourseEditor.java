@@ -13,8 +13,9 @@ import javax.swing.*;
  */
 public class CourseEditor extends JPanel {
 
-	private JTextField courseName, courseNumber;
-	private JComboBox<String> courseSelector, operationSelector;
+	private JTextField courseName, courseIdentifier;
+	private JComboBox<String> courseSelector, operationSelector,
+			universitySelector;
 
 	private JButton submit;
 
@@ -36,13 +37,21 @@ public class CourseEditor extends JPanel {
 		}
 		operationSelector.addItemListener(new ItemResponder());
 		courseName = new JTextField();
-		courseNumber = new JTextField();
+		courseIdentifier = new JTextField();
 		courseSelector = new JComboBox<String>();
 
 		if (PRSFrame.JDBC) {
-			// Populate combo box with names
+			// TODO Populate combo box with names
 		}
 		else courseSelector.addItem("TEMP");
+
+		universitySelector = new JComboBox<String>();
+		if (PRSFrame.JDBC) {
+			// TODO Get listing from sql.
+		}
+		else {
+			universitySelector.addItem("TEMP");
+		}
 
 		courseSelector.setEditable(false);
 		courseSelector.setEnabled(false);
@@ -66,13 +75,13 @@ public class CourseEditor extends JPanel {
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		add(new JLabel("Course Number: "), gbc);
+		add(new JLabel("Course Identifier: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		add(courseNumber, gbc);
+		add(courseIdentifier, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -88,8 +97,20 @@ public class CourseEditor extends JPanel {
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		add(new JLabel("University: "), gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = 3;
+		add(universitySelector, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 1;
+		gbc.gridy = 4;
 		gbc.gridheight = 1;
 
 		add(submit, gbc);
