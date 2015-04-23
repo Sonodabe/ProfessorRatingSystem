@@ -5,6 +5,7 @@ package graphics;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import javax.swing.*;
 import data.Professor;
 
@@ -18,10 +19,6 @@ public class ProfessorEditor extends JPanel {
 	 */
 	private static final long serialVersionUID = 7834761198935229285L;
 
-	private static final String ADD_STATEMENT = "insert into Professor (";
-	private static final String DELETE_STATEMENT = "delete from Professor where ";
-	private static final String UPDATE_STATEMENT = "update Professor set ";
-
 	private static final int ADD = 0;
 	private static final int DELETE = 1;
 	private static final int MODIFY = 2;
@@ -34,6 +31,9 @@ public class ProfessorEditor extends JPanel {
 
 	private ProfessorManager parent;
 	private Professor currentProf;
+
+	ArrayList<Object> values;
+	ArrayList<String> attributes;
 
 	public ProfessorEditor(ProfessorManager pm) {
 		parent = pm;
@@ -201,16 +201,12 @@ public class ProfessorEditor extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			switch (operationSelector.getSelectedIndex()) {
 			case ADD:
-				String cmd = buildAdd();
-				if (cmd.equals("")) {
-					break;
-				}
+				buildAdd();
 				if (PRSFrame.JDBC) {
 					// TODO Handle null input
 				}
-				else System.out.println(cmd + ";");
-				break;
 			case MODIFY:
+				buildModify();
 				// TODO SQL staements
 				break;
 			case DELETE:
@@ -220,35 +216,37 @@ public class ProfessorEditor extends JPanel {
 		}
 	}
 
-	protected String buildAdd() {
-		String cmd = ADD_STATEMENT;
-		if (!id.getText().trim().isEmpty()
-				&& !professorName.getText().trim().isEmpty()) {
-			cmd += "PID, PName";
+	private void initializeLists() {
+		values = new ArrayList<Object>();
+		attributes = new ArrayList<String>();
+	}
+
+	protected void buildAdd() {
+		initializeLists();
+		if (!id.getText().trim().isEmpty()) {
+			attributes.add("PID");
+			values.add(id.getText());
 		}
-		else {
-			JOptionPane.showMessageDialog(null,
-					"Invalid request. Try again.");
-			return "";
+		if (!professorName.getText().trim().isEmpty()) {
+			attributes.add("PName");
+			values.add(professorName.getText());
 		}
 		if (!researchArea.getText().trim().isEmpty()) {
-			cmd += ", ResearchArea";
+			attributes.add("ResearchArea");
+			values.add(researchArea.getText());
 		}
 		if (!bio.getText().trim().isEmpty()) {
-			cmd += ", Bio";
+			attributes.add("Bio");
+			values.add(bio.getText());
 		}
-		cmd += ", YearsWorked) values (\"" + id.getText() + "\", \""
-				+ professorName.getText() + "\"";
+		attributes.add("YearsWorked");
+		values.add(yearsWorked.getValue());
+	}
 
-		if (!researchArea.getText().trim().isEmpty()) {
-			cmd += ", \"" + researchArea.getText() + "\"";
-		}
-		if (!bio.getText().trim().isEmpty()) {
-			cmd += ", \"" + bio.getText() + "\"";
-		}
-		cmd += ", " + yearsWorked.getValue() + ")";
-
-		return cmd;
+	/**
+	 * 
+	 */
+	protected void buildModify() {
 	}
 
 }

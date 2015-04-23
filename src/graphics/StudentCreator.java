@@ -5,6 +5,7 @@ package graphics;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import javax.swing.*;
 import data.Student;
 
@@ -21,10 +22,11 @@ public class StudentCreator extends JPanel {
 	private JComboBox<String> universitySelector;
 	private JButton submit;
 
-	private static final String ADD_STATEMENT = "insert into Student values";
-
 	private static final int ADD = 0;
 	private Student student;
+
+	ArrayList<Object> values;
+	ArrayList<String> attributes;
 
 	/**
 	 * 
@@ -111,28 +113,41 @@ public class StudentCreator extends JPanel {
 	private class ButtonResponder implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			String cmd = buildAdd();
-			if (cmd.equals("")) {
-				return;
-			}
+			buildAdd();
 			if (PRSFrame.JDBC) {
 				// TODO Handle null input
 			}
-			else System.out.println(cmd + ";");
 		}
 
+	}
+
+	private void initializeLists() {
+		values = new ArrayList<Object>();
+		attributes = new ArrayList<String>();
 	}
 
 	/**
 	 * @return
 	 */
-	public String buildAdd() {
-		String cmd = ADD_STATEMENT;
-		if (studentName.getText().trim().isEmpty()) {
-			return "";
+	public void buildAdd() {
+		initializeLists();
+		if (!studentName.getText().trim().isEmpty()) {
+			attributes.add("SID");
+			values.add(studentName.getText());
 		}
+		if (!userName.getText().trim().isEmpty()) {
+			attributes.add("Username");
+			values.add(userName.getText());
+		}
+		if (!major.getText().trim().isEmpty()) {
+			attributes.add("Major");
+			values.add(major.getText());
+		}
+		attributes.add("University");
+		values.add(universitySelector.getItemAt(universitySelector
+				.getSelectedIndex()));
 
-		return cmd;
+		// TODO Call Sql package
 	}
 
 }

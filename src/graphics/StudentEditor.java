@@ -5,10 +5,11 @@ package graphics;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import javax.swing.*;
 
 /**
- * Contains the fields required to insert, delete, or modify a student
+ * Contains the fields required to indelete, or modify a student
  * entry.
  * 
  * @author Doug Blase
@@ -20,13 +21,13 @@ public class StudentEditor extends JPanel {
 	private JComboBox<String> studentSelector, operationSelector;
 	private JButton submit;
 
-	private static final String DELETE_STATEMENT = "delete from Student ";
-	private static final String UPDATE_STATEMENT = "update Student ";
-
 	private static final int DELETE = 0;
 	private static final int MODIFY = 1;
 
 	private StudentManager parent;
+
+	ArrayList<Object> values;
+	ArrayList<String> attributes;
 
 	/**
 	 * 
