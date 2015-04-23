@@ -43,7 +43,7 @@ public class StudentManager extends JPanel {
 
 			add(tableViewer);
 		}
-		studentFieldsPane = new StudentEditor();
+		studentFieldsPane = new StudentEditor(this);
 		add(studentFieldsPane);
 	}
 

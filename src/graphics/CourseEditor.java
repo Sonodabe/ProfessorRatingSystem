@@ -27,7 +27,10 @@ public class CourseEditor extends JPanel {
 	private static final int DELETE = 1;
 	private static final int MODIFY = 2;
 
-	public CourseEditor() {
+	private CourseManager parent;
+
+	public CourseEditor(CourseManager cm) {
+		parent = cm;
 		operationSelector = new JComboBox<String>();
 		operationSelector.addItem("Add");
 

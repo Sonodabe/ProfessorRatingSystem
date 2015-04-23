@@ -26,10 +26,13 @@ public class StudentEditor extends JPanel {
 	private static final int DELETE = 0;
 	private static final int MODIFY = 1;
 
+	private StudentManager parent;
+
 	/**
 	 * 
 	 */
-	public StudentEditor() {
+	public StudentEditor(StudentManager sm) {
+		parent = sm;
 		operationSelector = new JComboBox<String>();
 		operationSelector.addItem("Delete");
 		operationSelector.addItem("Modify");

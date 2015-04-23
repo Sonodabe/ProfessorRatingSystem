@@ -32,7 +32,7 @@ public class CourseManager extends JPanel {
 
 			add(tableViewer);
 		}
-		ce = new CourseEditor();
+		ce = new CourseEditor(this);
 		add(ce);
 	}
 }

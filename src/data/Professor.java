@@ -1,6 +1,6 @@
 package data;
 
-public class Teacher {
+public class Professor {
 
 	private String name, bio;
 	private int id, yearsWorked;
@@ -11,7 +11,7 @@ public class Teacher {
 	 * @param id
 	 * @param yearsWorked
 	 */
-	public Teacher(String name, String bio, int id, int yearsWorked) {
+	public Professor(String name, String bio, int id, int yearsWorked) {
 		this.name = name;
 		this.bio = bio;
 		this.id = id;

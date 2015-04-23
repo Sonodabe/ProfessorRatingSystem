@@ -6,6 +6,7 @@ package graphics;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import data.Professor;
 
 /**
  * @author Doug Blase
@@ -18,7 +19,7 @@ public class ProfessorEditor extends JPanel {
 	private static final long serialVersionUID = 7834761198935229285L;
 
 	private static final String ADD_STATEMENT = "insert into Professor (";
-	private static final String DELETE_STATEMENT = "delete from Professor where PID = x";
+	private static final String DELETE_STATEMENT = "delete from Professor where ";
 	private static final String UPDATE_STATEMENT = "update Professor set ";
 
 	private static final int ADD = 0;
@@ -31,7 +32,11 @@ public class ProfessorEditor extends JPanel {
 	private JComboBox<String> professorSelector, operationSelector;
 	private JButton submit;
 
-	public ProfessorEditor() {
+	private ProfessorManager parent;
+	private Professor currentProf;
+
+	public ProfessorEditor(ProfessorManager pm) {
+		parent = pm;
 		operationSelector = new JComboBox<String>();
 		operationSelector.addItem("Add");
 
