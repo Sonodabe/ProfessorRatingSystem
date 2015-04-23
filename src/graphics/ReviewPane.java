@@ -2,7 +2,7 @@ package graphics;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Calendar;
+import java.util.*;
 import javax.swing.*;
 
 /**
@@ -21,6 +21,9 @@ public class ReviewPane extends JPanel {
 	private JTextArea comments;
 	private JButton submit;
 	private ReviewTab parent;
+
+	ArrayList<Object> values;
+	ArrayList<String> attributes;
 
 	public ReviewPane(ReviewTab rt) {
 		parent = rt;
@@ -205,7 +208,50 @@ public class ReviewPane extends JPanel {
 	private class ButtonResponder implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
+			buildAdd();
+		}
+	}
 
+	private void initializeLists() {
+		values = new ArrayList<Object>();
+		attributes = new ArrayList<String>();
+	}
+
+	/**
+	 * 
+	 */
+	protected void buildAdd() {
+		initializeLists();
+
+		attributes.add("Year");
+		values.add(year.getValue());
+
+		if (engagement.getValue() != (Integer) 0) {
+			attributes.add("Engagement");
+			values.add(engagement.getValue());
+		}
+
+		if (fairness.getValue() != (Integer) 0) {
+			attributes.add("Fairness");
+			values.add(fairness.getValue());
+		}
+
+		if (difficultyWork.getValue() != (Integer) 0) {
+			attributes.add("DifficultyWork");
+			values.add(difficultyWork.getValue());
+		}
+
+		if (easeOfLearning.getValue() != (Integer) 0) {
+			attributes.add("EaseLearning");
+			values.add(easeOfLearning.getValue());
+		}
+		if (teachingStyle.getValue() != (Integer) 0) {
+			attributes.add("TeachingStyle");
+			values.add(teachingStyle.getValue());
+		}
+		if (!comments.getText().trim().isEmpty()) {
+			attributes.add("Comments");
+			values.add(comments.getText().trim());
 		}
 	}
 }

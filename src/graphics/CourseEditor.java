@@ -5,6 +5,7 @@ package graphics;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import javax.swing.*;
 
 /**
@@ -19,13 +20,12 @@ public class CourseEditor extends JPanel {
 
 	private JButton submit;
 
-	private static final String ADD_STATEMENT = "insert into Course ";
-	private static final String DELETE_STATEMENT = "delete from Course ";
-	private static final String UPDATE_STATEMENT = "update Course set ";
-
 	private static final int ADD = 0;
 	private static final int DELETE = 1;
 	private static final int MODIFY = 2;
+
+	ArrayList<Object> values;
+	ArrayList<String> attributes;
 
 	private CourseManager parent;
 
@@ -145,14 +145,10 @@ public class CourseEditor extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			switch (operationSelector.getSelectedIndex()) {
 			case ADD:
-				String cmd = buildAdd();
-				if (cmd.equals("")) {
-					break;
-				}
+				buildAdd();
 				if (PRSFrame.JDBC) {
-					// TODO Handle null input
+					// TODO Call SQL
 				}
-				else System.out.println(cmd + ";");
 				break;
 			case MODIFY:
 				// TODO SQL staements
@@ -164,10 +160,27 @@ public class CourseEditor extends JPanel {
 		}
 	}
 
+	private void initializeLists() {
+		values = new ArrayList<Object>();
+		attributes = new ArrayList<String>();
+	}
+
 	/**
 	 * @return
 	 */
-	public String buildAdd() {
-		return null;
+	protected void buildAdd() {
+		initializeLists();
+		if (!courseName.getText().trim().isEmpty()) {
+			attributes.add("CName");
+			values.add(courseName.getText());
+		}
+		if (!courseIdentifier.getText().trim().isEmpty()) {
+			attributes.add("CIdentifier");
+			values.add(courseIdentifier.getText());
+		}
+		attributes.add("University");
+		values.add(universitySelector.getItemAt(universitySelector
+				.getSelectedIndex()));
+
 	}
 }
