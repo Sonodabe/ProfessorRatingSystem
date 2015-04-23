@@ -47,10 +47,9 @@ public class ReviewPane extends JPanel {
 
 		SpinnerNumberModel snm2 = new SpinnerNumberModel();
 		snm2.setMinimum(1970); // 0 = N/A
-
 		snm2.setMaximum(Calendar.getInstance().get(Calendar.YEAR));
 		year = new JSpinner(snm2);
-		year.setValue(1970);
+		year.setValue(Calendar.getInstance().get(Calendar.YEAR));
 
 		comments = new JTextArea();
 
