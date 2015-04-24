@@ -16,9 +16,9 @@ public class CourseEditor extends JPanel {
 
 	private JTextField courseName, courseIdentifier;
 	private JComboBox<String> courseSelector, operationSelector,
-			universitySelector;
+			universitySelector, professorSelector, courseSelector2;
 
-	private JButton submit;
+	private JButton submitCourse, submitTeacherCourse;
 
 	private static final int ADD = 0;
 	private static final int DELETE = 1;
@@ -28,6 +28,11 @@ public class CourseEditor extends JPanel {
 	ArrayList<String> attributes;
 
 	private CourseManager parent;
+
+	// TODO ENABLE THE BELOW
+	/*
+	 * Course course; Professor prof;
+	 */
 
 	public CourseEditor(CourseManager cm) {
 		parent = cm;
@@ -42,11 +47,15 @@ public class CourseEditor extends JPanel {
 		courseName = new JTextField();
 		courseIdentifier = new JTextField();
 		courseSelector = new JComboBox<String>();
+		courseSelector2 = new JComboBox<String>();
 
 		if (PRSFrame.JDBC) {
-			// TODO Populate combo box with names
+			// TODO Populate combo boxes with names
 		}
-		else courseSelector.addItem("TEMP");
+		else {
+			courseSelector.addItem("TEMP");
+			courseSelector2.addItem("TEMP2");
+		}
 
 		universitySelector = new JComboBox<String>();
 		if (PRSFrame.JDBC) {
@@ -56,11 +65,25 @@ public class CourseEditor extends JPanel {
 			universitySelector.addItem("TEMP");
 		}
 
+		professorSelector = new JComboBox<String>();
+
+		if (PRSFrame.JDBC) {
+			// TODO Get Profs from sql.
+		}
+		else {
+			professorSelector.addItem("TEMP Prof");
+		}
+
 		courseSelector.setEditable(false);
 		courseSelector.setEnabled(false);
 
-		submit = new JButton("Submit");
-		submit.addActionListener(new ButtonResponder());
+		courseSelector2.setEditable(false);
+		professorSelector.setEditable(false);
+
+		submitCourse = new JButton("Submit");
+		submitCourse.addActionListener(new ButtonResponder());
+		submitTeacherCourse = new JButton("Add Instructor for Course");
+		submitTeacherCourse.addActionListener(new ButtonResponder());
 		setLayout(new GridBagLayout());
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -115,8 +138,52 @@ public class CourseEditor extends JPanel {
 		gbc.gridx = 1;
 		gbc.gridy = 4;
 		gbc.gridheight = 1;
+		gbc.insets = new Insets(0, 0, 100, 0);
 
-		add(submit, gbc);
+		add(submitCourse, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 1;
+		gbc.gridy = 8;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		add(new JLabel("Add an instructor for a course:"), gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 0;
+		gbc.gridy = 9;
+
+		add(new JLabel("Course: "), gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 1;
+		gbc.gridy = 9;
+
+		add(courseSelector2, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 0;
+		gbc.gridy = 10;
+
+		add(new JLabel("Professor: "), gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 1;
+		gbc.gridy = 10;
+
+		add(professorSelector, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 1;
+		gbc.gridy = 11;
+
+		add(submitTeacherCourse, gbc);
 	}
 
 	private class ItemResponder implements ItemListener {
@@ -132,9 +199,12 @@ public class CourseEditor extends JPanel {
 					break;
 				}
 			}
+			else if (e.getSource() == professorSelector) {
+				// TODO get Professor data
+			}
 			else {
 				if (courseSelector.isEnabled()) {
-					// TODO Populate text fields with data
+					// TODO Populate text fields with Course data
 				}
 			}
 		}
@@ -143,26 +213,42 @@ public class CourseEditor extends JPanel {
 	private class ButtonResponder implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			switch (operationSelector.getSelectedIndex()) {
-			case ADD:
-				buildAdd();
-				if (PRSFrame.JDBC) {
-					// TODO Call SQL
+			if (e.getSource() == submitCourse) {
+				switch (operationSelector.getSelectedIndex()) {
+				case ADD:
+					buildAdd();
+					if (PRSFrame.JDBC) {
+						// TODO Call SQL
+					}
+					break;
+				case MODIFY:
+					// TODO SQL staements
+					break;
+				case DELETE:
+					// TODO SQL staements
+					break;
 				}
-				break;
-			case MODIFY:
-				// TODO SQL staements
-				break;
-			case DELETE:
-				// TODO SQL staements
-				break;
+			}
+			else {
+				buildAddCourseTeacher();
 			}
 		}
+
 	}
 
 	private void initializeLists() {
 		values = new ArrayList<Object>();
 		attributes = new ArrayList<String>();
+	}
+
+	/**
+	 * 
+	 */
+	protected void buildAddCourseTeacher() {
+		initializeLists();
+		attributes.add("Cnumber");
+		attributes.add("PID");
+		// TODO add values for above and then call the SQL manager.
 	}
 
 	/**
