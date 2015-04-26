@@ -59,7 +59,6 @@ public class SQLStatements {
 			String statement = insertStatements.get(table);
 			PreparedStatement pstmt = dbc.prepareStatement(statement);
 			setAttributes(pstmt, values);
-
 			return pstmt;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -168,7 +167,7 @@ public class SQLStatements {
 		for (Object val : values) {
 			// Gets the type of the value
 			Class<? extends Object> c = val.getClass();
-
+			System.out.println(val);
 			if (c == String.class) {
 				pstmt.setString(++index, (String) val);
 				continue;

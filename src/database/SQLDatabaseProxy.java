@@ -37,8 +37,10 @@ public class SQLDatabaseProxy {
 				values);
 
 		try {
-			return pstmt.executeQuery().rowInserted();
+			int numRows = pstmt.executeUpdate();
+			return numRows != 0;
 		} catch (SQLException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
