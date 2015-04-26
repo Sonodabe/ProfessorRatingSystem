@@ -18,11 +18,8 @@ import javax.swing.*;
 public class StudentEditor extends JPanel {
 
 	private JTextField major, studentName;
-	private JComboBox<String> studentSelector, operationSelector;
+	private JComboBox<String> studentSelector;
 	private JButton submit;
-
-	private static final int DELETE = 0;
-	private static final int MODIFY = 1;
 
 	private StudentManager parent;
 
@@ -34,9 +31,7 @@ public class StudentEditor extends JPanel {
 	 */
 	public StudentEditor(StudentManager sm) {
 		parent = sm;
-		operationSelector = new JComboBox<String>();
-		operationSelector.addItem("Delete");
-		operationSelector.addItem("Modify");
+
 		studentName = new JTextField();
 		major = new JTextField();
 		studentSelector = new JComboBox<String>();
@@ -49,20 +44,17 @@ public class StudentEditor extends JPanel {
 		studentSelector.setEditable(false);
 		studentSelector.setEnabled(false);
 
-		submit = new JButton("Submit");
+		submit = new JButton("Delete Student");
 		submit.addActionListener(new ButtonResponder());
 		setLayout(new GridBagLayout());
 
 		GridBagConstraints gbc = new GridBagConstraints();
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridwidth = 2;
-
-		add(operationSelector, gbc);
-
+		/*
+		 * gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx =
+		 * 0.5; gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+		 * 
+		 * add(operationSelector, gbc);
+		 */
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridwidth = 1;
 		gbc.weightx = 0.5;
@@ -125,14 +117,7 @@ public class StudentEditor extends JPanel {
 	private class ButtonResponder implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			switch (operationSelector.getSelectedIndex()) {
-			case MODIFY:
-				// TODO SQL staements
-				break;
-			case DELETE:
-				// TODO SQL staements
-				break;
-			}
+
 		}
 	}
 
