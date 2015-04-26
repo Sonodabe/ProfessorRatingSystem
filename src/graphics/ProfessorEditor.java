@@ -23,7 +23,7 @@ public class ProfessorEditor extends JPanel {
 	private static final int DELETE = 1;
 	private static final int MODIFY = 2;
 
-	private JTextField id, professorName, researchArea;
+	private JTextField professorName, researchArea;
 	private JTextArea bio;
 	private JSpinner yearsWorked;
 	private JComboBox<String> professorSelector, operationSelector;
@@ -47,7 +47,6 @@ public class ProfessorEditor extends JPanel {
 		operationSelector.addItemListener(new ItemResponder());
 		professorName = new JTextField();
 		researchArea = new JTextField();
-		id = new JTextField();
 		professorSelector = new JComboBox<String>();
 		professorSelector.addItemListener(new ItemResponder());
 		if (PRSFrame.JDBC) {
@@ -107,20 +106,6 @@ public class ProfessorEditor extends JPanel {
 		gbc.gridy = 2;
 
 		add(professorName, gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-
-		add(new JLabel("UniqueID"), gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 3;
-
-		add(id, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -223,10 +208,6 @@ public class ProfessorEditor extends JPanel {
 
 	protected void buildAdd() {
 		initializeLists();
-		if (!id.getText().trim().isEmpty()) {
-			attributes.add("PID");
-			values.add(id.getText());
-		}
 		if (!professorName.getText().trim().isEmpty()) {
 			attributes.add("PName");
 			values.add(professorName.getText());
