@@ -30,7 +30,7 @@ public class SQLDatabaseProxy {
 		}
 	}
 
-	public static boolean insert(String table, Collection<String> attributes,
+	public static boolean insert(String table, ArrayList<String> attributes,
 			ArrayList<Object> values) {
 
 		PreparedStatement pstmt = SQLStatements.insert(dbc, table, attributes,
@@ -38,6 +38,7 @@ public class SQLDatabaseProxy {
 
 		try {
 			int numRows = pstmt.executeUpdate();
+			
 			return numRows != 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -46,9 +47,15 @@ public class SQLDatabaseProxy {
 	}
 
 	public static ArrayList<String[]> select(String table,
-			Collection<String> attributes) {
+			ArrayList<String> attributes) {
+		return select(table, attributes, null);
+	}
 
-		PreparedStatement pstmt = SQLStatements.select(dbc, attributes, table);
+	public static ArrayList<String[]> select(String table,
+			ArrayList<String> attributes, ArrayList<AttributeValue> filter) {
+
+		PreparedStatement pstmt = SQLStatements.select(dbc, attributes, table,
+				filter);
 
 		try {
 			ArrayList<String[]> results = new ArrayList<String[]>();
@@ -59,7 +66,7 @@ public class SQLDatabaseProxy {
 				String[] temp = new String[attributes.size()];
 
 				for (int i = 0; i < temp.length; i++) {
-					Object cur = rs.getObject(i);
+					Object cur = rs.getObject(i + 1);
 
 					temp[i] = (cur == null) ? null : cur.toString();
 				}

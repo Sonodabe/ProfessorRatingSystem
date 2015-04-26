@@ -6,4 +6,6 @@ public class ErrorUtilities {
 	
 	// Error Messages
 	public static final String EX_VALNOTCAUGHT = "Error: Value (%s @ %d) not caught!%n";
+
+	public static final String EX_ATTRIBUTE_NULL = "Attribute may not be null!";
 }

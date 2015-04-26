@@ -3,6 +3,7 @@ package database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -42,7 +43,7 @@ public class SQLStatements {
 	 *         in creating the PreparedStatement.
 	 */
 	public static PreparedStatement insert(Connection dbc, String table,
-			Collection<String> attributes, Collection<Object> values) {
+			ArrayList<String> attributes, ArrayList<Object> values) {
 
 		// Don't process if any of these values aren't set
 		if (dbc == null || attributes == null || values == null
@@ -79,8 +80,9 @@ public class SQLStatements {
 	 *         attributes
 	 */
 	public static PreparedStatement select(Connection dbc,
-			Collection<String> attributes, String table) {
-		if (dbc == null || attributes == null || !attributes.isEmpty()) {
+			ArrayList<String> attributes, String table,
+			ArrayList<AttributeValue> filter) {
+		if (dbc == null || attributes == null || attributes.isEmpty()) {
 			return null;
 		}
 
@@ -97,8 +99,22 @@ public class SQLStatements {
 
 			String statement = String.format(SELECT,
 					attributeString.toString(), table);
-			
+
+			if (filter != null && !filter.isEmpty()) {
+				statement += AttributeValue.where(filter);
+			}
+
 			PreparedStatement pstmt = dbc.prepareStatement(statement);
+
+			if (filter != null && !filter.isEmpty()) {
+				ArrayList<Object> vals = new ArrayList<Object>();
+
+				for (AttributeValue av : filter) {
+					vals.add(av.value);
+				}
+
+				setAttributes(pstmt, vals);
+			}
 
 			return pstmt;
 		} catch (Exception e) {
@@ -117,7 +133,7 @@ public class SQLStatements {
 	 *            The attributes that will be added into the statement
 	 */
 	private static void createStatement(String table,
-			Collection<String> attributes) {
+			ArrayList<String> attributes) {
 
 		// Will hold the list of attributes
 		StringBuilder attributeString = new StringBuilder();
@@ -159,7 +175,7 @@ public class SQLStatements {
 	 *             statement
 	 */
 	private static void setAttributes(PreparedStatement pstmt,
-			Collection<Object> values) throws SQLException {
+			ArrayList<Object> values) throws SQLException {
 
 		// Keeping track of the current value
 		int index = 0;
@@ -167,7 +183,6 @@ public class SQLStatements {
 		for (Object val : values) {
 			// Gets the type of the value
 			Class<? extends Object> c = val.getClass();
-			System.out.println(val);
 			if (c == String.class) {
 				pstmt.setString(++index, (String) val);
 				continue;
