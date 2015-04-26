@@ -3,8 +3,10 @@ package database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import utilities.ErrorUtilities;
 import utilities.PropertyUtilities;
@@ -19,7 +21,8 @@ public class SQLDatabaseProxy {
 
 			// Set up connection
 			String databaseName = PropertyUtilities.getDatabaseName();
-			String connectionString = String.format("jdbc:sqlite:%s", databaseName);
+			String connectionString = String.format("jdbc:sqlite:%s",
+					databaseName);
 			dbc = DriverManager.getConnection(connectionString);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -27,7 +30,7 @@ public class SQLDatabaseProxy {
 		}
 	}
 
-	public static boolean insert(String table, ArrayList<String> attributes,
+	public static boolean insert(String table, Collection<String> attributes,
 			ArrayList<Object> values) {
 
 		PreparedStatement pstmt = SQLStatements.insert(dbc, table, attributes,
@@ -37,6 +40,35 @@ public class SQLDatabaseProxy {
 			return pstmt.executeQuery().rowInserted();
 		} catch (SQLException e) {
 			return false;
+		}
+	}
+
+	public static ArrayList<String[]> select(String table,
+			Collection<String> attributes) {
+
+		PreparedStatement pstmt = SQLStatements.select(dbc, attributes, table);
+
+		try {
+			ArrayList<String[]> results = new ArrayList<String[]>();
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				String[] temp = new String[attributes.size()];
+
+				for (int i = 0; i < temp.length; i++) {
+					Object cur = rs.getObject(i);
+
+					temp[i] = (cur == null) ? null : cur.toString();
+				}
+
+				results.add(temp);
+			}
+
+			return results;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 }

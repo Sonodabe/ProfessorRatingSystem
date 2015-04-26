@@ -19,6 +19,7 @@ public class SQLStatements {
 
 	// SQL statments
 	private static final String INSERT = "INSERT INTO %s (%s) VALUES (%s)";
+	private static final String SELECT = "SELECT %s FROM %s";
 
 	// Initializing variables
 	static {
@@ -29,7 +30,7 @@ public class SQLStatements {
 	 * Generates the prepared statement for an insert call
 	 * 
 	 * @param dbc
-	 *            The connection for which the prepared statement is affecting
+	 *            The connection to which we are inserting
 	 * @param table
 	 *            The name of the table into which the statement will insert
 	 * @param attributes
@@ -58,6 +59,47 @@ public class SQLStatements {
 			String statement = insertStatements.get(table);
 			PreparedStatement pstmt = dbc.prepareStatement(statement);
 			setAttributes(pstmt, values);
+
+			return pstmt;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Gets attributes from every record from a specified table
+	 * 
+	 * @param dbc
+	 *            The connection from which we are selecting
+	 * @param attributes
+	 *            The attributes that will be returned from the SQL call
+	 * @param table
+	 *            The table from which we are selecting
+	 * @return The prepared statement that will return all records with given
+	 *         attributes
+	 */
+	public static PreparedStatement select(Connection dbc,
+			Collection<String> attributes, String table) {
+		if (dbc == null || attributes == null || !attributes.isEmpty()) {
+			return null;
+		}
+
+		try {
+			// Build the prepared statement string
+			StringBuilder attributeString = new StringBuilder();
+
+			for (String att : attributes) {
+				attributeString.append(COMMA);
+				attributeString.append(att);
+			}
+
+			attributeString.deleteCharAt(0);
+
+			String statement = String.format(SELECT,
+					attributeString.toString(), table);
+			
+			PreparedStatement pstmt = dbc.prepareStatement(statement);
 
 			return pstmt;
 		} catch (Exception e) {
@@ -144,7 +186,8 @@ public class SQLStatements {
 
 			// Probably not good
 			pstmt.setObject(++index, val);
-			System.err.printf(ErrorUtilities.EX_VALNOTCAUGHT, val.toString(), index);
+			System.err.printf(ErrorUtilities.EX_VALNOTCAUGHT, val.toString(),
+					index);
 
 		}
 	}
