@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
+import database.SQLDatabaseProxy;
 
 /**
  * @author Doug Blase
@@ -62,7 +63,7 @@ public class CourseEditor extends JPanel {
 			// TODO Get listing from sql.
 		}
 		else {
-			universitySelector.addItem("TEMP");
+			universitySelector.addItem("Miami University");
 		}
 
 		professorSelector = new JComboBox<String>();
@@ -267,6 +268,9 @@ public class CourseEditor extends JPanel {
 		attributes.add("University");
 		values.add(universitySelector.getItemAt(universitySelector
 				.getSelectedIndex()));
+
+		System.out.println(SQLDatabaseProxy.insert("Course",
+				attributes, values));
 
 	}
 }
