@@ -43,7 +43,7 @@ foreign key(University) references University(UName) ON DELETE CASCADE
 
 CREATE TABLE Teaches (
 CNumber        varchar,
-PID            varchar,
+PID            INTEGER,
 primary key(CNumber, PID),
 foreign key(CNumber) references Course(CIdentifier) ON DELETE CASCADE,
 foreign key(PID) references Professor(PID) ON DELETE CASCADE

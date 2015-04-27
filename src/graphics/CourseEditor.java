@@ -25,8 +25,9 @@ public class CourseEditor extends JPanel {
 	private static final int DELETE = 1;
 	private static final int MODIFY = 2;
 
-	ArrayList<Object> values;
-	ArrayList<String> attributes;
+	private ArrayList<Object> values;
+	private ArrayList<String> attributes;
+	private ArrayList<Integer> profIds;
 
 	private CourseManager parent;
 
@@ -39,7 +40,7 @@ public class CourseEditor extends JPanel {
 		parent = cm;
 		operationSelector = new JComboBox<String>();
 		operationSelector.addItem("Add");
-
+		profIds = new ArrayList<Integer>();
 		if (PRSFrame.JDBC) {
 			operationSelector.addItem("Delete");
 			operationSelector.addItem("Modify");
@@ -50,27 +51,9 @@ public class CourseEditor extends JPanel {
 		courseSelector = new JComboBox<String>();
 		courseSelector2 = new JComboBox<String>();
 
-		if (PRSFrame.JDBC) {
-			// TODO Populate combo boxes with names
-		} else {
-			courseSelector.addItem("TEMP");
-			courseSelector2.addItem("TEMP2");
-		}
-
 		universitySelector = new JComboBox<String>();
-		if (PRSFrame.JDBC) {
-			// TODO Get listing from sql.
-		} else {
-			universitySelector.addItem("Miami University");
-		}
 
 		professorSelector = new JComboBox<String>();
-
-		if (PRSFrame.JDBC) {
-			// TODO Get Profs from sql.
-		} else {
-			professorSelector.addItem("TEMP Prof");
-		}
 
 		courseSelector.setEditable(false);
 		courseSelector.setEnabled(false);
@@ -198,9 +181,11 @@ public class CourseEditor extends JPanel {
 					// TODO populate text fields with data
 					break;
 				}
-			} else if (e.getSource() == professorSelector) {
+			}
+			else if (e.getSource() == professorSelector) {
 				// TODO get Professor data
-			} else {
+			}
+			else {
 				if (courseSelector.isEnabled()) {
 					// TODO Populate text fields with Course data
 				}
@@ -226,7 +211,8 @@ public class CourseEditor extends JPanel {
 					// TODO SQL staements
 					break;
 				}
-			} else {
+			}
+			else {
 				buildAddCourseTeacher();
 			}
 		}
@@ -243,9 +229,12 @@ public class CourseEditor extends JPanel {
 	 */
 	protected void buildAddCourseTeacher() {
 		initializeLists();
-		attributes.add("Cnumber");
+		attributes.add("CNumber");
 		attributes.add("PID");
 		// TODO add values for above and then call the SQL manager.
+		values.add(courseSelector2.getSelectedItem());
+		values.add(profIds.get(professorSelector.getSelectedIndex()));
+		SQLDatabaseProxy.insert("Teaches", attributes, values);
 	}
 
 	/**
@@ -265,8 +254,8 @@ public class CourseEditor extends JPanel {
 		values.add(universitySelector.getItemAt(universitySelector
 				.getSelectedIndex()));
 
-		System.out.println(SQLDatabaseProxy
-				.insert("Course", attributes, values));
+		System.out.println(SQLDatabaseProxy.insert("Course",
+				attributes, values));
 
 	}
 
@@ -274,19 +263,44 @@ public class CourseEditor extends JPanel {
 		updateSelector(courseSelector2, "Course", "CName");
 		updateSelector(professorSelector, "Professor", "PName");
 		updateSelector(universitySelector, "University", "UName");
+		updateProfIds(profIds, "Professor", "PID");
 	}
-	
-	public void updateSelector(JComboBox<String> comboBox, String tableName, String fieldName) {
+
+	/**
+	 * @param profIds2
+	 * @param string
+	 * @param string2
+	 */
+	private void updateProfIds(ArrayList<Integer> idList,
+			String tableName, String fieldName) {
 		ArrayList<String[]> records;
-		
+
 		// TODO Make static and stick somewhere
 		ArrayList<String> atts = new ArrayList<String>();
 		atts.add(fieldName);
-		
+
 		records = SQLDatabaseProxy.select(tableName, atts);
-		
+
+		idList.clear();
+
+		for (String[] arr : records) {
+			idList.add(Integer.parseInt(arr[0]));
+		}
+	}
+
+	// TODO allow for a filter of some sort...
+	public void updateSelector(JComboBox<String> comboBox,
+			String tableName, String fieldName) {
+		ArrayList<String[]> records;
+
+		// TODO Make static and stick somewhere
+		ArrayList<String> atts = new ArrayList<String>();
+		atts.add(fieldName);
+
+		records = SQLDatabaseProxy.select(tableName, atts);
+
 		comboBox.removeAllItems();
-		
+
 		for (String[] arr : records) {
 			comboBox.addItem(arr[0]);
 		}
