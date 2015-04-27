@@ -22,8 +22,7 @@ public class CourseEditor extends JPanel {
 	private JButton submitCourse, submitTeacherCourse;
 
 	private static final int ADD = 0;
-	private static final int DELETE = 1;
-	private static final int MODIFY = 2;
+	private static final int MODIFY = 1;
 
 	private ArrayList<Object> values;
 	private ArrayList<String> attributes;
@@ -41,10 +40,9 @@ public class CourseEditor extends JPanel {
 		operationSelector = new JComboBox<String>();
 		operationSelector.addItem("Add");
 		profIds = new ArrayList<Integer>();
-		if (PRSFrame.JDBC) {
-			operationSelector.addItem("Delete");
-			operationSelector.addItem("Modify");
-		}
+
+		operationSelector.addItem("Modify");
+
 		operationSelector.addItemListener(new ItemResponder());
 		courseName = new JTextField();
 		courseIdentifier = new JTextField();
@@ -82,42 +80,55 @@ public class CourseEditor extends JPanel {
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		add(new JLabel("Course Identifier: "), gbc);
+		add(new JLabel("Existing Course: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = 1;
+		add(courseSelector, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.5;
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		add(new JLabel("Course Identifier: "), gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 1;
+		gbc.gridy = 2;
 		add(courseIdentifier, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 2;
+		gbc.gridy = 3;
 		add(new JLabel("Course Name: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 2;
+		gbc.gridy = 3;
 		add(courseName, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 3;
+		gbc.gridy = 4;
 		add(new JLabel("University: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 3;
+		gbc.gridy = 4;
 		add(universitySelector, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 4;
+		gbc.gridy = 5;
 		gbc.gridheight = 1;
 		gbc.insets = new Insets(0, 0, 100, 0);
 
@@ -200,14 +211,8 @@ public class CourseEditor extends JPanel {
 				switch (operationSelector.getSelectedIndex()) {
 				case ADD:
 					buildAdd();
-					if (PRSFrame.JDBC) {
-						// TODO Call SQL
-					}
 					break;
 				case MODIFY:
-					// TODO SQL staements
-					break;
-				case DELETE:
 					// TODO SQL staements
 					break;
 				}
@@ -260,6 +265,7 @@ public class CourseEditor extends JPanel {
 	}
 
 	public void updateSelectors() {
+		updateSelector(courseSelector, "Course", "CName");
 		updateSelector(courseSelector2, "Course", "CName");
 		updateSelector(professorSelector, "Professor", "PName");
 		updateSelector(universitySelector, "University", "UName");
