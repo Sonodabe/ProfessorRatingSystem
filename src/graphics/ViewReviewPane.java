@@ -239,6 +239,7 @@ public class ViewReviewPane extends JPanel {
 			if (i == 0) {
 				buttons[i].setSelected(true);
 			}
+			buttons[i].setEnabled(false);
 			group.add(buttons[i]);
 		}
 	}
