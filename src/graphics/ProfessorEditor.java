@@ -8,6 +8,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import data.Professor;
+import database.SQLDatabaseProxy;
 
 /**
  * @author Doug Blase
@@ -222,6 +223,7 @@ public class ProfessorEditor extends JPanel {
 		}
 		attributes.add("YearsWorked");
 		values.add(yearsWorked.getValue());
+		SQLDatabaseProxy.insert("Professor", attributes, values);
 	}
 
 	/**
