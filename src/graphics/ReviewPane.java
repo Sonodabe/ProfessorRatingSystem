@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
+import database.SQLDatabaseProxy;
 
 /**
  * 
@@ -15,12 +16,17 @@ import javax.swing.*;
  */
 public class ReviewPane extends JPanel {
 
-	private JSpinner year, engagement, fairness, difficultyWork,
-			easeOfLearning, teachingStyle;
+	private JSpinner year;
 	private JComboBox<String> semester, username, classTeacher;
 	private JTextArea comments;
 	private JButton submit;
 	private ReviewTab parent;
+
+	private JRadioButton[] engagement, fairness, difficultyWork,
+			easeOfLearning, teachingStyle;
+	private ButtonGroup engagementGroup, fairnessGroup,
+			difficultyWorkGroup, easeOfLearningGroup,
+			teachingStyleGroup;
 
 	ArrayList<Object> values;
 	ArrayList<String> attributes;
@@ -38,16 +44,6 @@ public class ReviewPane extends JPanel {
 		semester.addItem("SPRING");
 		semester.addItem("SUMMER");
 
-		SpinnerNumberModel snm = new SpinnerNumberModel();
-		snm.setMinimum(0); // 0 = N/A
-		snm.setMaximum(5);
-
-		engagement = new JSpinner(snm);
-		fairness = new JSpinner(snm);
-		difficultyWork = new JSpinner(snm);
-		easeOfLearning = new JSpinner(snm);
-		teachingStyle = new JSpinner(snm);
-
 		SpinnerNumberModel snm2 = new SpinnerNumberModel();
 		snm2.setMinimum(1970); // 0 = N/A
 		snm2.setMaximum(Calendar.getInstance().get(Calendar.YEAR));
@@ -55,6 +51,26 @@ public class ReviewPane extends JPanel {
 		year.setValue(Calendar.getInstance().get(Calendar.YEAR));
 
 		comments = new JTextArea();
+
+		engagement = new JRadioButton[6];
+		engagementGroup = new ButtonGroup();
+		initializeButtonGroup(engagement, engagementGroup);
+
+		fairness = new JRadioButton[6];
+		fairnessGroup = new ButtonGroup();
+		initializeButtonGroup(fairness, fairnessGroup);
+
+		difficultyWork = new JRadioButton[6];
+		difficultyWorkGroup = new ButtonGroup();
+		initializeButtonGroup(difficultyWork, difficultyWorkGroup);
+
+		easeOfLearning = new JRadioButton[6];
+		easeOfLearningGroup = new ButtonGroup();
+		initializeButtonGroup(easeOfLearning, easeOfLearningGroup);
+
+		teachingStyle = new JRadioButton[6];
+		teachingStyleGroup = new ButtonGroup();
+		initializeButtonGroup(teachingStyle, teachingStyleGroup);
 
 		setLayout(new GridBagLayout());
 
@@ -116,12 +132,14 @@ public class ReviewPane extends JPanel {
 
 		add(new JLabel("Engagement: "), gbc);
 
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 4;
-
-		add(engagement, gbc);
+		for (int i = 0; i < engagement.length; i++) {
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+			gbc.weightx = 0.5;
+			gbc.gridx = 1 + i;
+			gbc.gridy = 4;
+			add(engagement[i], gbc);
+		}
+		// add(engagement, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -130,12 +148,14 @@ public class ReviewPane extends JPanel {
 
 		add(new JLabel("Fairness: "), gbc);
 
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 5;
+		for (int i = 0; i < fairness.length; i++) {
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+			gbc.weightx = 0.5;
+			gbc.gridx = 1 + i;
+			gbc.gridy = 5;
 
-		add(fairness, gbc);
+			add(fairness[i], gbc);
+		}
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -145,13 +165,14 @@ public class ReviewPane extends JPanel {
 		add(new JLabel("Difficulty of Work: (1 - Easy, 5 - Hard)"),
 				gbc);
 
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 6;
+		for (int i = 0; i < difficultyWork.length; i++) {
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+			gbc.weightx = 0.5;
+			gbc.gridx = 1 + i;
+			gbc.gridy = 6;
 
-		add(difficultyWork, gbc);
-
+			add(difficultyWork[i], gbc);
+		}
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
@@ -159,12 +180,14 @@ public class ReviewPane extends JPanel {
 
 		add(new JLabel("Ease of Learning: "), gbc);
 
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 7;
+		for (int i = 0; i < easeOfLearning.length; i++) {
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+			gbc.weightx = 0.5;
+			gbc.gridx = 1 + i;
+			gbc.gridy = 7;
 
-		add(easeOfLearning, gbc);
+			add(easeOfLearning[i], gbc);
+		}
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -175,12 +198,14 @@ public class ReviewPane extends JPanel {
 				"Teaching Style: (1 - Entirely Lab Focused, 5 - Entirely Lecture)"),
 				gbc);
 
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 8;
+		for (int i = 0; i < teachingStyle.length; i++) {
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+			gbc.weightx = 0.5;
+			gbc.gridx = 1 + i;
+			gbc.gridy = 8;
 
-		add(teachingStyle, gbc);
+			add(teachingStyle[i], gbc);
+		}
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -205,6 +230,17 @@ public class ReviewPane extends JPanel {
 		add(submit, gbc);
 	}
 
+	private void initializeButtonGroup(JRadioButton buttons[],
+			ButtonGroup group) {
+		for (int i = 0; i < buttons.length; i++) {
+			buttons[i] = new JRadioButton(i == 0 ? "N/A" : "" + i);
+			if (i == 0) {
+				buttons[i].setSelected(true);
+			}
+			group.add(buttons[i]);
+		}
+	}
+
 	private class ButtonResponder implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
@@ -226,32 +262,49 @@ public class ReviewPane extends JPanel {
 		attributes.add("Year");
 		values.add(year.getValue());
 
-		if (engagement.getValue() != (Integer) 0) {
-			attributes.add("Engagement");
-			values.add(engagement.getValue());
-		}
+		/*
+		 * if (engagement.getValue() != (Integer) 0) {
+		 * attributes.add("Engagement");
+		 * values.add(engagement.getValue()); }
+		 */
 
-		if (fairness.getValue() != (Integer) 0) {
-			attributes.add("Fairness");
-			values.add(fairness.getValue());
-		}
+		attributes.add("Engagement");
+		values.add(getRating(engagementGroup));
 
-		if (difficultyWork.getValue() != (Integer) 0) {
-			attributes.add("DifficultyWork");
-			values.add(difficultyWork.getValue());
-		}
+		attributes.add("Fairness");
+		values.add(getRating(fairnessGroup));
 
-		if (easeOfLearning.getValue() != (Integer) 0) {
-			attributes.add("EaseLearning");
-			values.add(easeOfLearning.getValue());
-		}
-		if (teachingStyle.getValue() != (Integer) 0) {
-			attributes.add("TeachingStyle");
-			values.add(teachingStyle.getValue());
-		}
+		attributes.add("DifficultyWork");
+		values.add(getRating(difficultyWorkGroup));
+
+		attributes.add("EaseLearning");
+		values.add(getRating(easeOfLearningGroup));
+
+		attributes.add("TeachingStyle");
+		values.add(getRating(teachingStyleGroup));
+
 		if (!comments.getText().trim().isEmpty()) {
 			attributes.add("Comments");
 			values.add(comments.getText().trim());
 		}
+		SQLDatabaseProxy.insert("Review", attributes, values);
+	}
+
+	/**
+	 * @param engagementGroup2
+	 * @return
+	 */
+	private Object getRating(ButtonGroup buttonGroup) {
+		String s = null;
+		for (Enumeration<AbstractButton> buttons = engagementGroup
+				.getElements(); buttons.hasMoreElements();) {
+			AbstractButton button = buttons.nextElement();
+
+			if (button.isSelected()) {
+				s = button.getText();
+				break;
+			}
+		}
+		return s.equals("N/A") ? null : Integer.parseInt(s);
 	}
 }
