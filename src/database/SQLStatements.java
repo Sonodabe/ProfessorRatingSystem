@@ -3,8 +3,8 @@ package database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 import utilities.ErrorUtilities;
@@ -179,10 +179,15 @@ public class SQLStatements {
 
 		// Keeping track of the current value
 		int index = 0;
-
-		for (Object val : values) {
+		for (Object val : values) {			
+			if (val == null) {
+				pstmt.setNull(++index, Types.NULL);
+				continue;
+			}
+			
 			// Gets the type of the value
 			Class<? extends Object> c = val.getClass();
+			
 			if (c == String.class) {
 				pstmt.setString(++index, (String) val);
 				continue;
