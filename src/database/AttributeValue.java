@@ -14,33 +14,28 @@ public class AttributeValue {
 	public static final int LESS_OR_EQUAL = 5;
 
 	public static final int LIKE = 6;
+	
+	public static final int JOIN = 7;
 
-	public final String attribute1, attribute2;
+	public final String attribute;
 	public final Object value;
 	public final int comparison;
 
 	public AttributeValue(String attribute, Object value,
 			int comparison) {
-		if (attribute == null)
+		if (attribute == null) {
 			throw new IllegalArgumentException(
 					ErrorUtilities.EX_ATTRIBUTE_NULL);
+		}
+		
+		if (comparison == JOIN && value == null) {
+			throw new IllegalArgumentException(
+					ErrorUtilities.EX_ATTRIBUTE_NULL);
+		}
 
-		this.attribute1 = attribute;
+		this.attribute = attribute;
 		this.value = value;
 		this.comparison = comparison;
-		this.attribute2 = null;
-	}
-
-	public AttributeValue(String attribute, String attr2,
-			int comparison) {
-		if (attribute == null)
-			throw new IllegalArgumentException(
-					ErrorUtilities.EX_ATTRIBUTE_NULL);
-
-		this.attribute1 = attribute;
-		this.value = null;
-		this.comparison = comparison;
-		this.attribute2 = attr2;
 	}
 
 	public AttributeValue(String attribute, Object value) {
@@ -48,9 +43,13 @@ public class AttributeValue {
 	}
 
 	public String toString() {
+		if (comparison == JOIN) {
+			return String.format("%s = %s", attribute, value);
+		}
+		
 		StringBuilder ret = new StringBuilder();
 
-		ret.append(attribute1);
+		ret.append(attribute);
 		ret.append(" ");
 
 		switch (comparison) {
