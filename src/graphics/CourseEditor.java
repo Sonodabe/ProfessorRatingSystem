@@ -52,8 +52,7 @@ public class CourseEditor extends JPanel {
 
 		if (PRSFrame.JDBC) {
 			// TODO Populate combo boxes with names
-		}
-		else {
+		} else {
 			courseSelector.addItem("TEMP");
 			courseSelector2.addItem("TEMP2");
 		}
@@ -61,8 +60,7 @@ public class CourseEditor extends JPanel {
 		universitySelector = new JComboBox<String>();
 		if (PRSFrame.JDBC) {
 			// TODO Get listing from sql.
-		}
-		else {
+		} else {
 			universitySelector.addItem("Miami University");
 		}
 
@@ -70,8 +68,7 @@ public class CourseEditor extends JPanel {
 
 		if (PRSFrame.JDBC) {
 			// TODO Get Profs from sql.
-		}
-		else {
+		} else {
 			professorSelector.addItem("TEMP Prof");
 		}
 
@@ -185,6 +182,8 @@ public class CourseEditor extends JPanel {
 		gbc.gridy = 11;
 
 		add(submitTeacherCourse, gbc);
+
+		this.updateSelectors();
 	}
 
 	private class ItemResponder implements ItemListener {
@@ -199,11 +198,9 @@ public class CourseEditor extends JPanel {
 					// TODO populate text fields with data
 					break;
 				}
-			}
-			else if (e.getSource() == professorSelector) {
+			} else if (e.getSource() == professorSelector) {
 				// TODO get Professor data
-			}
-			else {
+			} else {
 				if (courseSelector.isEnabled()) {
 					// TODO Populate text fields with Course data
 				}
@@ -229,8 +226,7 @@ public class CourseEditor extends JPanel {
 					// TODO SQL staements
 					break;
 				}
-			}
-			else {
+			} else {
 				buildAddCourseTeacher();
 			}
 		}
@@ -269,8 +265,30 @@ public class CourseEditor extends JPanel {
 		values.add(universitySelector.getItemAt(universitySelector
 				.getSelectedIndex()));
 
-		System.out.println(SQLDatabaseProxy.insert("Course",
-				attributes, values));
+		System.out.println(SQLDatabaseProxy
+				.insert("Course", attributes, values));
 
+	}
+
+	public void updateSelectors() {
+		updateSelector(courseSelector2, "Course", "CName");
+		updateSelector(professorSelector, "Professor", "PName");
+		updateSelector(universitySelector, "University", "UName");
+	}
+	
+	public void updateSelector(JComboBox<String> comboBox, String tableName, String fieldName) {
+		ArrayList<String[]> records;
+		
+		// TODO Make static and stick somewhere
+		ArrayList<String> atts = new ArrayList<String>();
+		atts.add(fieldName);
+		
+		records = SQLDatabaseProxy.select(tableName, atts);
+		
+		comboBox.removeAllItems();
+		
+		for (String[] arr : records) {
+			comboBox.addItem(arr[0]);
+		}
 	}
 }
