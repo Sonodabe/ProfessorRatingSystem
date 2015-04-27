@@ -1,9 +1,16 @@
+/**
+ * 
+ */
 package database;
 
 import java.util.ArrayList;
 import utilities.ErrorUtilities;
 
-public class AttributeValue {
+/**
+ * @author Doug Blase
+ *
+ */
+public class AttributeAttribute {
 	public static final int EQUAL = 0;
 	public static final int NOT_EQUAL = 1;
 
@@ -16,35 +23,21 @@ public class AttributeValue {
 	public static final int LIKE = 6;
 
 	public final String attribute1, attribute2;
-	public final Object value;
 	public final int comparison;
 
-	public AttributeValue(String attribute, Object value,
+	public AttributeAttribute(String attribute, String attr2,
 			int comparison) {
 		if (attribute == null)
 			throw new IllegalArgumentException(
 					ErrorUtilities.EX_ATTRIBUTE_NULL);
 
 		this.attribute1 = attribute;
-		this.value = value;
-		this.comparison = comparison;
-		this.attribute2 = null;
-	}
-
-	public AttributeValue(String attribute, String attr2,
-			int comparison) {
-		if (attribute == null)
-			throw new IllegalArgumentException(
-					ErrorUtilities.EX_ATTRIBUTE_NULL);
-
-		this.attribute1 = attribute;
-		this.value = null;
 		this.comparison = comparison;
 		this.attribute2 = attr2;
 	}
 
-	public AttributeValue(String attribute, Object value) {
-		this(attribute, value, EQUAL);
+	public AttributeAttribute(String attribute, String attr2) {
+		this(attribute, attr2, EQUAL);
 	}
 
 	public String toString() {
@@ -55,11 +48,11 @@ public class AttributeValue {
 
 		switch (comparison) {
 		case EQUAL:
-			ret.append(value == null ? "IS" : "=");
+			ret.append(attribute2 == null ? "IS" : "=");
 			break;
 
 		case NOT_EQUAL:
-			ret.append(value == null ? "IS NOT" : "<>");
+			ret.append(attribute2 == null ? "IS NOT" : "<>");
 			break;
 
 		case GREATER:
@@ -83,7 +76,7 @@ public class AttributeValue {
 			break;
 		}
 
-		if (value == null) {
+		if (attribute2 == null) {
 			ret.append(" NULL");
 		}
 		else {
@@ -93,7 +86,7 @@ public class AttributeValue {
 		return ret.toString();
 	}
 
-	public static String where(ArrayList<AttributeValue> arr) {
+	public static String where(ArrayList<AttributeAttribute> arr) {
 		if (arr == null || arr.isEmpty())
 			return "";
 

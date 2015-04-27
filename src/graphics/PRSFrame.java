@@ -2,7 +2,7 @@ package graphics;
 
 import java.util.ArrayList;
 import javax.swing.*;
-import database.SQLDatabaseProxy;
+import database.*;
 
 public class PRSFrame extends JFrame {
 
@@ -70,5 +70,38 @@ public class PRSFrame extends JFrame {
 			comboBox.addItem(arr[0]);
 		}
 	}
+
+	public static void updateSelector(JComboBox<String> comboBox,
+			String tableName, String fieldName,
+			ArrayList<AttributeValue> filters) {
+		ArrayList<String[]> records;
+
+		ArrayList<String> atts = new ArrayList<String>();
+		atts.add(fieldName);
+
+		records = SQLDatabaseProxy.select(tableName, atts, filters);
+
+		comboBox.removeAllItems();
+
+		for (String[] arr : records) {
+			comboBox.addItem(arr[0]);
+		}
+	}
+
+	/*
+	 * public static void updateSelector2(JComboBox<String> comboBox,
+	 * String tableName, String fieldName,
+	 * ArrayList<AttributeAttribute> filters) { ArrayList<String[]>
+	 * records;
+	 * 
+	 * ArrayList<String> atts = new ArrayList<String>();
+	 * atts.add(fieldName);
+	 * 
+	 * records = SQLDatabaseProxy.select2(tableName, atts, filters);
+	 * 
+	 * comboBox.removeAllItems();
+	 * 
+	 * for (String[] arr : records) { comboBox.addItem(arr[0]); } }
+	 */
 
 }

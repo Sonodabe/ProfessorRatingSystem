@@ -39,6 +39,7 @@ public class ReviewPane extends JPanel {
 		// TODO probably get rid of the username menu concept.
 		username = new JComboBox<String>();
 		classSelector = new JComboBox<String>();
+		classSelector.addItemListener(new ItemResponder());
 		professorSelector = new JComboBox<String>();
 		semester = new JComboBox<String>();
 		semester.addItem("FALL");
@@ -90,7 +91,7 @@ public class ReviewPane extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 
-		add(new JLabel("Class and Teacher: "), gbc);
+		add(new JLabel("Class: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -104,41 +105,55 @@ public class ReviewPane extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 
-		add(new JLabel("Year: "), gbc);
+		add(new JLabel("Professor: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 
-		add(year, gbc);
+		add(professorSelector, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 
-		add(new JLabel("Semester: "), gbc);
+		add(new JLabel("Year: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = 3;
 
-		add(semester, gbc);
+		add(year, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = 4;
 
+		add(new JLabel("Semester: "), gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 1;
+		gbc.gridy = 4;
+
+		add(semester, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 0;
+		gbc.gridy = 5;
+
 		add(new JLabel("Engagement: "), gbc);
 
 		for (int i = 0; i < engagement.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
-			gbc.gridx = 1 + i;
-			gbc.gridy = 4;
+			gbc.gridx = 2 + i;
+			gbc.gridy = 5;
 			add(engagement[i], gbc);
 		}
 		// add(engagement, gbc);
@@ -146,15 +161,15 @@ public class ReviewPane extends JPanel {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 5;
+		gbc.gridy = 6;
 
 		add(new JLabel("Fairness: "), gbc);
 
 		for (int i = 0; i < fairness.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
-			gbc.gridx = 1 + i;
-			gbc.gridy = 5;
+			gbc.gridx = 2 + i;
+			gbc.gridy = 6;
 
 			add(fairness[i], gbc);
 		}
@@ -162,7 +177,7 @@ public class ReviewPane extends JPanel {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 6;
+		gbc.gridy = 7;
 
 		add(new JLabel("Difficulty of Work: (1 - Easy, 5 - Hard)"),
 				gbc);
@@ -170,23 +185,23 @@ public class ReviewPane extends JPanel {
 		for (int i = 0; i < difficultyWork.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
-			gbc.gridx = 1 + i;
-			gbc.gridy = 6;
+			gbc.gridx = 2 + i;
+			gbc.gridy = 7;
 
 			add(difficultyWork[i], gbc);
 		}
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 7;
+		gbc.gridy = 8;
 
 		add(new JLabel("Ease of Learning: "), gbc);
 
 		for (int i = 0; i < easeOfLearning.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
-			gbc.gridx = 1 + i;
-			gbc.gridy = 7;
+			gbc.gridx = 2 + i;
+			gbc.gridy = 8;
 
 			add(easeOfLearning[i], gbc);
 		}
@@ -194,7 +209,7 @@ public class ReviewPane extends JPanel {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 8;
+		gbc.gridy = 9;
 
 		add(new JLabel(
 				"Teaching Style: (1 - Entirely Lab Focused, 5 - Entirely Lecture)"),
@@ -203,8 +218,8 @@ public class ReviewPane extends JPanel {
 		for (int i = 0; i < teachingStyle.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
-			gbc.gridx = 1 + i;
-			gbc.gridy = 8;
+			gbc.gridx = 2 + i;
+			gbc.gridy = 9;
 
 			add(teachingStyle[i], gbc);
 		}
@@ -212,14 +227,14 @@ public class ReviewPane extends JPanel {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 9;
+		gbc.gridy = 10;
 
 		add(new JLabel("Comments: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 9;
+		gbc.gridy = 10;
 		gbc.gridheight = 3;
 
 		add(comments, gbc);
@@ -227,7 +242,7 @@ public class ReviewPane extends JPanel {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 12;
+		gbc.gridy = 13;
 
 		add(submit, gbc);
 
@@ -240,8 +255,6 @@ public class ReviewPane extends JPanel {
 	private void populateSelectors() {
 		PRSFrame.updateSelector(username, "Student", "Username");
 		PRSFrame.updateSelector(classSelector, "Teaches", "CNumber");
-		// PRSFrame.updateSelector(professorSelector, "Teaches",
-		// fieldName);
 	}
 
 	private void initializeButtonGroup(JRadioButton buttons[],
@@ -320,5 +333,24 @@ public class ReviewPane extends JPanel {
 			}
 		}
 		return s.equals("N/A") ? null : Integer.parseInt(s);
+	}
+
+	private class ItemResponder implements ItemListener {
+		public void itemStateChanged(ItemEvent e) {
+			/*
+			 * if (e.getSource() == classSelector) {
+			 * ArrayList<AttributeAttribute> filters = new
+			 * ArrayList<AttributeAttribute>(); filters.add(new
+			 * AttributeAttribute("Teaches.CNumber",
+			 * classSelector.getItemAt(classSelector
+			 * .getSelectedIndex()), AttributeValue.EQUAL));
+			 * filters.add(new AttributeAttribute("Teaches.PID",
+			 * "Professor.PID"));
+			 * PRSFrame.updateSelector2(professorSelector,
+			 * "Professor, Teaches", "PName", filters); } else if
+			 * (e.getSource() == username) { // TODO filter class list
+			 * based on student university. }
+			 */
+		}
 	}
 }

@@ -1,12 +1,7 @@
 package database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.HashMap;
-
+import java.sql.*;
+import java.util.*;
 import utilities.ErrorUtilities;
 
 public class SQLStatements {
@@ -14,7 +9,8 @@ public class SQLStatements {
 	private static final char COMMA = ',';
 	private static final char QUESTION_MARK = '?';
 
-	// Caches insert statements so they don't have to be generated multiple
+	// Caches insert statements so they don't have to be generated
+	// multiple
 	// times
 	private static final HashMap<String, String> insertStatements;
 
@@ -33,21 +29,24 @@ public class SQLStatements {
 	 * @param dbc
 	 *            The connection to which we are inserting
 	 * @param table
-	 *            The name of the table into which the statement will insert
+	 *            The name of the table into which the statement will
+	 *            insert
 	 * @param attributes
 	 *            The list of attributes in the table
 	 * @param values
 	 *            The list of values in the record
-	 * @return A prepared statment populated with the insert logic and the
-	 *         values of the new record. <code>null</code> if there is an error
-	 *         in creating the PreparedStatement.
+	 * @return A prepared statment populated with the insert logic and
+	 *         the values of the new record. <code>null</code> if
+	 *         there is an error in creating the PreparedStatement.
 	 */
-	public static PreparedStatement insert(Connection dbc, String table,
-			ArrayList<String> attributes, ArrayList<Object> values) {
+	public static PreparedStatement insert(Connection dbc,
+			String table, ArrayList<String> attributes,
+			ArrayList<Object> values) {
 
 		// Don't process if any of these values aren't set
 		if (dbc == null || attributes == null || values == null
-				|| attributes.size() != values.size() || attributes.isEmpty()) {
+				|| attributes.size() != values.size()
+				|| attributes.isEmpty()) {
 			return null;
 		}
 
@@ -61,7 +60,8 @@ public class SQLStatements {
 			PreparedStatement pstmt = dbc.prepareStatement(statement);
 			setAttributes(pstmt, values);
 			return pstmt;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -73,11 +73,12 @@ public class SQLStatements {
 	 * @param dbc
 	 *            The connection from which we are selecting
 	 * @param attributes
-	 *            The attributes that will be returned from the SQL call
+	 *            The attributes that will be returned from the SQL
+	 *            call
 	 * @param table
 	 *            The table from which we are selecting
-	 * @return The prepared statement that will return all records with given
-	 *         attributes
+	 * @return The prepared statement that will return all records
+	 *         with given attributes
 	 */
 	public static PreparedStatement select(Connection dbc,
 			ArrayList<String> attributes, String table,
@@ -117,18 +118,67 @@ public class SQLStatements {
 			}
 
 			return pstmt;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
 	/**
-	 * Generates the prepared statement string with a given set of attributes
+	 * Gets attributes from every record from a specified table
+	 * 
+	 * @param dbc
+	 *            The connection from which we are selecting
+	 * @param attributes
+	 *            The attributes that will be returned from the SQL
+	 *            call
+	 * @param table
+	 *            The table from which we are selecting
+	 * @return The prepared statement that will return all records
+	 *         with given attributes
+	 */
+	/*
+	 * public static PreparedStatement select2(Connection dbc,
+	 * ArrayList<String> attributes, String table,
+	 * ArrayList<AttributeAttribute> filter) { if (dbc == null ||
+	 * attributes == null || attributes.isEmpty()) { return null; }
+	 * 
+	 * try { // Build the prepared statement string StringBuilder
+	 * attributeString = new StringBuilder();
+	 * 
+	 * for (String att : attributes) { attributeString.append(COMMA);
+	 * attributeString.append(att); }
+	 * 
+	 * attributeString.deleteCharAt(0);
+	 * 
+	 * String statement = String.format(SELECT,
+	 * attributeString.toString(), table);
+	 * 
+	 * if (filter != null && !filter.isEmpty()) { statement +=
+	 * AttributeAttribute.where(filter); }
+	 * 
+	 * PreparedStatement pstmt = dbc.prepareStatement(statement);
+	 * 
+	 * if (filter != null && !filter.isEmpty()) { ArrayList<Object>
+	 * vals = new ArrayList<Object>();
+	 * 
+	 * for (AttributeAttribute av : filter) { vals.add(av.attribute2);
+	 * }
+	 * 
+	 * setAttributes(pstmt, vals); }
+	 * 
+	 * return pstmt; } catch (Exception e) { e.printStackTrace();
+	 * return null; } }
+	 */
+
+	/**
+	 * Generates the prepared statement string with a given set of
+	 * attributes
 	 * 
 	 * @param table
-	 *            The table name under which this statement will be stored in
-	 *            the hash table
+	 *            The table name under which this statement will be
+	 *            stored in the hash table
 	 * @param attributes
 	 *            The attributes that will be added into the statement
 	 */
@@ -145,7 +195,8 @@ public class SQLStatements {
 			attributeString.append(att);
 		}
 
-		// Make a list of question marks (used for the prepared statement)
+		// Make a list of question marks (used for the prepared
+		// statement)
 		for (int i = 0; i < attributes.size(); i++) {
 			valueString.append(COMMA);
 			valueString.append(QUESTION_MARK);
@@ -166,28 +217,29 @@ public class SQLStatements {
 	 * Inserts a given set of values into a prepared statement
 	 * 
 	 * @param pstmt
-	 *            The statement into which the values are being inserted
+	 *            The statement into which the values are being
+	 *            inserted
 	 * @param values
-	 *            The list of object that will be inserted into the prepared
-	 *            statement
+	 *            The list of object that will be inserted into the
+	 *            prepared statement
 	 * @throws SQLException
-	 *             If there are issues inserting the values into the prepared
-	 *             statement
+	 *             If there are issues inserting the values into the
+	 *             prepared statement
 	 */
 	private static void setAttributes(PreparedStatement pstmt,
 			ArrayList<Object> values) throws SQLException {
 
 		// Keeping track of the current value
 		int index = 0;
-		for (Object val : values) {			
+		for (Object val : values) {
 			if (val == null) {
 				pstmt.setNull(++index, Types.NULL);
 				continue;
 			}
-			
+
 			// Gets the type of the value
 			Class<? extends Object> c = val.getClass();
-			
+
 			if (c == String.class) {
 				pstmt.setString(++index, (String) val);
 				continue;
@@ -205,8 +257,8 @@ public class SQLStatements {
 
 			// Probably not good
 			pstmt.setObject(++index, val);
-			System.err.printf(ErrorUtilities.EX_VALNOTCAUGHT, val.toString(),
-					index);
+			System.err.printf(ErrorUtilities.EX_VALNOTCAUGHT,
+					val.toString(), index);
 
 		}
 	}
