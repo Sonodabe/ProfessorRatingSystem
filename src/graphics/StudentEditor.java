@@ -73,28 +73,28 @@ public class StudentEditor extends JPanel {
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = 3;
-		// add(new JLabel("Major: "), gbc);
+		//add(new JLabel("Major: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = 3;
 
-		// add(major, gbc);
+		//add(major, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 
-		// add(new JLabel("Student Name: "), gbc);
+		//add(new JLabel("Student Name: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 
-		// add(studentName, gbc);
+		//add(studentName, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
