@@ -1,6 +1,8 @@
 package graphics;
 
+import java.util.ArrayList;
 import javax.swing.*;
+import database.SQLDatabaseProxy;
 
 public class PRSFrame extends JFrame {
 
@@ -49,6 +51,23 @@ public class PRSFrame extends JFrame {
 			studentTabs.add("Compose Review", rt);
 			studentTabs.addTab("View Reviews", vrt);
 			add(studentTabs);
+		}
+	}
+
+	// TODO allow for a filter of some sort...
+	public static void updateSelector(JComboBox<String> comboBox,
+			String tableName, String fieldName) {
+		ArrayList<String[]> records;
+
+		ArrayList<String> atts = new ArrayList<String>();
+		atts.add(fieldName);
+
+		records = SQLDatabaseProxy.select(tableName, atts);
+
+		comboBox.removeAllItems();
+
+		for (String[] arr : records) {
+			comboBox.addItem(arr[0]);
 		}
 	}
 

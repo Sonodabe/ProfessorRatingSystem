@@ -8,6 +8,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import data.Student;
+import database.SQLDatabaseProxy;
 
 /**
  * Contains the fields required to insert, delete, or modify a student
@@ -39,12 +40,8 @@ public class StudentCreator extends JPanel {
 		submit.addActionListener(new ButtonResponder());
 		setLayout(new GridBagLayout());
 		universitySelector = new JComboBox<String>();
-		if (PRSFrame.JDBC) {
-			// TODO Get listing from sql.
-		}
-		else {
-			universitySelector.addItem("TEMP");
-		}
+		PRSFrame.updateSelector(universitySelector, "University",
+				"UName");
 		userName = new JTextField();
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -132,7 +129,7 @@ public class StudentCreator extends JPanel {
 	public void buildAdd() {
 		initializeLists();
 		if (!studentName.getText().trim().isEmpty()) {
-			attributes.add("SID");
+			attributes.add("SName");
 			values.add(studentName.getText());
 		}
 		if (!userName.getText().trim().isEmpty()) {
@@ -147,7 +144,7 @@ public class StudentCreator extends JPanel {
 		values.add(universitySelector.getItemAt(universitySelector
 				.getSelectedIndex()));
 
-		// TODO Call Sql package
+		SQLDatabaseProxy.insert("Student", attributes, values);
 	}
 
 }

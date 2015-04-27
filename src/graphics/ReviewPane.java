@@ -17,7 +17,8 @@ import database.SQLDatabaseProxy;
 public class ReviewPane extends JPanel {
 
 	private JSpinner year;
-	private JComboBox<String> semester, username, classTeacher;
+	private JComboBox<String> semester, username, classSelector,
+			professorSelector;
 	private JTextArea comments;
 	private JButton submit;
 	private ReviewTab parent;
@@ -37,7 +38,8 @@ public class ReviewPane extends JPanel {
 		submit.addActionListener(new ButtonResponder());
 		// TODO probably get rid of the username menu concept.
 		username = new JComboBox<String>();
-		classTeacher = new JComboBox<String>();
+		classSelector = new JComboBox<String>();
+		professorSelector = new JComboBox<String>();
 		semester = new JComboBox<String>();
 		semester.addItem("FALL");
 		semester.addItem("WINTER");
@@ -95,7 +97,7 @@ public class ReviewPane extends JPanel {
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 
-		add(classTeacher, gbc);
+		add(classSelector, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -228,6 +230,18 @@ public class ReviewPane extends JPanel {
 		gbc.gridy = 12;
 
 		add(submit, gbc);
+
+		populateSelectors();
+	}
+
+	/**
+	 * 
+	 */
+	private void populateSelectors() {
+		PRSFrame.updateSelector(username, "Student", "Username");
+		PRSFrame.updateSelector(classSelector, "Teaches", "CNumber");
+		// PRSFrame.updateSelector(professorSelector, "Teaches",
+		// fieldName);
 	}
 
 	private void initializeButtonGroup(JRadioButton buttons[],

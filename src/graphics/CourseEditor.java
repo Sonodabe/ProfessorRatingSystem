@@ -265,10 +265,12 @@ public class CourseEditor extends JPanel {
 	}
 
 	public void updateSelectors() {
-		updateSelector(courseSelector, "Course", "CName");
-		updateSelector(courseSelector2, "Course", "CName");
-		updateSelector(professorSelector, "Professor", "PName");
-		updateSelector(universitySelector, "University", "UName");
+		PRSFrame.updateSelector(courseSelector, "Course", "CName");
+		PRSFrame.updateSelector(courseSelector2, "Course", "CName");
+		PRSFrame.updateSelector(professorSelector, "Professor",
+				"PName");
+		PRSFrame.updateSelector(universitySelector, "University",
+				"UName");
 		updateProfIds(profIds, "Professor", "PID");
 	}
 
@@ -294,21 +296,4 @@ public class CourseEditor extends JPanel {
 		}
 	}
 
-	// TODO allow for a filter of some sort...
-	public void updateSelector(JComboBox<String> comboBox,
-			String tableName, String fieldName) {
-		ArrayList<String[]> records;
-
-		// TODO Make static and stick somewhere
-		ArrayList<String> atts = new ArrayList<String>();
-		atts.add(fieldName);
-
-		records = SQLDatabaseProxy.select(tableName, atts);
-
-		comboBox.removeAllItems();
-
-		for (String[] arr : records) {
-			comboBox.addItem(arr[0]);
-		}
-	}
 }
