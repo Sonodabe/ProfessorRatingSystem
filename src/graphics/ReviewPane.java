@@ -1,9 +1,27 @@
 package graphics;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Enumeration;
+
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
+import javax.swing.JTextArea;
+import javax.swing.SpinnerNumberModel;
+
+import database.AttributeValue;
 import database.SQLDatabaseProxy;
 
 /**
@@ -25,9 +43,8 @@ public class ReviewPane extends JPanel {
 
 	private JRadioButton[] engagement, fairness, difficultyWork,
 			easeOfLearning, teachingStyle;
-	private ButtonGroup engagementGroup, fairnessGroup,
-			difficultyWorkGroup, easeOfLearningGroup,
-			teachingStyleGroup;
+	private ButtonGroup engagementGroup, fairnessGroup, difficultyWorkGroup,
+			easeOfLearningGroup, teachingStyleGroup;
 
 	ArrayList<Object> values;
 	ArrayList<String> attributes;
@@ -179,8 +196,7 @@ public class ReviewPane extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy = 7;
 
-		add(new JLabel("Difficulty of Work: (1 - Easy, 5 - Hard)"),
-				gbc);
+		add(new JLabel("Difficulty of Work: (1 - Easy, 5 - Hard)"), gbc);
 
 		for (int i = 0; i < difficultyWork.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -257,8 +273,7 @@ public class ReviewPane extends JPanel {
 		PRSFrame.updateSelector(classSelector, "Teaches", "CNumber");
 	}
 
-	private void initializeButtonGroup(JRadioButton buttons[],
-			ButtonGroup group) {
+	private void initializeButtonGroup(JRadioButton buttons[], ButtonGroup group) {
 		for (int i = 0; i < buttons.length; i++) {
 			buttons[i] = new JRadioButton(i == 0 ? "N/A" : "" + i);
 			if (i == 0) {
@@ -291,8 +306,7 @@ public class ReviewPane extends JPanel {
 
 		/*
 		 * if (engagement.getValue() != (Integer) 0) {
-		 * attributes.add("Engagement");
-		 * values.add(engagement.getValue()); }
+		 * attributes.add("Engagement"); values.add(engagement.getValue()); }
 		 */
 
 		attributes.add("Engagement");
@@ -337,20 +351,24 @@ public class ReviewPane extends JPanel {
 
 	private class ItemResponder implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
-			/*
-			 * if (e.getSource() == classSelector) {
-			 * ArrayList<AttributeAttribute> filters = new
-			 * ArrayList<AttributeAttribute>(); filters.add(new
-			 * AttributeAttribute("Teaches.CNumber",
-			 * classSelector.getItemAt(classSelector
-			 * .getSelectedIndex()), AttributeValue.EQUAL));
-			 * filters.add(new AttributeAttribute("Teaches.PID",
-			 * "Professor.PID"));
-			 * PRSFrame.updateSelector2(professorSelector,
-			 * "Professor, Teaches", "PName", filters); } else if
-			 * (e.getSource() == username) { // TODO filter class list
-			 * based on student university. }
-			 */
+
+			if (e.getSource() == classSelector) {
+				ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
+
+				filters.add(new AttributeValue("Teaches.CNumber", classSelector
+						.getItemAt(classSelector.getSelectedIndex()),
+						AttributeValue.EQUAL));
+
+				filters.add(new AttributeValue("Teaches.PID", "Professor.PID",
+						AttributeValue.JOIN));
+
+				PRSFrame.updateSelector(professorSelector,
+						"Professor, Teaches", "PName", filters);
+
+			} else if (e.getSource() == username) {
+				// TODO filter class list based on student university.
+			}
+
 		}
 	}
 }
