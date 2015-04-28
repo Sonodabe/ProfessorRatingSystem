@@ -17,7 +17,7 @@ import database.SQLDatabaseProxy;
  * @author Doug Blase
  *
  */
-public class StudentCreator extends JPanel {
+public class StudentCreator extends CallRespondSqlEvent {
 
 	private JTextField major, studentName, userName;
 	private JComboBox<String> universitySelector;
@@ -104,7 +104,7 @@ public class StudentCreator extends JPanel {
 		gbc.gridwidth = 2;
 
 		add(submit, gbc);
-
+		super.addPanel(this);
 	}
 
 	private class ButtonResponder implements ActionListener {
@@ -144,7 +144,19 @@ public class StudentCreator extends JPanel {
 		values.add(universitySelector.getItemAt(universitySelector
 				.getSelectedIndex()));
 
-		SQLDatabaseProxy.insert("Student", attributes, values);
+		if (SQLDatabaseProxy.insert("Student", attributes, values)) {
+			super.sqlChanged();
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see graphics.CallRespondSqlEvent#updateSelectors()
+	 */
+	@Override
+	protected void updateSelectors() {
+		// No selectors to be had, therefore no usefullness
 	}
 
 }

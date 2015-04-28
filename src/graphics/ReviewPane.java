@@ -15,7 +15,7 @@ import database.AttributeValue;
  * @author Doug Blase
  *
  */
-public class ReviewPane extends JPanel {
+public class ReviewPane extends CallRespondSqlEvent {
 
 	private JSpinner year;
 	private JComboBox<String> semester, username, classSelector,
@@ -49,13 +49,13 @@ public class ReviewPane extends JPanel {
 		semester.addItem("SPRING");
 		semester.addItem("SUMMER");
 
-		
 		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-	    SpinnerModel yearModel = new SpinnerNumberModel(currentYear, 1970, currentYear, 1);                                
+		SpinnerModel yearModel = new SpinnerNumberModel(currentYear,
+				1970, currentYear, 1);
 
 		year = new JSpinner(yearModel);
 		year.setEditor(new JSpinner.NumberEditor(year, "#"));
-				
+
 		comments = new JTextArea();
 
 		engagement = new JRadioButton[6];
@@ -102,6 +102,7 @@ public class ReviewPane extends JPanel {
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = y++;
+		gbc.gridwidth = 6;
 
 		add(username, gbc);
 
@@ -109,6 +110,7 @@ public class ReviewPane extends JPanel {
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = y;
+		gbc.gridwidth = 1;
 
 		add(new JLabel("Class: "), gbc);
 
@@ -116,6 +118,7 @@ public class ReviewPane extends JPanel {
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = y++;
+		gbc.gridwidth = 6;
 
 		add(classSelector, gbc);
 
@@ -123,6 +126,7 @@ public class ReviewPane extends JPanel {
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = y;
+		gbc.gridwidth = 1;
 
 		add(new JLabel("Professor: "), gbc);
 
@@ -130,6 +134,7 @@ public class ReviewPane extends JPanel {
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = y++;
+		gbc.gridwidth = 6;
 
 		add(professorSelector, gbc);
 
@@ -137,6 +142,7 @@ public class ReviewPane extends JPanel {
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = y;
+		gbc.gridwidth = 1;
 
 		add(new JLabel("Year: "), gbc);
 
@@ -144,20 +150,21 @@ public class ReviewPane extends JPanel {
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = y++;
-
+		gbc.gridwidth = 6;
 		add(year, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = y;
-
+		gbc.gridwidth = 1;
 		add(new JLabel("Semester: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = y++;
+		gbc.gridwidth = 6;
 
 		add(semester, gbc);
 
@@ -165,13 +172,13 @@ public class ReviewPane extends JPanel {
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = y;
-
+		gbc.gridwidth = 1;
 		add(new JLabel("Engagement: "), gbc);
 
 		for (int i = 0; i < engagement.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
-			gbc.gridx = 2 + i;
+			gbc.gridx = 1 + i;
 			gbc.gridy = y;
 			add(engagement[i], gbc);
 		}
@@ -188,7 +195,7 @@ public class ReviewPane extends JPanel {
 		for (int i = 0; i < fairness.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
-			gbc.gridx = 2 + i;
+			gbc.gridx = 1 + i;
 			gbc.gridy = y;
 
 			add(fairness[i], gbc);
@@ -205,7 +212,7 @@ public class ReviewPane extends JPanel {
 		for (int i = 0; i < difficultyWork.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
-			gbc.gridx = 2 + i;
+			gbc.gridx = 1 + i;
 			gbc.gridy = y;
 
 			add(difficultyWork[i], gbc);
@@ -221,7 +228,7 @@ public class ReviewPane extends JPanel {
 		for (int i = 0; i < easeOfLearning.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
-			gbc.gridx = 2 + i;
+			gbc.gridx = 1 + i;
 			gbc.gridy = y;
 
 			add(easeOfLearning[i], gbc);
@@ -239,7 +246,7 @@ public class ReviewPane extends JPanel {
 		for (int i = 0; i < teachingStyle.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
-			gbc.gridx = 2 + i;
+			gbc.gridx = 1 + i;
 			gbc.gridy = y;
 
 			add(teachingStyle[i], gbc);
@@ -257,6 +264,7 @@ public class ReviewPane extends JPanel {
 		gbc.gridx = 1;
 		gbc.gridy = y;
 		gbc.gridheight = 3;
+		gbc.gridwidth = 6;
 
 		add(comments, gbc);
 		y += 3;
@@ -266,16 +274,8 @@ public class ReviewPane extends JPanel {
 		gbc.gridy = y;
 
 		add(submit, gbc);
-
-		populateSelectors();
-	}
-
-	/**
-	 * 
-	 */
-	private void populateSelectors() {
-		PRSFrame.updateSelector(username, "Student", "Username");
-		PRSFrame.updateSelector(classSelector, "Teaches", "CNumber");
+		super.addPanel(this);
+		updateSelectors();
 	}
 
 	private void initializeButtonGroup(JRadioButton buttons[],
@@ -428,5 +428,16 @@ public class ReviewPane extends JPanel {
 				"Course.University", AttributeValue.JOIN));
 		PRSFrame.updateSelector(classSelector, "Student,Course",
 				"CIdentifier", filters);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see graphics.CallRespondSqlEvent#updateSelectors()
+	 */
+	@Override
+	protected void updateSelectors() {
+		PRSFrame.updateSelector(username, "Student", "Username");
+		PRSFrame.updateSelector(classSelector, "Teaches", "CNumber");
 	}
 }
