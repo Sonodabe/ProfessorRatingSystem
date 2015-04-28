@@ -213,13 +213,21 @@ public class ProfessorEditor extends JPanel {
 			attributes.add("PName");
 			values.add(professorName.getText());
 		}
+		attributes.add("ResearchArea");
 		if (!researchArea.getText().trim().isEmpty()) {
-			attributes.add("ResearchArea");
+
 			values.add(researchArea.getText());
 		}
+		else {
+			values.add(null);
+		}
+		attributes.add("Bio");
 		if (!bio.getText().trim().isEmpty()) {
-			attributes.add("Bio");
+
 			values.add(bio.getText());
+		}
+		else {
+			values.add(null);
 		}
 		attributes.add("YearsWorked");
 		values.add(yearsWorked.getValue());

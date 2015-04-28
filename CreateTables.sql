@@ -12,15 +12,15 @@ Major        varchar,
 Username    varchar UNIQUE,
 University    varchar NOT NULL,
 SID        INTEGER PRIMARY KEY,
-foreign key(University) references University(UName) ON DELETE CASCADE
+foreign key(University) references University(UName) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Review (
-SID            INTEGER,
-PID            varchar ,
-Year            INTEGER,
-CID            INTEGER ,
-Semester        varchar,
+SID            INTEGER NOT NULL,
+PID            varchar NOT NULL,
+Year            INTEGER NOT NULL,
+CID            varchar NOT NULL,
+Semester        varchar NOT NULL,
 Engagement        INTEGER,
 Fairness        INTEGER,
 DifficultyWork        INTEGER,
@@ -28,25 +28,25 @@ EaseLearning        INTEGER,
 TeachingStyle     INTEGER,
 Comments        varchar,
 primary key(Semester,Year,SID,PID,CID),
-foreign key(SID) references Student(SID) ON DELETE CASCADE,
-foreign key(PID) references Professor(PID) ON DELETE CASCADE,
-foreign key(CID) references Course(CNumber) ON DELETE CASCADE
+foreign key(SID) references Student(SID) ON DELETE CASCADE ON UPDATE CASCADE,
+foreign key(PID) references Professor(PID) ON DELETE CASCADE ON UPDATE CASCADE,
+foreign key(CID) references Course(CIdentifier) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Course (
-CIdentifier        varchar,
+CIdentifier        varchar not null,
 CName        varchar NOT NULL,
-University        varchar,
+University        varchar not null,
 primary key(CIdentifier, University),
-foreign key(University) references University(UName) ON DELETE CASCADE
+foreign key(University) references University(UName) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Teaches (
 CNumber        varchar,
 PID            INTEGER,
 primary key(CNumber, PID),
-foreign key(CNumber) references Course(CIdentifier) ON DELETE CASCADE,
-foreign key(PID) references Professor(PID) ON DELETE CASCADE
+foreign key(CNumber) references Course(CIdentifier) ON DELETE CASCADE ON UPDATE CASCADE,
+foreign key(PID) references Professor(PID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE University (

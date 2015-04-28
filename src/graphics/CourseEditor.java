@@ -259,14 +259,15 @@ public class CourseEditor extends JPanel {
 		values.add(universitySelector.getItemAt(universitySelector
 				.getSelectedIndex()));
 
-		System.out.println(SQLDatabaseProxy.insert("Course",
-				attributes, values));
+		SQLDatabaseProxy.insert("Course", attributes, values);
 
 	}
 
 	public void updateSelectors() {
-		PRSFrame.updateSelector(courseSelector, "Course", "CName");
-		PRSFrame.updateSelector(courseSelector2, "Course", "CName");
+		PRSFrame.updateSelector(courseSelector, "Course",
+				"CIdentifier");
+		PRSFrame.updateSelector(courseSelector2, "Course",
+				"CIdentifier");
 		PRSFrame.updateSelector(professorSelector, "Professor",
 				"PName");
 		PRSFrame.updateSelector(universitySelector, "University",

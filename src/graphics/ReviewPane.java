@@ -1,28 +1,11 @@
 package graphics;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Enumeration;
-
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JSpinner;
-import javax.swing.JTextArea;
-import javax.swing.SpinnerNumberModel;
-
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import javax.swing.*;
+import database.*;
 import database.AttributeValue;
-import database.SQLDatabaseProxy;
 
 /**
  * 
@@ -43,8 +26,9 @@ public class ReviewPane extends JPanel {
 
 	private JRadioButton[] engagement, fairness, difficultyWork,
 			easeOfLearning, teachingStyle;
-	private ButtonGroup engagementGroup, fairnessGroup, difficultyWorkGroup,
-			easeOfLearningGroup, teachingStyleGroup;
+	private ButtonGroup engagementGroup, fairnessGroup,
+			difficultyWorkGroup, easeOfLearningGroup,
+			teachingStyleGroup;
 
 	ArrayList<Object> values;
 	ArrayList<String> attributes;
@@ -55,6 +39,7 @@ public class ReviewPane extends JPanel {
 		submit.addActionListener(new ButtonResponder());
 		// TODO probably get rid of the username menu concept.
 		username = new JComboBox<String>();
+		username.addItemListener(new ItemResponder());
 		classSelector = new JComboBox<String>();
 		classSelector.addItemListener(new ItemResponder());
 		professorSelector = new JComboBox<String>();
@@ -96,73 +81,89 @@ public class ReviewPane extends JPanel {
 
 		GridBagConstraints gbc = new GridBagConstraints();
 
+		int y = 0;
+
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 0;
+		gbc.gridy = y++;
 
 		add(new JLabel("0 - N/A, 1 - Bad, 5 - Good"), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 1;
+		gbc.gridy = y;
+
+		add(new JLabel("User: "), gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 1;
+		gbc.gridy = y++;
+
+		add(username, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 0;
+		gbc.gridy = y;
 
 		add(new JLabel("Class: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 1;
+		gbc.gridy = y++;
 
 		add(classSelector, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 2;
+		gbc.gridy = y;
 
 		add(new JLabel("Professor: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 2;
+		gbc.gridy = y++;
 
 		add(professorSelector, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 3;
+		gbc.gridy = y;
 
 		add(new JLabel("Year: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 3;
+		gbc.gridy = y++;
 
 		add(year, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 4;
+		gbc.gridy = y;
 
 		add(new JLabel("Semester: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 4;
+		gbc.gridy = y++;
 
 		add(semester, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 5;
+		gbc.gridy = y;
 
 		add(new JLabel("Engagement: "), gbc);
 
@@ -170,15 +171,16 @@ public class ReviewPane extends JPanel {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
 			gbc.gridx = 2 + i;
-			gbc.gridy = 5;
+			gbc.gridy = y;
 			add(engagement[i], gbc);
 		}
+		y++;
 		// add(engagement, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 6;
+		gbc.gridy = y;
 
 		add(new JLabel("Fairness: "), gbc);
 
@@ -186,30 +188,32 @@ public class ReviewPane extends JPanel {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
 			gbc.gridx = 2 + i;
-			gbc.gridy = 6;
+			gbc.gridy = y;
 
 			add(fairness[i], gbc);
 		}
-
+		y++;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 7;
+		gbc.gridy = y;
 
-		add(new JLabel("Difficulty of Work: (1 - Easy, 5 - Hard)"), gbc);
+		add(new JLabel("Difficulty of Work: (1 - Easy, 5 - Hard)"),
+				gbc);
 
 		for (int i = 0; i < difficultyWork.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
 			gbc.gridx = 2 + i;
-			gbc.gridy = 7;
+			gbc.gridy = y;
 
 			add(difficultyWork[i], gbc);
 		}
+		y++;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 8;
+		gbc.gridy = y;
 
 		add(new JLabel("Ease of Learning: "), gbc);
 
@@ -217,15 +221,15 @@ public class ReviewPane extends JPanel {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
 			gbc.gridx = 2 + i;
-			gbc.gridy = 8;
+			gbc.gridy = y;
 
 			add(easeOfLearning[i], gbc);
 		}
-
+		y++;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 9;
+		gbc.gridy = y;
 
 		add(new JLabel(
 				"Teaching Style: (1 - Entirely Lab Focused, 5 - Entirely Lecture)"),
@@ -235,30 +239,30 @@ public class ReviewPane extends JPanel {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
 			gbc.gridx = 2 + i;
-			gbc.gridy = 9;
+			gbc.gridy = y;
 
 			add(teachingStyle[i], gbc);
 		}
-
+		y++;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 10;
+		gbc.gridy = y;
 
 		add(new JLabel("Comments: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 10;
+		gbc.gridy = y;
 		gbc.gridheight = 3;
 
 		add(comments, gbc);
-
+		y += 3;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 13;
+		gbc.gridy = y;
 
 		add(submit, gbc);
 
@@ -273,7 +277,8 @@ public class ReviewPane extends JPanel {
 		PRSFrame.updateSelector(classSelector, "Teaches", "CNumber");
 	}
 
-	private void initializeButtonGroup(JRadioButton buttons[], ButtonGroup group) {
+	private void initializeButtonGroup(JRadioButton buttons[],
+			ButtonGroup group) {
 		for (int i = 0; i < buttons.length; i++) {
 			buttons[i] = new JRadioButton(i == 0 ? "N/A" : "" + i);
 			if (i == 0) {
@@ -301,13 +306,22 @@ public class ReviewPane extends JPanel {
 	protected void buildAdd() {
 		initializeLists();
 
+		attributes.add("SID");
+		// since DB is 1 based indexing
+		values.add(username.getSelectedIndex() + 1);
+
+		attributes.add("PID");
+		values.add(getProfessorId(professorSelector
+				.getItemAt(professorSelector.getSelectedIndex())));
+
+		attributes.add("CID");
+		values.add(classSelector.getSelectedItem());
+
+		attributes.add("Semester");
+		values.add(semester.getSelectedItem());
+
 		attributes.add("Year");
 		values.add(year.getValue());
-
-		/*
-		 * if (engagement.getValue() != (Integer) 0) {
-		 * attributes.add("Engagement"); values.add(engagement.getValue()); }
-		 */
 
 		attributes.add("Engagement");
 		values.add(getRating(engagementGroup));
@@ -323,12 +337,33 @@ public class ReviewPane extends JPanel {
 
 		attributes.add("TeachingStyle");
 		values.add(getRating(teachingStyleGroup));
-
+		attributes.add("Comments");
 		if (!comments.getText().trim().isEmpty()) {
-			attributes.add("Comments");
 			values.add(comments.getText().trim());
 		}
+		else {
+			values.add(null);
+		}
 		SQLDatabaseProxy.insert("Review", attributes, values);
+	}
+
+	/**
+	 * @param itemAt
+	 * @return
+	 */
+	private Integer getProfessorId(String itemAt) {
+		ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
+		filters.add(new AttributeValue("PName", itemAt));
+		filters.add(new AttributeValue("Course.CIdentifier",
+				classSelector.getItemAt(classSelector
+						.getSelectedIndex())));
+		filters.add(new AttributeValue("Teaches.PID",
+				"Professor.PID", AttributeValue.JOIN));
+		ArrayList<String> atts = new ArrayList<String>();
+		atts.add("Professor.PID");
+		ArrayList<String[]> results = SQLDatabaseProxy.select(
+				"Professor,Course,Teaches", atts, filters);
+		return Integer.parseInt((results.get(0))[0]);
 	}
 
 	/**
@@ -337,7 +372,7 @@ public class ReviewPane extends JPanel {
 	 */
 	private Object getRating(ButtonGroup buttonGroup) {
 		String s = null;
-		for (Enumeration<AbstractButton> buttons = engagementGroup
+		for (Enumeration<AbstractButton> buttons = buttonGroup
 				.getElements(); buttons.hasMoreElements();) {
 			AbstractButton button = buttons.nextElement();
 
@@ -353,22 +388,44 @@ public class ReviewPane extends JPanel {
 		public void itemStateChanged(ItemEvent e) {
 
 			if (e.getSource() == classSelector) {
-				ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
-
-				filters.add(new AttributeValue("Teaches.CNumber", classSelector
-						.getItemAt(classSelector.getSelectedIndex()),
-						AttributeValue.EQUAL));
-
-				filters.add(new AttributeValue("Teaches.PID", "Professor.PID",
-						AttributeValue.JOIN));
-
-				PRSFrame.updateSelector(professorSelector,
-						"Professor, Teaches", "PName", filters);
-
-			} else if (e.getSource() == username) {
-				// TODO filter class list based on student university.
+				if (classSelector.getItemCount() > 0) {
+					refreshProfList();
+				}
+			}
+			else if (e.getSource() == username) {
+				if (username.getItemCount() > 0) {
+					refreshCourseList();
+					// refreshProfList();
+				}
 			}
 
 		}
+	}
+
+	protected void refreshProfList() {
+		ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
+
+		filters.add(new AttributeValue("Teaches.CNumber",
+				classSelector.getItemAt(classSelector
+						.getSelectedIndex()), AttributeValue.EQUAL));
+
+		filters.add(new AttributeValue("Teaches.PID",
+				"Professor.PID", AttributeValue.JOIN));
+
+		PRSFrame.updateSelector(professorSelector,
+				"Professor, Teaches", "PName", filters);
+	}
+
+	/**
+	 * 
+	 */
+	protected void refreshCourseList() {
+		ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
+		filters.add(new AttributeValue("SID", username
+				.getSelectedIndex() + 1));
+		filters.add(new AttributeValue("Student.University",
+				"Course.University", AttributeValue.JOIN));
+		PRSFrame.updateSelector(classSelector, "Student,Course",
+				"CIdentifier", filters);
 	}
 }
