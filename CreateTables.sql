@@ -3,7 +3,7 @@ PID            INTEGER PRIMARY KEY,
 PName        varchar NOT NULL,
 ResearchArea         varchar,
 Bio            varchar,
-YearsWorked        varchar
+YearsWorked        INTEGER
 );
 
 CREATE TABLE Student(
@@ -17,7 +17,7 @@ foreign key(University) references University(UName) ON DELETE CASCADE ON UPDATE
 
 CREATE TABLE Review (
 SID            INTEGER NOT NULL,
-PID            varchar NOT NULL,
+PID            INTEGER NOT NULL,
 Year            INTEGER NOT NULL,
 CID            varchar NOT NULL,
 Semester        varchar NOT NULL,
@@ -53,5 +53,6 @@ CREATE TABLE University (
 UName    varchar NOT NULL,
 primary key(UName)
 );
+
 
 
