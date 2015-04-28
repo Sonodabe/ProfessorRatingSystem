@@ -14,7 +14,7 @@ import database.SQLDatabaseProxy;
  * @author Doug Blase
  *
  */
-public class ProfessorEditor extends JPanel {
+public class ProfessorEditor extends CallRespondSqlEvent {
 	/**
 	 * Keeping Eclipse happy
 	 */
@@ -40,20 +40,13 @@ public class ProfessorEditor extends JPanel {
 		parent = pm;
 		operationSelector = new JComboBox<String>();
 		operationSelector.addItem("Add");
-
-		if (PRSFrame.JDBC) {
-			operationSelector.addItem("Delete");
-			operationSelector.addItem("Modify");
-		}
+		operationSelector.addItem("Delete");
+		operationSelector.addItem("Modify");
 		operationSelector.addItemListener(new ItemResponder());
 		professorName = new JTextField();
 		researchArea = new JTextField();
 		professorSelector = new JComboBox<String>();
 		professorSelector.addItemListener(new ItemResponder());
-		if (PRSFrame.JDBC) {
-			// Populate combo box with names
-		}
-		else professorSelector.addItem("TEMP");
 
 		professorSelector.setEditable(false);
 		professorSelector.setEnabled(false);
@@ -159,6 +152,9 @@ public class ProfessorEditor extends JPanel {
 
 		add(submit, gbc);
 
+		super.addPanel(this);
+		this.updateSelectors();
+
 	}
 
 	private class ItemResponder implements ItemListener {
@@ -209,9 +205,12 @@ public class ProfessorEditor extends JPanel {
 
 	protected void buildAdd() {
 		initializeLists();
+		attributes.add("PName");
 		if (!professorName.getText().trim().isEmpty()) {
-			attributes.add("PName");
 			values.add(professorName.getText());
+		}
+		else {
+			values.add(null);
 		}
 		attributes.add("ResearchArea");
 		if (!researchArea.getText().trim().isEmpty()) {
@@ -231,13 +230,26 @@ public class ProfessorEditor extends JPanel {
 		}
 		attributes.add("YearsWorked");
 		values.add(yearsWorked.getValue());
-		SQLDatabaseProxy.insert("Professor", attributes, values);
+		if (SQLDatabaseProxy.insert("Professor", attributes, values)) {
+			super.sqlChanged();
+		}
 	}
 
 	/**
 	 * 
 	 */
 	protected void buildModify() {
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see graphics.CallRespondSqlEvent#updateSelectors()
+	 */
+	@Override
+	protected void updateSelectors() {
+		PRSFrame.updateSelector(professorSelector, "Professor",
+				"PName");
 	}
 
 }

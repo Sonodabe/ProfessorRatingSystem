@@ -10,7 +10,7 @@ import javax.swing.*;
  * @author Doug Blase
  *
  */
-public class ViewReviewPane extends JPanel {
+public class ViewReviewPane extends CallRespondSqlEvent {
 	private JSpinner year;
 	private JComboBox<String> semester;
 	private JTextArea comments;
@@ -70,89 +70,98 @@ public class ViewReviewPane extends JPanel {
 
 		GridBagConstraints gbc = new GridBagConstraints();
 
+		int y = 0;
+
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 0;
+		gbc.gridy = y++;
 
 		add(new JLabel("0 - N/A, 1 - Bad, 5 - Good"), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 1;
+		gbc.gridy = y;
+		gbc.gridwidth = 1;
 
-		add(new JLabel("Class : "), gbc);
+		add(new JLabel("Class: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 1;
+		gbc.gridy = y++;
+		gbc.gridwidth = 6;
 
 		add(className, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 2;
+		gbc.gridy = y;
+		gbc.gridwidth = 1;
 
-		add(new JLabel("Professor : "), gbc);
+		add(new JLabel("Professor: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 2;
+		gbc.gridy = y++;
+		gbc.gridwidth = 6;
 
 		add(professorName, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 3;
+		gbc.gridy = y;
+		gbc.gridwidth = 1;
 
 		add(new JLabel("Year: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 3;
-
+		gbc.gridy = y++;
+		gbc.gridwidth = 6;
 		add(year, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 4;
-
+		gbc.gridy = y;
+		gbc.gridwidth = 1;
 		add(new JLabel("Semester: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 4;
+		gbc.gridy = y++;
+		gbc.gridwidth = 6;
 
 		add(semester, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 5;
-
+		gbc.gridy = y;
+		gbc.gridwidth = 1;
 		add(new JLabel("Engagement: "), gbc);
 
 		for (int i = 0; i < engagement.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
 			gbc.gridx = 1 + i;
-			gbc.gridy = 5;
+			gbc.gridy = y;
 			add(engagement[i], gbc);
 		}
+		y++;
 		// add(engagement, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 6;
+		gbc.gridy = y;
 
 		add(new JLabel("Fairness: "), gbc);
 
@@ -160,15 +169,15 @@ public class ViewReviewPane extends JPanel {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
 			gbc.gridx = 1 + i;
-			gbc.gridy = 6;
+			gbc.gridy = y;
 
 			add(fairness[i], gbc);
 		}
-
+		y++;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 7;
+		gbc.gridy = y;
 
 		add(new JLabel("Difficulty of Work: (1 - Easy, 5 - Hard)"),
 				gbc);
@@ -177,14 +186,15 @@ public class ViewReviewPane extends JPanel {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
 			gbc.gridx = 1 + i;
-			gbc.gridy = 7;
+			gbc.gridy = y;
 
 			add(difficultyWork[i], gbc);
 		}
+		y++;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 8;
+		gbc.gridy = y;
 
 		add(new JLabel("Ease of Learning: "), gbc);
 
@@ -192,15 +202,15 @@ public class ViewReviewPane extends JPanel {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
 			gbc.gridx = 1 + i;
-			gbc.gridy = 8;
+			gbc.gridy = y;
 
 			add(easeOfLearning[i], gbc);
 		}
-
+		y++;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 9;
+		gbc.gridy = y;
 
 		add(new JLabel(
 				"Teaching Style: (1 - Entirely Lab Focused, 5 - Entirely Lecture)"),
@@ -210,25 +220,29 @@ public class ViewReviewPane extends JPanel {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
 			gbc.gridx = 1 + i;
-			gbc.gridy = 9;
+			gbc.gridy = y;
 
 			add(teachingStyle[i], gbc);
 		}
-
+		y++;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 10;
+		gbc.gridy = y;
 
 		add(new JLabel("Comments: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 10;
+		gbc.gridy = y;
 		gbc.gridheight = 3;
+		gbc.gridwidth = 6;
 
 		add(comments, gbc);
+		y += 3;
+		super.addPanel(this);
+		updateSelectors();
 
 	}
 
@@ -242,5 +256,16 @@ public class ViewReviewPane extends JPanel {
 			buttons[i].setEnabled(false);
 			group.add(buttons[i]);
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see graphics.CallRespondSqlEvent#updateSelectors()
+	 */
+	@Override
+	protected void updateSelectors() {
+		// No combo boxes dependent on other database updates,
+		// therefore nothing to do here.
 	}
 }

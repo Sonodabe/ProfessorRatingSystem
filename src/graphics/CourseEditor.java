@@ -13,7 +13,7 @@ import database.SQLDatabaseProxy;
  * @author Doug Blase
  *
  */
-public class CourseEditor extends JPanel {
+public class CourseEditor extends CallRespondSqlEvent {
 
 	private JTextField courseName, courseIdentifier;
 	private JComboBox<String> courseSelector, operationSelector,
@@ -176,7 +176,7 @@ public class CourseEditor extends JPanel {
 		gbc.gridy = 11;
 
 		add(submitTeacherCourse, gbc);
-
+		super.addPanel(this);
 		this.updateSelectors();
 	}
 
@@ -239,7 +239,10 @@ public class CourseEditor extends JPanel {
 		// TODO add values for above and then call the SQL manager.
 		values.add(courseSelector2.getSelectedItem());
 		values.add(profIds.get(professorSelector.getSelectedIndex()));
-		SQLDatabaseProxy.insert("Teaches", attributes, values);
+
+		if (SQLDatabaseProxy.insert("Teaches", attributes, values)) {
+			super.sqlChanged();
+		}
 	}
 
 	/**
@@ -259,11 +262,13 @@ public class CourseEditor extends JPanel {
 		values.add(universitySelector.getItemAt(universitySelector
 				.getSelectedIndex()));
 
-		SQLDatabaseProxy.insert("Course", attributes, values);
+		if (SQLDatabaseProxy.insert("Course", attributes, values)) {
+			super.sqlChanged();
+		}
 
 	}
 
-	public void updateSelectors() {
+	protected void updateSelectors() {
 		PRSFrame.updateSelector(courseSelector, "Course",
 				"CIdentifier");
 		PRSFrame.updateSelector(courseSelector2, "Course",
