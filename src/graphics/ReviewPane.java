@@ -49,12 +49,13 @@ public class ReviewPane extends JPanel {
 		semester.addItem("SPRING");
 		semester.addItem("SUMMER");
 
-		SpinnerNumberModel snm2 = new SpinnerNumberModel();
-		snm2.setMinimum(1970); // 0 = N/A
-		snm2.setMaximum(Calendar.getInstance().get(Calendar.YEAR));
-		year = new JSpinner(snm2);
-		year.setValue(Calendar.getInstance().get(Calendar.YEAR));
+		
+		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+	    SpinnerModel yearModel = new SpinnerNumberModel(currentYear, 1970, currentYear, 1);                                
 
+		year = new JSpinner(yearModel);
+		year.setEditor(new JSpinner.NumberEditor(year, "#"));
+				
 		comments = new JTextArea();
 
 		engagement = new JRadioButton[6];
