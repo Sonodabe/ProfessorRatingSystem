@@ -14,23 +14,23 @@ public class AttributeValue {
 	public static final int LESS_OR_EQUAL = 5;
 
 	public static final int LIKE = 6;
-	
+
 	public static final int JOIN = 7;
+	
+	private static final String COMMA = ", ";
+	private static final String AND = " AND ";
 
 	public final String attribute;
 	public final Object value;
 	public final int comparison;
 
-	public AttributeValue(String attribute, Object value,
-			int comparison) {
+	public AttributeValue(String attribute, Object value, int comparison) {
 		if (attribute == null) {
-			throw new IllegalArgumentException(
-					ErrorUtilities.EX_ATTRIBUTE_NULL);
+			throw new IllegalArgumentException(ErrorUtilities.EX_ATTRIBUTE_NULL);
 		}
-		
+
 		if (comparison == JOIN && value == null) {
-			throw new IllegalArgumentException(
-					ErrorUtilities.EX_ATTRIBUTE_NULL);
+			throw new IllegalArgumentException(ErrorUtilities.EX_ATTRIBUTE_NULL);
 		}
 
 		this.attribute = attribute;
@@ -46,7 +46,7 @@ public class AttributeValue {
 		if (comparison == JOIN) {
 			return String.format("%s = %s", attribute, value);
 		}
-		
+
 		StringBuilder ret = new StringBuilder();
 
 		ret.append(attribute);
@@ -84,25 +84,24 @@ public class AttributeValue {
 
 		if (value == null) {
 			ret.append(" NULL");
-		}
-		else {
+		} else {
 			ret.append(" ?");
 		}
 
 		return ret.toString();
 	}
 
-	public static String where(ArrayList<AttributeValue> arr) {
+	public static String list(ArrayList<AttributeValue> arr, String delimeter) {
 		if (arr == null || arr.isEmpty())
 			return "";
 
 		StringBuilder ret = new StringBuilder();
 
-		ret.append(" WHERE ");
+		ret.append(" ");
 		ret.append(arr.get(0).toString());
 
 		for (int i = 1; i < arr.size(); i++) {
-			ret.append(" AND ");
+			ret.append(delimeter);
 			ret.append(arr.get(i).toString());
 
 		}
@@ -110,5 +109,13 @@ public class AttributeValue {
 		ret.append(" ");
 
 		return ret.toString();
+	}
+
+	public static String where(ArrayList<AttributeValue> arr) {
+		return String.format(" WHERE %s", list(arr, COMMA));
+	}
+
+	public static String set(ArrayList<AttributeValue> arr) {
+		return String.format(" SET %s", list(arr, AND));
 	}
 }

@@ -1,5 +1,12 @@
 import graphics.PRSFrame;
-import javax.swing.*;
+
+import java.util.ArrayList;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import database.AttributeValue;
+import database.SQLDatabaseProxy;
 
 /**
  * Implements a driver of the program
@@ -24,5 +31,19 @@ public class Main {
 		frame.setVisible(true);
 		frame.setBounds(100, 100, 600, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		Test();
+	}
+	
+	private static void Test() {
+		ArrayList<AttributeValue> atts = new ArrayList<AttributeValue>();
+		ArrayList<AttributeValue> filter = new ArrayList<AttributeValue>();
+		
+		atts.add(new AttributeValue("Bio", "Testing the update call..."));
+		filter.add(new AttributeValue("PID", 4));
+		
+		int updated = SQLDatabaseProxy.update("Professor", atts, filter);
+		System.out.printf("%d row(s) updated%n", updated);
+		
 	}
 }
