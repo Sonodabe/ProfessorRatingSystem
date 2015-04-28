@@ -112,10 +112,10 @@ public class AttributeValue {
 	}
 
 	public static String where(ArrayList<AttributeValue> arr) {
-		return String.format(" WHERE %s", list(arr, COMMA));
+		return String.format(" WHERE %s", list(arr, AND));
 	}
 
 	public static String set(ArrayList<AttributeValue> arr) {
-		return String.format(" SET %s", list(arr, AND));
+		return String.format(" SET %s", list(arr, COMMA));
 	}
 }
