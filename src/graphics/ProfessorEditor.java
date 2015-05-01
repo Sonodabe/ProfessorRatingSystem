@@ -35,6 +35,7 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 
 	ArrayList<Object> values;
 	ArrayList<String> attributes;
+	ArrayList<Professor> availableProfessors;
 
 	public ProfessorEditor(ProfessorManager pm) {
 		parent = pm;
