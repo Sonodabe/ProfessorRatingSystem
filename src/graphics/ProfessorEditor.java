@@ -37,8 +37,15 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 	ArrayList<String> attributes;
 	ArrayList<Professor> availableProfessors;
 
+	/**
+	 * Instantiates this panel, and defines the layout.
+	 * 
+	 * @param pm
+	 *            The parent panel for this instance.
+	 */
 	public ProfessorEditor(ProfessorManager pm) {
 		parent = pm;
+		availableProfessors = new ArrayList<Professor>();
 		operationSelector = new JComboBox<String>();
 		operationSelector.addItem("Add");
 		operationSelector.addItem("Delete");
@@ -199,11 +206,20 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 		}
 	}
 
+	/**
+	 * Initializes/clears the lists of attributes and values that are
+	 * to become part of the next query call to the SQLDatabaseProxy
+	 * class.
+	 */
 	private void initializeLists() {
 		values = new ArrayList<Object>();
 		attributes = new ArrayList<String>();
 	}
 
+	/**
+	 * Builds an insert request to be passed to the SQLDatabaseProxy
+	 * class.
+	 */
 	protected void buildAdd() {
 		initializeLists();
 		attributes.add("PName");
@@ -232,6 +248,8 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 		attributes.add("YearsWorked");
 		values.add(yearsWorked.getValue());
 		if (SQLDatabaseProxy.insert("Professor", attributes, values)) {
+			// Notify all JPanels that the database has changed in
+			// some way.
 			super.sqlChanged();
 		}
 	}
