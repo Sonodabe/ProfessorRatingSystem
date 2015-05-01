@@ -8,7 +8,8 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import data.Professor;
-import database.SQLDatabaseProxy;
+import database.*;
+import database.AttributeValue;
 
 /**
  * @author Doug Blase
@@ -36,6 +37,7 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 	ArrayList<Object> values;
 	ArrayList<String> attributes;
 	ArrayList<Professor> availableProfessors;
+	ArrayList<AttributeValue> currentFilters;
 
 	/**
 	 * Instantiates this panel, and defines the layout.
@@ -46,6 +48,7 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 	public ProfessorEditor(ProfessorManager pm) {
 		parent = pm;
 		availableProfessors = new ArrayList<Professor>();
+		currentFilters = new ArrayList<AttributeValue>();
 		operationSelector = new JComboBox<String>();
 		operationSelector.addItem("Add");
 		operationSelector.addItem("Delete");
@@ -192,9 +195,6 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 			switch (operationSelector.getSelectedIndex()) {
 			case ADD:
 				buildAdd();
-				if (PRSFrame.JDBC) {
-					// TODO Handle null input
-				}
 			case MODIFY:
 				buildModify();
 				// TODO SQL staements
@@ -268,20 +268,42 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 	@Override
 	protected void updateSelectors() {
 		PRSFrame.updateSelector(professorSelector, "Professor",
-				"PName");
-		// initializeLists();
-		// attributes.add("*");
-		// populateArrayList(SQLDatabaseProxy.select("Professor",
-		// attributes));
+				"PName", currentFilters);
+		initializeLists();
+		attributes.add("PID");
+		attributes.add("PName");
+		attributes.add("ResearchArea");
+		attributes.add("Bio");
+		attributes.add("YearsWorked");
+		populateArrayList(SQLDatabaseProxy.select("Professor",
+				attributes, currentFilters));
 	}
 
 	/**
+	 * Populates the back-end ArrayList of the Professor data that is
+	 * available to be selected by the JCombBox. This allows for
+	 * easier use of update and delete statements.
+	 * 
 	 * @param select
 	 */
 	private void populateArrayList(ArrayList<String[]> select) {
+		availableProfessors.clear();
 		for (String[] s : select) {
 			availableProfessors.add(new Professor(s));
 		}
+	}
+
+	/**
+	 * Updates the current filters that are used to limit which
+	 * Professors are accessible by the professorSelector ComboBox.
+	 * This method should generally be called from the parent
+	 * ProfessorManager.
+	 * 
+	 * @param filts
+	 *            The filters being used.
+	 */
+	public void updateFilters(ArrayList<AttributeValue> filts) {
+		currentFilters = filts;
 	}
 
 }
