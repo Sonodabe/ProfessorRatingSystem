@@ -2,7 +2,7 @@ package data;
 
 public class Professor {
 
-	private String name, bio;
+	private String name, bio, researchArea;
 	private int id, yearsWorked;
 
 	/**
@@ -11,11 +11,25 @@ public class Professor {
 	 * @param id
 	 * @param yearsWorked
 	 */
-	public Professor(String name, String bio, int id, int yearsWorked) {
+	public Professor(String name, String bio, int id,
+			int yearsWorked, String researchArea) {
 		this.name = name;
 		this.bio = bio;
 		this.id = id;
 		this.yearsWorked = yearsWorked;
+		this.researchArea = researchArea;
+	}
+
+	/**
+	 * @param s
+	 */
+	public Professor(String[] s) {
+		id = Integer.parseInt(s[0]);
+		name = s[1];
+		researchArea = s[2];
+		bio = s[3];
+		yearsWorked = Integer.parseInt(s[4]);
+
 	}
 
 	/**
@@ -76,6 +90,14 @@ public class Professor {
 	 */
 	public void setYearsWorked(int yearsWorked) {
 		this.yearsWorked = yearsWorked;
+	}
+
+	public String getResearchArea() {
+		return researchArea;
+	}
+
+	public void setResearchArea(String researchArea) {
+		this.researchArea = researchArea;
 	}
 
 	// TODO: Hashcode, equals, toString

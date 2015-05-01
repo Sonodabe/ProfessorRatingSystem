@@ -269,6 +269,19 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 	protected void updateSelectors() {
 		PRSFrame.updateSelector(professorSelector, "Professor",
 				"PName");
+		// initializeLists();
+		// attributes.add("*");
+		// populateArrayList(SQLDatabaseProxy.select("Professor",
+		// attributes));
+	}
+
+	/**
+	 * @param select
+	 */
+	private void populateArrayList(ArrayList<String[]> select) {
+		for (String[] s : select) {
+			availableProfessors.add(new Professor(s));
+		}
 	}
 
 }
