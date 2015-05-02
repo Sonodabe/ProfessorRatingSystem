@@ -34,10 +34,10 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 	private ProfessorManager parent;
 	private Professor currentProf;
 
-	ArrayList<Object> values;
-	ArrayList<String> attributes;
-	ArrayList<Professor> availableProfessors;
-	ArrayList<AttributeValue> currentFilters;
+	private ArrayList<Object> values;
+	private ArrayList<String> attributes;
+	private ArrayList<Professor> availableProfessors;
+	private ArrayList<AttributeValue> currentFilters;
 
 	/**
 	 * Instantiates this panel, and defines the layout.
@@ -177,13 +177,13 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 					break;
 				default:
 					professorSelector.setEnabled(true);
-					// TODO populate text fields with data
+					populateFields();
 					break;
 				}
 			}
 			else {
 				if (professorSelector.isEnabled()) {
-					// TODO Populate text fields with data
+					populateFields();
 				}
 			}
 		}
@@ -214,6 +214,29 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 	private void initializeLists() {
 		values = new ArrayList<Object>();
 		attributes = new ArrayList<String>();
+	}
+
+	/**
+	 * Populates the fields of the form with the data for the
+	 * currently selected professor.
+	 */
+	protected void populateFields() {
+		currentProf = availableProfessors.get(professorSelector
+				.getSelectedIndex());
+		professorName.setText(currentProf.getName());
+		researchArea.setText(currentProf.getResearchArea());
+		bio.setText(currentProf.getBio());
+		yearsWorked.setValue(currentProf.getYearsWorked());
+	}
+
+	/**
+	 * Sets the fields in this form to their default (blank) values.
+	 */
+	protected void clearFields() {
+		professorName.setText(null);
+		researchArea.setText(null);
+		bio.setText(null);
+		yearsWorked.setValue(0);
 	}
 
 	/**
@@ -251,6 +274,7 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 			// Notify all JPanels that the database has changed in
 			// some way.
 			super.sqlChanged();
+			clearFields();
 		}
 	}
 
@@ -285,6 +309,7 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 	 * easier use of update and delete statements.
 	 * 
 	 * @param select
+	 *            The results from the select query on the database
 	 */
 	private void populateArrayList(ArrayList<String[]> select) {
 		availableProfessors.clear();
