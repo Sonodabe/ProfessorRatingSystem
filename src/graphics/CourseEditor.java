@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
+import data.Course;
 import database.SQLDatabaseProxy;
 
 /**
@@ -27,13 +28,13 @@ public class CourseEditor extends CallRespondSqlEvent {
 	private ArrayList<Object> values;
 	private ArrayList<String> attributes;
 	private ArrayList<Integer> profIds;
+	private ArrayList<Course> availableCourses;
 
 	private CourseManager parent;
+	private Course currCourse;
 
 	// TODO ENABLE THE BELOW
-	/*
-	 * Course course; Professor prof;
-	 */
+	// Professor prof;
 
 	public CourseEditor(CourseManager cm) {
 		parent = cm;
@@ -52,9 +53,10 @@ public class CourseEditor extends CallRespondSqlEvent {
 		universitySelector = new JComboBox<String>();
 
 		professorSelector = new JComboBox<String>();
-
+		availableCourses = new ArrayList<Course>();
 		courseSelector.setEditable(false);
 		courseSelector.setEnabled(false);
+		courseSelector.addItemListener(new ItemResponder());
 
 		courseSelector2.setEditable(false);
 		professorSelector.setEditable(false);
@@ -189,7 +191,7 @@ public class CourseEditor extends CallRespondSqlEvent {
 					break;
 				default:
 					courseSelector.setEnabled(true);
-					// TODO populate text fields with data
+					populateFields();
 					break;
 				}
 			}
@@ -198,7 +200,7 @@ public class CourseEditor extends CallRespondSqlEvent {
 			}
 			else {
 				if (courseSelector.isEnabled()) {
-					// TODO Populate text fields with Course data
+					populateFields();
 				}
 			}
 		}
@@ -230,13 +232,25 @@ public class CourseEditor extends CallRespondSqlEvent {
 	}
 
 	/**
+	 * Populates the text fields with the data from the currently
+	 * selected course.
+	 */
+	protected void populateFields() {
+		currCourse = availableCourses.get(courseSelector
+				.getSelectedIndex());
+		courseName.setText(currCourse.getCName());
+		courseIdentifier.setText(currCourse.getCIdentifier());
+		universitySelector
+				.setSelectedItem(currCourse.getUniversity());
+	}
+
+	/**
 	 * 
 	 */
 	protected void buildAddCourseTeacher() {
 		initializeLists();
 		attributes.add("CNumber");
 		attributes.add("PID");
-		// TODO add values for above and then call the SQL manager.
 		values.add(courseSelector2.getSelectedItem());
 		values.add(profIds.get(professorSelector.getSelectedIndex()));
 
@@ -264,41 +278,83 @@ public class CourseEditor extends CallRespondSqlEvent {
 
 		if (SQLDatabaseProxy.insert("Course", attributes, values)) {
 			super.sqlChanged();
+			clearTextFields();
 		}
 
 	}
 
+	/**
+	 * 
+	 */
+	private void clearTextFields() {
+		courseIdentifier.setText(null);
+		courseName.setText(null);
+	}
+
+	/**
+	 * An override from <code>CallRespondSqlEvent</code>, updates the
+	 * course, professor, and university JComboBoxes to ensure that
+	 * the latest data is present, and to apply any filters the user
+	 * has requested via the parent <code>CourseManager</code> class.
+	 */
 	protected void updateSelectors() {
 		PRSFrame.updateSelector(courseSelector, "Course",
-				"CIdentifier");
+				"CIdentifier", currentFilters);
 		PRSFrame.updateSelector(courseSelector2, "Course",
-				"CIdentifier");
+				"CIdentifier", currentFilters);
 		PRSFrame.updateSelector(professorSelector, "Professor",
 				"PName");
 		PRSFrame.updateSelector(universitySelector, "University",
 				"UName");
-		updateProfIds(profIds, "Professor", "PID");
+		updateProfIds("Professor", "PID");
+		initializeLists();
+		attributes.add("CIdentifier");
+		attributes.add("CName");
+		attributes.add("University");
+		populateArrayList(SQLDatabaseProxy.select("Course",
+				attributes, currentFilters));
 	}
 
 	/**
-	 * @param profIds2
-	 * @param string
-	 * @param string2
+	 * Updates the list of professorIds so that a professor can easily
+	 * be assigned to a class by matching the
+	 * <code>selectedIndex</code> of <code>professorSelector</code>
+	 * with the index in profIds.
+	 * 
+	 * @param tableName
+	 *            The name of the table to pull the information from
+	 *            in the database.
+	 * @param fieldName
+	 *            The the name of the attribute whose value will be
+	 *            retrieved.
 	 */
-	private void updateProfIds(ArrayList<Integer> idList,
-			String tableName, String fieldName) {
+	private void updateProfIds(String tableName, String fieldName) {
 		ArrayList<String[]> records;
 
-		// TODO Make static and stick somewhere
 		ArrayList<String> atts = new ArrayList<String>();
 		atts.add(fieldName);
 
 		records = SQLDatabaseProxy.select(tableName, atts);
 
-		idList.clear();
+		profIds.clear();
 
 		for (String[] arr : records) {
-			idList.add(Integer.parseInt(arr[0]));
+			profIds.add(Integer.parseInt(arr[0]));
+		}
+	}
+
+	/**
+	 * Populates the back-end ArrayList of the Course data that is
+	 * available to be selected by the JCombBox. This allows for
+	 * easier use of update and delete statements.
+	 * 
+	 * @param select
+	 *            The results from the select query on the database
+	 */
+	private void populateArrayList(ArrayList<String[]> select) {
+		availableCourses.clear();
+		for (String[] s : select) {
+			availableCourses.add(new Course(s));
 		}
 	}
 

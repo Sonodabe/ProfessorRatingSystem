@@ -8,8 +8,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import data.Professor;
-import database.*;
-import database.AttributeValue;
+import database.SQLDatabaseProxy;
 
 /**
  * @author Doug Blase
@@ -37,7 +36,8 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 	private ArrayList<Object> values;
 	private ArrayList<String> attributes;
 	private ArrayList<Professor> availableProfessors;
-	private ArrayList<AttributeValue> currentFilters;
+
+	// private ArrayList<AttributeValue> currentFilters;
 
 	/**
 	 * Instantiates this panel, and defines the layout.
@@ -48,7 +48,7 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 	public ProfessorEditor(ProfessorManager pm) {
 		parent = pm;
 		availableProfessors = new ArrayList<Professor>();
-		currentFilters = new ArrayList<AttributeValue>();
+		// currentFilters = new ArrayList<AttributeValue>();
 		operationSelector = new JComboBox<String>();
 		operationSelector.addItem("Add");
 		operationSelector.addItem("Delete");
@@ -316,19 +316,6 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 		for (String[] s : select) {
 			availableProfessors.add(new Professor(s));
 		}
-	}
-
-	/**
-	 * Updates the current filters that are used to limit which
-	 * Professors are accessible by the professorSelector ComboBox.
-	 * This method should generally be called from the parent
-	 * ProfessorManager.
-	 * 
-	 * @param filts
-	 *            The filters being used.
-	 */
-	public void updateFilters(ArrayList<AttributeValue> filts) {
-		currentFilters = filts;
 	}
 
 }
