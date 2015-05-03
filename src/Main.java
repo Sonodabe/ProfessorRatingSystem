@@ -22,13 +22,8 @@ public class Main {
 		frame.setVisible(true);
 		frame.setBounds(100, 100, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-<<<<<<< Updated upstream
 
 		Test();
-=======
-		
-		//Test();
->>>>>>> Stashed changes
 	}
 
 	private static void Test() {
