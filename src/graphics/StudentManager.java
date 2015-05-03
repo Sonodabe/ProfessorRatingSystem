@@ -28,12 +28,10 @@ public class StudentManager extends JPanel {
 	 */
 	private static final long serialVersionUID = 3040149087941503069L;
 
-	private JTable studentListing;
-	private JScrollPane tableViewer;
 	private JTable dataTable;
 	private DefaultTableModel model;
 	private StudentEditor studentFieldsPane;
-	private String[] columnNames = { "Name", "Major", "Username", "University", "SID" };
+	private String[] columnNames = { "Major", "University", "SID" };
 	/**
 	 * 
 	 */
@@ -44,9 +42,8 @@ public class StudentManager extends JPanel {
 			// TODO Query the database and get the data.
 			ArrayList<String> atts = new ArrayList<String>();
 
-			atts.add("SName");
+			
 			atts.add("Major");
-			atts.add("Username");
 			atts.add("University");
 			atts.add("SID");
 
@@ -59,7 +56,7 @@ public class StudentManager extends JPanel {
 				addRow(updated.get(i));
 			}
 			
-			dataTable.setName("guessTable");
+			dataTable.setName("StudentView");
 			JScrollPane scrollPane = new JScrollPane(dataTable);
 			dataTable.setFillsViewportHeight(true);
 			dataTable.setShowGrid(true);
@@ -83,8 +80,7 @@ public class StudentManager extends JPanel {
 		rowData.add(row[0]);
 		rowData.add(row[1]);
 		rowData.add(row[2]);
-		rowData.add(row[3]);
-		rowData.add(row[4]);
+
 		model.addRow(rowData);
 
 	}

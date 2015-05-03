@@ -20,14 +20,14 @@ public class ProfessorManager extends JPanel {
 	private JTable profListing;
 	private JScrollPane tableViewer;
 	private ProfessorEditor profFieldsPane;
-
+	private String colNames[] = { "ID", "Name", "Research Area",
+			"Bio", "Field of Study" };
 	public ProfessorManager() {
 		setLayout(new GridLayout(1, 1));
 
 		if (PRSFrame.JDBC) {
 			// TODO Query the database and get the data.
-			String colNames[] = { "ID", "Name", "Research Area",
-					"Bio", "Field of Study" };
+			
 			Object test[][] = new Object[1][1];
 			profListing = new JTable(
 					new PRSTableModel(test, colNames));
