@@ -3,7 +3,11 @@
  */
 package graphics;
 
+//import graphics.ReviewPane.ButtonResponder;
+
 import java.awt.*;
+import java.util.Calendar;
+
 import javax.swing.*;
 
 /**
@@ -16,7 +20,7 @@ public class ViewReviewPane extends CallRespondSqlEvent {
 	private JTextArea comments;
 	private ViewReviewTab parent;
 	private JTextField className, professorName;
-
+	private JButton search;
 	private JRadioButton[] engagement, fairness, difficultyWork,
 			easeOfLearning, teachingStyle;
 	private ButtonGroup engagementGroup, fairnessGroup,
@@ -25,12 +29,14 @@ public class ViewReviewPane extends CallRespondSqlEvent {
 
 	public ViewReviewPane(ViewReviewTab rt) {
 		parent = rt;
+		search = new JButton("Search");
+		//search.addActionListener(new ButtonResponder());
 
 		className = new JTextField();
-		className.setEditable(false);
+		className.setEditable(true);
 
 		professorName = new JTextField();
-		professorName.setEditable(false);
+		professorName.setEditable(true);
 
 		semester = new JComboBox<String>();
 		semester.addItem("FALL");
@@ -39,32 +45,19 @@ public class ViewReviewPane extends CallRespondSqlEvent {
 		semester.addItem("SUMMER");
 		semester.addItem(" ");
 		semester.setSelectedIndex(4);
+		
+		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+		SpinnerModel yearModel = new SpinnerNumberModel(currentYear,
+				1970, currentYear, 1);
 
-		year = new JSpinner();
-		year.setEnabled(false);
+
+		year = new JSpinner(yearModel);
+		year.setEditor(new JSpinner.NumberEditor(year, "#"));
 
 		comments = new JTextArea();
-		comments.setEditable(false);
+		comments.setEditable(true);
 
-		engagement = new JRadioButton[6];
-		engagementGroup = new ButtonGroup();
-		initializeButtonGroup(engagement, engagementGroup);
-
-		fairness = new JRadioButton[6];
-		fairnessGroup = new ButtonGroup();
-		initializeButtonGroup(fairness, fairnessGroup);
-
-		difficultyWork = new JRadioButton[6];
-		difficultyWorkGroup = new ButtonGroup();
-		initializeButtonGroup(difficultyWork, difficultyWorkGroup);
-
-		easeOfLearning = new JRadioButton[6];
-		easeOfLearningGroup = new ButtonGroup();
-		initializeButtonGroup(easeOfLearning, easeOfLearningGroup);
-
-		teachingStyle = new JRadioButton[6];
-		teachingStyleGroup = new ButtonGroup();
-		initializeButtonGroup(teachingStyle, teachingStyleGroup);
+		
 
 		setLayout(new GridBagLayout());
 
@@ -77,7 +70,7 @@ public class ViewReviewPane extends CallRespondSqlEvent {
 		gbc.gridx = 0;
 		gbc.gridy = y++;
 
-		add(new JLabel("0 - N/A, 1 - Bad, 5 - Good"), gbc);
+		add(new JLabel("Search by any of the below criteria"), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -140,107 +133,13 @@ public class ViewReviewPane extends CallRespondSqlEvent {
 		gbc.gridwidth = 6;
 
 		add(semester, gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = y;
-		gbc.gridwidth = 1;
-		add(new JLabel("Engagement: "), gbc);
-
-		for (int i = 0; i < engagement.length; i++) {
-			gbc.fill = GridBagConstraints.HORIZONTAL;
-			gbc.weightx = 0.5;
-			gbc.gridx = 1 + i;
-			gbc.gridy = y;
-			add(engagement[i], gbc);
-		}
-		y++;
-		// add(engagement, gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = y;
-
-		add(new JLabel("Fairness: "), gbc);
-
-		for (int i = 0; i < fairness.length; i++) {
-			gbc.fill = GridBagConstraints.HORIZONTAL;
-			gbc.weightx = 0.5;
-			gbc.gridx = 1 + i;
-			gbc.gridy = y;
-
-			add(fairness[i], gbc);
-		}
-		y++;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = y;
-
-		add(new JLabel("Difficulty of Work: (1 - Easy, 5 - Hard)"),
-				gbc);
-
-		for (int i = 0; i < difficultyWork.length; i++) {
-			gbc.fill = GridBagConstraints.HORIZONTAL;
-			gbc.weightx = 0.5;
-			gbc.gridx = 1 + i;
-			gbc.gridy = y;
-
-			add(difficultyWork[i], gbc);
-		}
-		y++;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = y;
-
-		add(new JLabel("Ease of Learning: "), gbc);
-
-		for (int i = 0; i < easeOfLearning.length; i++) {
-			gbc.fill = GridBagConstraints.HORIZONTAL;
-			gbc.weightx = 0.5;
-			gbc.gridx = 1 + i;
-			gbc.gridy = y;
-
-			add(easeOfLearning[i], gbc);
-		}
-		y++;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = y;
-
-		add(new JLabel(
-				"Teaching Style: (1 - Entirely Lab Focused, 5 - Entirely Lecture)"),
-				gbc);
-
-		for (int i = 0; i < teachingStyle.length; i++) {
-			gbc.fill = GridBagConstraints.HORIZONTAL;
-			gbc.weightx = 0.5;
-			gbc.gridx = 1 + i;
-			gbc.gridy = y;
-
-			add(teachingStyle[i], gbc);
-		}
-		y++;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = y;
-
-		add(new JLabel("Comments: "), gbc);
-
+		y += 3;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = y;
-		gbc.gridheight = 3;
-		gbc.gridwidth = 6;
-
-		add(comments, gbc);
-		y += 3;
+		
+		add(search, gbc);
 		super.addPanel(this);
 		updateSelectors();
 

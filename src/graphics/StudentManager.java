@@ -3,8 +3,17 @@
  */
 package graphics;
 
+import java.awt.Color;
 import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.Vector;
+
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
+import javax.swing.table.DefaultTableModel;
+
+import database.AttributeValue;
+import database.SQLDatabaseProxy;
 
 /**
  * @author Doug Blase
@@ -21,30 +30,62 @@ public class StudentManager extends JPanel {
 
 	private JTable studentListing;
 	private JScrollPane tableViewer;
-
+	private JTable dataTable;
+	private DefaultTableModel model;
 	private StudentEditor studentFieldsPane;
-
+	private String[] columnNames = { "Name", "Major", "Username", "University", "SID" };
 	/**
 	 * 
 	 */
 	public StudentManager() {
 		setLayout(new GridLayout(1, 1));
 
-		if (PRSFrame.JDBC) {
+		if (true) {
 			// TODO Query the database and get the data.
-			String colNames[] = { "ID", "Major" };
-			Object test[][] = new Object[1][1];
-			studentListing = new JTable(new PRSTableModel(test,
-					colNames));
-			studentListing.setShowGrid(true);
+			ArrayList<String> atts = new ArrayList<String>();
 
-			tableViewer = new JScrollPane(studentListing);
-			studentListing.setFillsViewportHeight(true);
+			atts.add("SName");
+			atts.add("Major");
+			atts.add("Username");
+			atts.add("University");
+			atts.add("SID");
 
-			add(tableViewer);
+			ArrayList<String[]> updated = SQLDatabaseProxy.select("Student", atts);
+			model = new DefaultTableModel(columnNames, 0);
+			
+
+			dataTable = new JTable(model);
+			for(int i=0; i<updated.size(); i++){
+				addRow(updated.get(i));
+			}
+			
+			dataTable.setName("guessTable");
+			JScrollPane scrollPane = new JScrollPane(dataTable);
+			dataTable.setFillsViewportHeight(true);
+			dataTable.setShowGrid(true);
+			dataTable.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+			dataTable.setGridColor(Color.BLACK);
+			//Object test[][] = new Object[1][1];
+		
+			
+
+			
+			add(scrollPane);
 		}
 		studentFieldsPane = new StudentEditor(this);
 		add(studentFieldsPane);
 	}
 
+	
+	private void addRow(String[] row) {
+
+		Vector<Object> rowData = new Vector<Object>();
+		rowData.add(row[0]);
+		rowData.add(row[1]);
+		rowData.add(row[2]);
+		rowData.add(row[3]);
+		rowData.add(row[4]);
+		model.addRow(rowData);
+
+	}
 }
