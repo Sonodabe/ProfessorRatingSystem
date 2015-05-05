@@ -48,7 +48,14 @@ public class StudentManager extends JPanel {
 		atts.add("SID");
 
 		ArrayList<String[]> updated = SQLDatabaseProxy.select("Student", atts);
-		model = new DefaultTableModel(columnNames, 0);
+		model = new DefaultTableModel(columnNames, 0){
+
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		       //all cells false
+		       return false;
+		    }
+		};
 
 		dataTable = new JTable(model);
 		for (int i = 0; i < updated.size(); i++) {
