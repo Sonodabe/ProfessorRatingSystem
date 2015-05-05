@@ -8,7 +8,8 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import data.Course;
-import database.SQLDatabaseProxy;
+import database.*;
+import database.AttributeValue;
 
 /**
  * @author Doug Blase
@@ -188,6 +189,7 @@ public class CourseEditor extends CallRespondSqlEvent {
 				switch (operationSelector.getSelectedIndex()) {
 				case ADD:
 					courseSelector.setEnabled(false);
+					clearTextFields();
 					break;
 				default:
 					courseSelector.setEnabled(true);
@@ -200,7 +202,10 @@ public class CourseEditor extends CallRespondSqlEvent {
 			}
 			else {
 				if (courseSelector.isEnabled()) {
-					populateFields();
+					if (courseSelector.getItemCount() > 0) {
+						populateFields();
+					}
+
 				}
 			}
 		}
@@ -215,7 +220,7 @@ public class CourseEditor extends CallRespondSqlEvent {
 					buildAdd();
 					break;
 				case MODIFY:
-					// TODO SQL staements
+					buildModify();
 					break;
 				}
 			}
@@ -229,6 +234,34 @@ public class CourseEditor extends CallRespondSqlEvent {
 	private void initializeLists() {
 		values = new ArrayList<Object>();
 		attributes = new ArrayList<String>();
+	}
+
+	/**
+	 * 
+	 */
+	protected void buildModify() {
+		ArrayList<AttributeValue> info = new ArrayList<AttributeValue>();
+		ArrayList<AttributeValue> filter = new ArrayList<AttributeValue>();
+
+		info.add(new AttributeValue("CIdentifier", courseIdentifier
+				.getText().trim()));
+		info.add(new AttributeValue("CName", courseName.getText()
+				.trim()));
+		info.add(new AttributeValue("University", universitySelector
+				.getSelectedItem()));
+
+		filter.add(new AttributeValue("CIdentifier", availableCourses
+				.get(courseSelector.getSelectedIndex())
+				.getCIdentifier()));
+		filter.add(new AttributeValue("University", availableCourses
+				.get(courseSelector.getSelectedIndex())
+				.getUniversity()));
+
+		if (SQLDatabaseProxy.update("Course", info, filter) > 0) {
+			operationSelector.setSelectedIndex(ADD);
+			sqlChanged();
+		}
+
 	}
 
 	/**
@@ -256,6 +289,7 @@ public class CourseEditor extends CallRespondSqlEvent {
 
 		if (SQLDatabaseProxy.insert("Teaches", attributes, values)) {
 			super.sqlChanged();
+			clearTextFields();
 		}
 	}
 

@@ -1,16 +1,12 @@
 package graphics;
-import graphics.*;
 
-import java.awt.Color;
-import java.awt.GridLayout;
-import java.util.ArrayList;
-import java.util.Vector;
-
+import java.awt.*;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
-
 import database.SQLDatabaseProxy;
+
 /**
  * @author Doug Blase
  * @author Samantha Wolf
@@ -21,9 +17,12 @@ public class ViewReviewTab extends JPanel {
 	private JTable dataTable;
 	private DefaultTableModel model;
 	private ViewReviewPane vrp;
-	private String colNames[] = { "SID", "PID", "CID", "Year", "Semester", "Engagement", "Fairness", "Difficulty of Work", 
-			"Ease of Learning", "Teaching Style", "Comments"};
+	private String columnNames[] = { "SID", "PID", "CID", "Year",
+			"Semester", "Engagement", "Fairness",
+			"Difficulty of Work", "Ease of Learning",
+			"Teaching Style", "Comments" };
 
+	@SuppressWarnings("serial")
 	public ViewReviewTab() {
 		setLayout(new GridLayout(2, 0));
 
@@ -40,9 +39,16 @@ public class ViewReviewTab extends JPanel {
 		atts.add("TeachingStyle");
 		atts.add("Comments");
 
+		ArrayList<String[]> updated = SQLDatabaseProxy.select(
+				"Review", atts);
+		model = new DefaultTableModel(columnNames, 0) {
 
-		ArrayList<String[]> updated = SQLDatabaseProxy.select("Review", atts);
-		model = new DefaultTableModel(colNames, 0);
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// all cells false
+				return false;
+			}
+		};
 		dataTable = new JTable(model);
 
 		for (int i = 0; i < updated.size(); i++) {
@@ -58,12 +64,11 @@ public class ViewReviewTab extends JPanel {
 
 		add(scrollPane);
 
-		
 		vrp = new ViewReviewPane(this);
 		add(vrp);
 		add(scrollPane);
 	}
-	
+
 	private void addRow(String[] row) {
 
 		Vector<Object> rowData = new Vector<Object>();

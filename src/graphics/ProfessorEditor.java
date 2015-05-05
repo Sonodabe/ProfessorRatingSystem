@@ -8,7 +8,8 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import data.Professor;
-import database.SQLDatabaseProxy;
+import database.*;
+import database.AttributeValue;
 
 /**
  * @author Doug Blase
@@ -282,6 +283,22 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 	 * 
 	 */
 	protected void buildModify() {
+		ArrayList<AttributeValue> info = new ArrayList<AttributeValue>();
+		info.add(new AttributeValue("PName", professorName.getText()
+				.trim()));
+		info.add(new AttributeValue("ResearchArea", researchArea
+				.getText().trim()));
+		info.add(new AttributeValue("Bio", bio.getText().trim()));
+		info.add(new AttributeValue("YearsWorked", yearsWorked
+				.getValue()));
+
+		ArrayList<AttributeValue> filter = new ArrayList<AttributeValue>();
+		filter.add(new AttributeValue("PID", availableProfessors.get(
+				professorSelector.getSelectedIndex()).getId()));
+
+		if (SQLDatabaseProxy.update("Professor", info, filter) > 0) {
+			sqlChanged();
+		}
 	}
 
 	/*

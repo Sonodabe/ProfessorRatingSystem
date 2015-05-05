@@ -3,15 +3,11 @@
  */
 package graphics;
 
-import java.awt.Color;
-import java.awt.GridLayout;
-import java.util.ArrayList;
-import java.util.Vector;
-
+import java.awt.*;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
-
 import database.SQLDatabaseProxy;
 
 /**
@@ -28,9 +24,10 @@ public class ProfessorManager extends JPanel {
 	private JTable dataTable;
 	private DefaultTableModel model;
 	private ProfessorEditor profFieldsPane;
-	private String colNames[] = { "PID", "Name", "Research Area", "Bio",
-			"Years Worked" };
+	private String columnNames[] = { "PID", "Name", "Research Area",
+			"Bio", "Years Worked" };
 
+	@SuppressWarnings("serial")
 	public ProfessorManager() {
 		setLayout(new GridLayout(1, 1));
 
@@ -40,9 +37,16 @@ public class ProfessorManager extends JPanel {
 		atts.add("ResearchArea");
 		atts.add("Bio");
 		atts.add("YearsWorked");
-		ArrayList<String[]> updated = SQLDatabaseProxy
-				.select("Professor", atts);
-		model = new DefaultTableModel(colNames, 0);
+		ArrayList<String[]> updated = SQLDatabaseProxy.select(
+				"Professor", atts);
+		model = new DefaultTableModel(columnNames, 0) {
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// all cells false
+				return false;
+			}
+		};
 		dataTable = new JTable(model);
 
 		for (int i = 0; i < updated.size(); i++) {

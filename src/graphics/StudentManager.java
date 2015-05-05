@@ -3,16 +3,11 @@
  */
 package graphics;
 
-import java.awt.Color;
-import java.awt.GridLayout;
-import java.util.ArrayList;
-import java.util.Vector;
-
+import java.awt.*;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
-
-import database.AttributeValue;
 import database.SQLDatabaseProxy;
 
 /**
@@ -37,6 +32,7 @@ public class StudentManager extends JPanel {
 	/**
 	 * 
 	 */
+	@SuppressWarnings("serial")
 	public StudentManager() {
 		setLayout(new GridLayout(1, 1));
 
@@ -47,14 +43,15 @@ public class StudentManager extends JPanel {
 		atts.add("University");
 		atts.add("SID");
 
-		ArrayList<String[]> updated = SQLDatabaseProxy.select("Student", atts);
-		model = new DefaultTableModel(columnNames, 0){
+		ArrayList<String[]> updated = SQLDatabaseProxy.select(
+				"Student", atts);
+		model = new DefaultTableModel(columnNames, 0) {
 
-		    @Override
-		    public boolean isCellEditable(int row, int column) {
-		       //all cells false
-		       return false;
-		    }
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// all cells false
+				return false;
+			}
 		};
 
 		dataTable = new JTable(model);
