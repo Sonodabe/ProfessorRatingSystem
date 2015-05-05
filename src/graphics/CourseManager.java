@@ -15,7 +15,7 @@ import database.SQLDatabaseProxy;
  * @author Samantha Wolf
  *
  */
-public class CourseManager extends JPanel {
+public class CourseManager extends CallRespondSqlEvent {
 
 	private JTable dataTable;
 	private DefaultTableModel model;
@@ -27,14 +27,6 @@ public class CourseManager extends JPanel {
 	public CourseManager() {
 		setLayout(new GridLayout(1, 1));
 
-		ArrayList<String> atts = new ArrayList<String>();
-
-		atts.add("CIdentifier");
-		atts.add("CName");
-		atts.add("University");
-
-		ArrayList<String[]> updated = SQLDatabaseProxy.select(
-				"Course", atts);
 		model = new DefaultTableModel(columnNames, 0) {
 
 			@Override
@@ -44,10 +36,6 @@ public class CourseManager extends JPanel {
 			}
 		};
 		dataTable = new JTable(model);
-
-		for (int i = 0; i < updated.size(); i++) {
-			addRow(updated.get(i));
-		}
 
 		dataTable.setName("CourseView");
 		JScrollPane scrollPane = new JScrollPane(dataTable);
@@ -60,6 +48,8 @@ public class CourseManager extends JPanel {
 
 		ce = new CourseEditor(this);
 		add(ce);
+		super.addPanel(this);
+		updateSelectors();
 	}
 
 	private void addRow(String[] row) {
@@ -70,5 +60,26 @@ public class CourseManager extends JPanel {
 		rowData.add(row[2]);
 		model.addRow(rowData);
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see graphics.CallRespondSqlEvent#updateSelectors()
+	 */
+	@Override
+	protected void updateSelectors() {
+		model.setRowCount(0);
+		ArrayList<String> atts = new ArrayList<String>();
+
+		atts.add("CIdentifier");
+		atts.add("CName");
+		atts.add("University");
+
+		ArrayList<String[]> updated = SQLDatabaseProxy.select(
+				"Course", atts);
+		for (int i = 0; i < updated.size(); i++) {
+			addRow(updated.get(i));
+		}
 	}
 }

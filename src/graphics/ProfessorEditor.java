@@ -175,6 +175,7 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 				switch (operationSelector.getSelectedIndex()) {
 				case ADD:
 					professorSelector.setEnabled(false);
+					clearFields();
 					break;
 				default:
 					professorSelector.setEnabled(true);
@@ -297,6 +298,7 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 				professorSelector.getSelectedIndex()).getId()));
 
 		if (SQLDatabaseProxy.update("Professor", info, filter) > 0) {
+			operationSelector.setSelectedIndex(ADD);
 			sqlChanged();
 		}
 	}
