@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
+import database.*;
+import database.AttributeValue;
 
 /**
  * Contains the fields required to indelete, or modify a student
@@ -15,9 +17,8 @@ import javax.swing.*;
  * @author Doug Blase
  *
  */
-public class StudentEditor extends JPanel {
+public class StudentEditor extends CallRespondSqlEvent {
 
-	private JTextField major, studentName;
 	private JComboBox<String> studentSelector;
 	private JButton submit;
 
@@ -32,29 +33,16 @@ public class StudentEditor extends JPanel {
 	public StudentEditor(StudentManager sm) {
 		parent = sm;
 
-		studentName = new JTextField();
-		major = new JTextField();
 		studentSelector = new JComboBox<String>();
-		studentSelector.addItemListener(new ItemResponder());
-		if (PRSFrame.JDBC) {
-			// Populate combo box with names
-		}
-		else studentSelector.addItem("TEMP");
 
 		studentSelector.setEditable(false);
-		studentSelector.setEnabled(false);
 
 		submit = new JButton("Delete Student");
 		submit.addActionListener(new ButtonResponder());
 		setLayout(new GridBagLayout());
 
 		GridBagConstraints gbc = new GridBagConstraints();
-		/*
-		 * gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx =
-		 * 0.5; gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
-		 * 
-		 * add(operationSelector, gbc);
-		 */
+
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridwidth = 1;
 		gbc.weightx = 0.5;
@@ -71,54 +59,37 @@ public class StudentEditor extends JPanel {
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		//add(new JLabel("Major: "), gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 3;
-
-		//add(major, gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-
-		//add(new JLabel("Student Name: "), gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-
-		//add(studentName, gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 4;
 		gbc.gridwidth = 2;
 
 		add(submit, gbc);
+		addPanel(this);
+		updateSelectors();
 
-	}
-
-	private class ItemResponder implements ItemListener {
-		public void itemStateChanged(ItemEvent e) {
-			if (e.getSource() == studentSelector) {
-				// TODO Create a student variable and populate fields.
-			}
-		}
 	}
 
 	private class ButtonResponder implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-
+			ArrayList<AttributeValue> condition = new ArrayList<AttributeValue>();
+			condition.add(new AttributeValue("SID", Integer
+					.parseInt((String) studentSelector
+							.getSelectedItem())));
+			SQLDatabaseProxy.delete("Student", condition);
+			sqlChanged();
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see graphics.CallRespondSqlEvent#updateSelectors()
+	 */
+	@Override
+	protected void updateSelectors() {
+		PRSFrame.updateSelector(studentSelector, "Student", "SID",
+				currentFilters);
 	}
 
 }
