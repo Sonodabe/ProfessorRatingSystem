@@ -1,52 +1,52 @@
 package data;
 
 public class Teaches {
-	
-	private String cNumber, pid;
-	
+
+	private String cNumber, pid, university;
+
 	/**
 	 * 
 	 * @param cNumber
 	 * @param pid
 	 */
-	public Teaches(String cNumber, String pid){
+	public Teaches(String cNumber, String pid) {
 		this.cNumber = cNumber;
 		this.pid = pid;
 	}
-	
+
 	/**
 	 * 
 	 * @return cNumber
 	 */
-	public String getCNumber(){
+	public String getCNumber() {
 		return cNumber;
 	}
-	
+
 	/**
 	 * 
 	 * @param cNumber
-	 * 					the cNumber to be set
+	 *            the cNumber to be set
 	 */
-	public void setCNumber(String cNumber){
+	public void setCNumber(String cNumber) {
 		this.cNumber = cNumber;
 	}
-	
+
 	/**
 	 * 
 	 * @return pid
 	 */
-	public String getPid(){
+	public String getPid() {
 		return pid;
 	}
-	
+
 	/**
 	 * 
 	 * @param pid
-	 * 				the pid to be set
+	 *            the pid to be set
 	 */
-	public void setPid(String pid){
+	public void setPid(String pid) {
 		this.pid = pid;
 	}
-	
+
 	// TODO: Hashcode, equals, toString
 }

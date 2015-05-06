@@ -137,48 +137,6 @@ public class CourseEditor extends CallRespondSqlEvent {
 
 		add(submitCourse, gbc);
 
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 8;
-		gbc.gridheight = 1;
-		gbc.insets = new Insets(0, 0, 0, 0);
-		add(new JLabel("Add an instructor for a course:"), gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = 9;
-
-		add(new JLabel("Course: "), gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 9;
-
-		add(courseSelector2, gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = 10;
-
-		add(new JLabel("Professor: "), gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 10;
-
-		add(professorSelector, gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 11;
-
-		add(submitTeacherCourse, gbc);
 		super.addPanel(this);
 		this.updateSelectors();
 	}
@@ -223,9 +181,6 @@ public class CourseEditor extends CallRespondSqlEvent {
 					buildModify();
 					break;
 				}
-			}
-			else {
-				buildAddCourseTeacher();
 			}
 		}
 
@@ -275,22 +230,6 @@ public class CourseEditor extends CallRespondSqlEvent {
 		courseIdentifier.setText(currCourse.getCIdentifier());
 		universitySelector
 				.setSelectedItem(currCourse.getUniversity());
-	}
-
-	/**
-	 * 
-	 */
-	protected void buildAddCourseTeacher() {
-		initializeLists();
-		attributes.add("CNumber");
-		attributes.add("PID");
-		values.add(courseSelector2.getSelectedItem());
-		values.add(profIds.get(professorSelector.getSelectedIndex()));
-
-		if (SQLDatabaseProxy.insert("Teaches", attributes, values)) {
-			super.sqlChanged();
-			clearTextFields();
-		}
 	}
 
 	/**

@@ -18,8 +18,8 @@ import database.AttributeValue;
 public class ReviewPane extends CallRespondSqlEvent {
 
 	private JSpinner year;
-	private JComboBox<String> semester, username, classSelector,
-			professorSelector;
+	private JComboBox<String> semester, username, courseSelector,
+			professorSelector, universitySelector;
 	private JTextArea comments;
 	private JButton submit;
 	private ReviewTab parent;
@@ -37,12 +37,13 @@ public class ReviewPane extends CallRespondSqlEvent {
 		parent = rt;
 		submit = new JButton("Submit");
 		submit.addActionListener(new ButtonResponder());
-		// TODO probably get rid of the username menu concept.
 		username = new JComboBox<String>();
 		username.addItemListener(new ItemResponder());
-		classSelector = new JComboBox<String>();
-		classSelector.addItemListener(new ItemResponder());
+		courseSelector = new JComboBox<String>();
+		courseSelector.addItemListener(new ItemResponder());
 		professorSelector = new JComboBox<String>();
+		universitySelector = new JComboBox<String>();
+		universitySelector.addItemListener(new ItemResponder());
 		semester = new JComboBox<String>();
 		semester.addItem("FALL");
 		semester.addItem("WINTER");
@@ -112,7 +113,7 @@ public class ReviewPane extends CallRespondSqlEvent {
 		gbc.gridy = y;
 		gbc.gridwidth = 1;
 
-		add(new JLabel("Class: "), gbc);
+		add(new JLabel("Course: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -120,7 +121,23 @@ public class ReviewPane extends CallRespondSqlEvent {
 		gbc.gridy = y++;
 		gbc.gridwidth = 6;
 
-		add(classSelector, gbc);
+		add(courseSelector, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 0;
+		gbc.gridy = y;
+		gbc.gridwidth = 1;
+
+		add(new JLabel("University: "), gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 1;
+		gbc.gridy = y++;
+		gbc.gridwidth = 6;
+
+		add(universitySelector, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -316,7 +333,7 @@ public class ReviewPane extends CallRespondSqlEvent {
 				.getItemAt(professorSelector.getSelectedIndex())));
 
 		attributes.add("CID");
-		values.add(classSelector.getSelectedItem());
+		values.add(courseSelector.getSelectedItem());
 
 		attributes.add("Semester");
 		values.add(semester.getSelectedItem());
@@ -356,7 +373,7 @@ public class ReviewPane extends CallRespondSqlEvent {
 		ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
 		filters.add(new AttributeValue("PName", itemAt));
 		filters.add(new AttributeValue("Course.CIdentifier",
-				classSelector.getItemAt(classSelector
+				courseSelector.getItemAt(courseSelector
 						.getSelectedIndex())));
 		filters.add(new AttributeValue("Teaches.PID",
 				"Professor.PID", AttributeValue.JOIN));
@@ -388,15 +405,20 @@ public class ReviewPane extends CallRespondSqlEvent {
 	private class ItemResponder implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
 
-			if (e.getSource() == classSelector) {
-				if (classSelector.getItemCount() > 0) {
-					refreshProfList();
+			if (e.getSource() == courseSelector) {
+				if (courseSelector.getItemCount() > 0) {
+					refreshUniversityList();
 				}
 			}
 			else if (e.getSource() == username) {
 				if (username.getItemCount() > 0) {
 					refreshCourseList();
 					// refreshProfList();
+				}
+			}
+			else if (e.getSource() == universitySelector) {
+				if (universitySelector.getItemCount() > 0) {
+					refreshProfList();
 				}
 			}
 
@@ -407,7 +429,7 @@ public class ReviewPane extends CallRespondSqlEvent {
 		ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
 
 		filters.add(new AttributeValue("Teaches.CNumber",
-				classSelector.getItemAt(classSelector
+				courseSelector.getItemAt(courseSelector
 						.getSelectedIndex()), AttributeValue.EQUAL));
 
 		filters.add(new AttributeValue("Teaches.PID",
@@ -420,13 +442,24 @@ public class ReviewPane extends CallRespondSqlEvent {
 	/**
 	 * 
 	 */
+	protected void refreshUniversityList() {
+		ArrayList<AttributeValue> courseFilt = new ArrayList<AttributeValue>();
+		courseFilt.add(new AttributeValue("CIdentifier",
+				courseSelector.getSelectedItem()));
+		PRSFrame.updateSelector(universitySelector, "Course",
+				"University", courseFilt);
+	}
+
+	/**
+	 * 
+	 */
 	protected void refreshCourseList() {
 		ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
 		filters.add(new AttributeValue("SID", username
 				.getSelectedIndex() + 1));
 		filters.add(new AttributeValue("Student.University",
 				"Course.University", AttributeValue.JOIN));
-		PRSFrame.updateSelector(classSelector, "Student,Course",
+		PRSFrame.updateSelector(courseSelector, "Student,Course",
 				"CIdentifier", filters);
 	}
 
@@ -438,6 +471,6 @@ public class ReviewPane extends CallRespondSqlEvent {
 	@Override
 	protected void updateSelectors() {
 		PRSFrame.updateSelector(username, "Student", "Username");
-		PRSFrame.updateSelector(classSelector, "Teaches", "CNumber");
+		PRSFrame.updateSelector(courseSelector, "Teaches", "CNumber");
 	}
 }

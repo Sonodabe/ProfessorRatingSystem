@@ -20,6 +20,7 @@ SID            INTEGER NOT NULL,
 PID            INTEGER NOT NULL,
 Year            INTEGER NOT NULL,
 CID            varchar NOT NULL,
+University		varchar NOT NULL,
 Semester        varchar NOT NULL,
 Engagement        INTEGER,
 Fairness        INTEGER,
@@ -30,7 +31,7 @@ Comments        varchar,
 primary key(Semester,Year,SID,PID,CID),
 foreign key(SID) references Student(SID) ON DELETE CASCADE ON UPDATE CASCADE,
 foreign key(PID) references Professor(PID) ON DELETE CASCADE ON UPDATE CASCADE,
-foreign key(CID) references Course(CIdentifier) ON DELETE CASCADE ON UPDATE CASCADE
+foreign key(CID,University) references Course(CIdentifier,University) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Course (
@@ -42,10 +43,11 @@ foreign key(University) references University(UName) ON DELETE CASCADE ON UPDATE
 );
 
 CREATE TABLE Teaches (
-CNumber        varchar,
-PID            INTEGER,
-primary key(CNumber, PID),
-foreign key(CNumber) references Course(CIdentifier) ON DELETE CASCADE ON UPDATE CASCADE,
+CNumber        varchar not null,
+PID            INTEGER not null,
+University		varchar not null,
+primary key(CNumber, PID, University),
+foreign key(CNumber,University) references Course(CIdentifier,University) ON DELETE CASCADE ON UPDATE CASCADE,
 foreign key(PID) references Professor(PID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -75,11 +77,11 @@ VALUES ('Brandon Sonoda', 'Psychology', 'sonodabe', 'Miami University');
 INSERT INTO Course values('CSE 626', 'Computing in an Imaginary World', 'University of Kentucky');
 INSERT INTO Course values('ISA 412', 'Advanced System Analytics and Stuff', 'Miami University');
 
-INSERT INTO Teaches values('CSE 626', 2);
-INSERT INTO Teaches values('ISA 412', 1);
+INSERT INTO Teaches values('CSE 626', 2, 'University of Kentucky');
+INSERT INTO Teaches values('ISA 412', 1, 'Miami University');
 
-INSERT INTO Review values(1, 2, 2015, 'CSE 626', 'Spring', 3, 1, 5, 2, 2, 'Hard class');
-INSERT INTO Review values(3, 1, 2012, 'ISA 412', 'Fall', 2, 2, 4, 2, 1, 'Not my favorite class');
+INSERT INTO Review values(1, 2, 2015, 'CSE 626', 'University of Kentucky', 'Spring', 3, 1, 5, 2, 2, 'Hard class');
+INSERT INTO Review values(3, 1, 2012, 'ISA 412', 'Miami University', 'Fall', 2, 2, 4, 2, 1, 'Not my favorite class');
 
 
 
