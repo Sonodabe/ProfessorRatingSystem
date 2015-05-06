@@ -3,6 +3,7 @@ package data;
 public class Course {
 
 	private String cIdentifier, cName, university;
+	private int uniqueId;
 
 	/**
 	 * 
@@ -20,6 +21,15 @@ public class Course {
 		this.cIdentifier = s[0];
 		this.cName = s[1];
 		this.university = s[2];
+		this.setUniqueId(Integer.parseInt(s[3]));
+	}
+
+	public int getUniqueId() {
+		return uniqueId;
+	}
+
+	public void setUniqueId(int uniqueId) {
+		this.uniqueId = uniqueId;
 	}
 
 	/**

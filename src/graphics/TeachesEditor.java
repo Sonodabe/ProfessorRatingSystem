@@ -117,10 +117,18 @@ public class TeachesEditor extends CallRespondSqlEvent {
 	 */
 	@Override
 	protected void updateSelectors() {
+		initializeLists();
 		PRSFrame.updateSelector(courseSelector, "Course",
 				"CIdentifier", currentFilters);
 		PRSFrame.updateSelector(professorSelector, "Professor",
 				"PName");
+		updateProfIds("Professor", "PID");
+		attributes.add("CIdentifier");
+		attributes.add("CName");
+		attributes.add("University");
+		attributes.add("UniqueId");
+		populateArrayList(SQLDatabaseProxy.select("Course",
+				attributes, currentFilters));
 		// PRSFrame.updateSelector(universitySelector, "Teaches",
 		// "University", currentFilters);
 	}
@@ -154,9 +162,9 @@ public class TeachesEditor extends CallRespondSqlEvent {
 		initializeLists();
 		attributes.add("CNumber");
 		attributes.add("PID");
-		values.add(courseSelector.getSelectedItem());
+		values.add(availableCourses.get(
+				courseSelector.getSelectedIndex()).getUniqueId());
 		values.add(profIds.get(professorSelector.getSelectedIndex()));
-
 		if (SQLDatabaseProxy.insert("Teaches", attributes, values)) {
 			super.sqlChanged();
 		}
@@ -167,4 +175,45 @@ public class TeachesEditor extends CallRespondSqlEvent {
 		attributes = new ArrayList<String>();
 	}
 
+	/**
+	 * Updates the list of professorIds so that a professor can easily
+	 * be assigned to a class by matching the
+	 * <code>selectedIndex</code> of <code>professorSelector</code>
+	 * with the index in profIds.
+	 * 
+	 * @param tableName
+	 *            The name of the table to pull the information from
+	 *            in the database.
+	 * @param fieldName
+	 *            The the name of the attribute whose value will be
+	 *            retrieved.
+	 */
+	private void updateProfIds(String tableName, String fieldName) {
+		ArrayList<String[]> records;
+
+		ArrayList<String> atts = new ArrayList<String>();
+		atts.add(fieldName);
+
+		records = SQLDatabaseProxy.select(tableName, atts);
+
+		profIds.clear();
+
+		for (String[] arr : records) {
+			profIds.add(Integer.parseInt(arr[0]));
+		}
+	}
+
+	/*
+	 * Populates the back-end ArrayList of the Course data that is
+	 * available to be selected by the JCombBox. This allows for
+	 * easier use of update and delete statements.
+	 * 
+	 * @param select The results from the select query on the database
+	 */
+	private void populateArrayList(ArrayList<String[]> select) {
+		availableCourses.clear();
+		for (String[] s : select) {
+			availableCourses.add(new Course(s));
+		}
+	}
 }

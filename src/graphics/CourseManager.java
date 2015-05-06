@@ -143,14 +143,16 @@ public class CourseManager extends CallRespondSqlEvent {
 			addRowToCourses(updated.get(i));
 		}
 		atts.clear();
-		atts.add("CNumber");
+		atts.add("CIdentifier");
 		atts.add("PName");
 		atts.add("University");
 		ArrayList<AttributeValue> professorConditions = new ArrayList<AttributeValue>();
 		professorConditions.add(new AttributeValue("Teaches.PID",
 				"Professor.PID", AttributeValue.JOIN));
-		updated = SQLDatabaseProxy.select("Teaches,Professor", atts,
-				professorConditions);
+		professorConditions.add(new AttributeValue("Teaches.CNumber",
+				"Course.UniqueId", AttributeValue.JOIN));
+		updated = SQLDatabaseProxy.select("Teaches,Professor,Course",
+				atts, professorConditions);
 		for (int i = 0; i < updated.size(); i++) {
 			addRowToTeaches(updated.get(i));
 		}

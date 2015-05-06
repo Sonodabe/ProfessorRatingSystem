@@ -471,6 +471,7 @@ public class ReviewPane extends CallRespondSqlEvent {
 	@Override
 	protected void updateSelectors() {
 		PRSFrame.updateSelector(username, "Student", "Username");
-		PRSFrame.updateSelector(courseSelector, "Teaches", "CNumber");
+		PRSFrame.updateSelector(courseSelector, "Teaches",
+				"Distinct CNumber");
 	}
 }

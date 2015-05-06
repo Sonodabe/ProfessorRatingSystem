@@ -283,6 +283,7 @@ public class CourseEditor extends CallRespondSqlEvent {
 		attributes.add("CIdentifier");
 		attributes.add("CName");
 		attributes.add("University");
+		attributes.add("UniqueId");
 		populateArrayList(SQLDatabaseProxy.select("Course",
 				attributes, currentFilters));
 	}
