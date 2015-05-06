@@ -70,6 +70,7 @@ public class CourseManager extends CallRespondSqlEvent {
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = y;
+		gbc.insets = new Insets(0, 0, 100, 0);
 		add(courseScrollPane, gbc);
 
 		ce = new CourseEditor(this);
@@ -79,6 +80,7 @@ public class CourseManager extends CallRespondSqlEvent {
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = y;
+		gbc.insets = new Insets(0, 0, 100, 0);
 		add(ce, gbc);
 
 		y++;
@@ -86,6 +88,7 @@ public class CourseManager extends CallRespondSqlEvent {
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = y;
+		gbc.insets = new Insets(0, 0, 0, 0);
 		add(teachesScrollPane, gbc);
 
 		gbc.fill = GridBagConstraints.BOTH;

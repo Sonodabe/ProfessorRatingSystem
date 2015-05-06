@@ -133,7 +133,6 @@ public class CourseEditor extends CallRespondSqlEvent {
 		gbc.gridx = 1;
 		gbc.gridy = 5;
 		gbc.gridheight = 1;
-		gbc.insets = new Insets(0, 0, 100, 0);
 
 		add(submitCourse, gbc);
 
