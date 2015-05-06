@@ -16,7 +16,7 @@ public class AttributeValue {
 	public static final int LIKE = 6;
 
 	public static final int JOIN = 7;
-	
+
 	private static final String COMMA = ", ";
 	private static final String AND = " AND ";
 
@@ -24,17 +24,20 @@ public class AttributeValue {
 	public final Object value;
 	public final int comparison;
 
-	public AttributeValue(String attribute, Object value, int comparison) {
+	public AttributeValue(String attribute, Object value,
+			int comparison) {
 		if (attribute == null) {
-			throw new IllegalArgumentException(ErrorUtilities.EX_ATTRIBUTE_NULL);
+			throw new IllegalArgumentException(
+					ErrorUtilities.EX_ATTRIBUTE_NULL);
 		}
 
 		if (comparison == JOIN && value == null) {
-			throw new IllegalArgumentException(ErrorUtilities.EX_ATTRIBUTE_NULL);
+			throw new IllegalArgumentException(
+					ErrorUtilities.EX_ATTRIBUTE_NULL);
 		}
 
 		this.attribute = attribute;
-		this.value = value;
+		this.value = comparison != LIKE ? value : "%" + value + "%";
 		this.comparison = comparison;
 	}
 
@@ -84,14 +87,16 @@ public class AttributeValue {
 
 		if (value == null) {
 			ret.append(" NULL");
-		} else {
+		}
+		else {
 			ret.append(" ?");
 		}
 
 		return ret.toString();
 	}
 
-	public static String list(ArrayList<AttributeValue> arr, String delimeter) {
+	public static String list(ArrayList<AttributeValue> arr,
+			String delimeter) {
 		if (arr == null || arr.isEmpty())
 			return "";
 
