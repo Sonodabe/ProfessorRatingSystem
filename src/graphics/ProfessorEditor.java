@@ -197,6 +197,7 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 			switch (operationSelector.getSelectedIndex()) {
 			case ADD:
 				buildAdd();
+				break;
 			case MODIFY:
 				buildModify();
 				// TODO SQL staements

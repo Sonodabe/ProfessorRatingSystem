@@ -425,6 +425,7 @@ public class ReviewPane extends CallRespondSqlEvent {
 		}
 	}
 
+	// TODO Rethink how this works w/o student-university relation
 	protected void refreshProfList() {
 		ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
 
@@ -442,6 +443,7 @@ public class ReviewPane extends CallRespondSqlEvent {
 	/**
 	 * 
 	 */
+	// TODO Rethink how this works w/o student-university relation
 	protected void refreshUniversityList() {
 		ArrayList<AttributeValue> courseFilt = new ArrayList<AttributeValue>();
 		courseFilt.add(new AttributeValue("CIdentifier",
@@ -455,10 +457,9 @@ public class ReviewPane extends CallRespondSqlEvent {
 	 */
 	protected void refreshCourseList() {
 		ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
+		// TODO get student background data
 		filters.add(new AttributeValue("SID", username
 				.getSelectedIndex() + 1));
-		filters.add(new AttributeValue("Student.University",
-				"Course.University", AttributeValue.JOIN));
 		PRSFrame.updateSelector(courseSelector, "Student,Course",
 				"CIdentifier", filters);
 	}

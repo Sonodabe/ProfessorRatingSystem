@@ -20,7 +20,6 @@ import database.SQLDatabaseProxy;
 public class StudentCreator extends CallRespondSqlEvent {
 
 	private JTextField major, studentName, userName;
-	private JComboBox<String> universitySelector;
 	private JButton submit;
 
 	private static final int ADD = 0;
@@ -39,68 +38,53 @@ public class StudentCreator extends CallRespondSqlEvent {
 		submit = new JButton("Submit");
 		submit.addActionListener(new ButtonResponder());
 		setLayout(new GridBagLayout());
-		universitySelector = new JComboBox<String>();
-		PRSFrame.updateSelector(universitySelector, "University",
-				"UName");
 		userName = new JTextField();
 
 		GridBagConstraints gbc = new GridBagConstraints();
-
+		int y = 0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 2;
+		gbc.gridy = y;
 
 		add(new JLabel("Student Name: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 2;
+		gbc.gridy = y++;
 
 		add(studentName, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 3;
+		gbc.gridy = y;
 		add(new JLabel("User Name: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 3;
+		gbc.gridy = y++;
 		add(userName, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 4;
-		add(new JLabel("University: "), gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 4;
-		add(universitySelector, gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = 5;
+		gbc.gridy = y;
 		add(new JLabel("Major :"), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 5;
+		gbc.gridy = y++;
 
 		add(major, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = 6;
+		gbc.gridy = y;
 		gbc.gridwidth = 2;
 
 		add(submit, gbc);
@@ -111,9 +95,6 @@ public class StudentCreator extends CallRespondSqlEvent {
 
 		public void actionPerformed(ActionEvent e) {
 			buildAdd();
-			if (PRSFrame.JDBC) {
-				// TODO Handle null input
-			}
 		}
 
 	}
@@ -140,9 +121,6 @@ public class StudentCreator extends CallRespondSqlEvent {
 			attributes.add("Major");
 			values.add(major.getText());
 		}
-		attributes.add("University");
-		values.add(universitySelector.getItemAt(universitySelector
-				.getSelectedIndex()));
 
 		if (SQLDatabaseProxy.insert("Student", attributes, values)) {
 			super.sqlChanged();

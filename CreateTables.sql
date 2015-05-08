@@ -10,7 +10,6 @@ CREATE TABLE Student(
 SName    varchar NOT NULL,
 Major        varchar,
 Username    varchar UNIQUE,
-University    varchar NOT NULL,
 SID        INTEGER PRIMARY KEY,
 foreign key(University) references University(UName) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -66,12 +65,12 @@ VALUES ('Eric Smith', 'Big Data', 'Received his PhD from Harvard', 19);
 INSERT INTO Professor (PName, ResearchArea, Bio, YearsWorked) 
 VALUES ('Max Rowell', 'Computer Architecture', 'Researching at Miami University', 8);
 
-INSERT INTO Student (SName, Major, Username, University)
-VALUES ('Doug Blase', 'Sports Management', 'blasedd', 'University of Kentucky');
-INSERT INTO Student (SName, Major, Username, University)
-VALUES ('Samantha Wolf', 'Mathematics', 'wolfsp', 'Xavier University');
-INSERT INTO Student (SName, Major, Username, University)
-VALUES ('Brandon Sonoda', 'Psychology', 'sonodabe', 'Miami University');
+INSERT INTO Student (SName, Major, Username)
+VALUES ('Doug Blase', 'Sports Management', 'blasedd');
+INSERT INTO Student (SName, Major, Username)
+VALUES ('Samantha Wolf', 'Mathematics', 'wolfsp');
+INSERT INTO Student (SName, Major, Username)
+VALUES ('Brandon Sonoda', 'Psychology', 'sonodabe');
 
 INSERT INTO Course(CIdentifier, CName, University) values('CSE 626', 'Computing in an Imaginary World', 'University of Kentucky');
 INSERT INTO Course(CIdentifier, CName, University) values('ISA 412', 'Advanced System Analytics and Stuff', 'Miami University');
