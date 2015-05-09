@@ -17,7 +17,8 @@ public class CommentEditor extends JPanel {
 	private JButton submit;
 	private ViewReviewTab parent;
 
-	public CommentEditor(boolean admin) {
+	public CommentEditor(boolean admin, ViewReviewTab vrt) {
+		parent = vrt;
 		setLayout(new GridLayout(3, 0));
 		commentsEditor = new JTextArea();
 		if (admin) {
@@ -35,7 +36,9 @@ public class CommentEditor extends JPanel {
 	}
 
 	public void populateComments(String text) {
-		commentsEditor.setText(text);
+		if (text != null) {
+			commentsEditor.setText(text);
+		}
 	}
 
 	private class ButtonResponder implements ActionListener {

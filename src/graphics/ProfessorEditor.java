@@ -200,10 +200,9 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 				break;
 			case MODIFY:
 				buildModify();
-				// TODO SQL staements
 				break;
 			case DELETE:
-				// TODO SQL staements
+				buildDelete();
 				break;
 			}
 		}
@@ -304,6 +303,12 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 		}
 	}
 
+	/**
+	 * 
+	 */
+	protected void buildDelete() {
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -312,7 +317,7 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 	@Override
 	protected void updateSelectors() {
 		PRSFrame.updateSelector(professorSelector, "Professor",
-				"PName", currentFilters);
+				"PName,PID", currentFilters);
 		initializeLists();
 		attributes.add("PID");
 		attributes.add("PName");

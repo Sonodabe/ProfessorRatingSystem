@@ -363,7 +363,10 @@ public class ReviewPane extends CallRespondSqlEvent {
 		else {
 			values.add(null);
 		}
-		SQLDatabaseProxy.insert("Review", attributes, values);
+		if (SQLDatabaseProxy.insert("Review", attributes, values)) {
+			sqlChanged();
+			comments.setText("");
+		}
 	}
 
 	/**

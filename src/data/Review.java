@@ -45,12 +45,12 @@ public class Review {
 		cid = Integer.parseInt(s[2]);
 		year = Integer.parseInt(s[3]);
 		semester = s[4];
-		engagement = Integer.parseInt(s[5]);
-		fairness = Integer.parseInt(s[6]);
-		difficultyWork = Integer.parseInt(s[7]);
-		easeLearning = Integer.parseInt(s[8]);
-		teachingStyle = Integer.parseInt(s[9]);
-		comments = s[10];
+		engagement = s[5] == null ? 0 : Integer.parseInt(s[5]);
+		fairness = s[6] == null ? 0 : Integer.parseInt(s[6]);
+		difficultyWork = s[7] == null ? 0 : Integer.parseInt(s[7]);
+		easeLearning = s[8] == null ? 0 : Integer.parseInt(s[8]);
+		teachingStyle = s[9] == null ? 0 : Integer.parseInt(s[9]);
+		comments = /* s[10] == null ? "" : */s[10];
 
 	}
 

@@ -77,14 +77,23 @@ public class PRSFrame extends JFrame {
 		ArrayList<String[]> records;
 
 		ArrayList<String> atts = new ArrayList<String>();
-		atts.add(fieldName);
+		String[] fields = fieldName.split(",");
+		for (String s : fields) {
+			atts.add(s);
+		}
 
 		records = SQLDatabaseProxy.select(tableName, atts, filters);
 
 		comboBox.removeAllItems();
 
 		for (String[] arr : records) {
-			comboBox.addItem(arr[0]);
+			if (arr.length == 1) {
+				comboBox.addItem(arr[0]);
+			}
+			else {
+				comboBox.addItem(arr[0] + ", " + arr[1]);
+			}
+
 		}
 	}
 }

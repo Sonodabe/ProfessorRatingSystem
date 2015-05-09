@@ -7,7 +7,8 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.*;
 import javax.swing.table.DefaultTableModel;
 import data.Review;
-import database.SQLDatabaseProxy;
+import database.*;
+import database.AttributeValue;
 
 /**
  * @author Doug Blase
@@ -65,17 +66,23 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 
 		// add(scrollPane);
 
-		vrp = new ViewReviewPane(this);
+		vrp = new ViewReviewPane(this, isAdmin);
 		add(vrp);
 		add(scrollPane);
-		ce = new CommentEditor(admin);
+		ce = new CommentEditor(admin, this);
 		add(ce);
-
+		addPanel(this);
+		updateSelectors();
 	}
 
 	private void addRow(String[] row) {
 
 		Vector<Object> rowData = new Vector<Object>();
+		for (int i = 0; i < row.length; i++) {
+			if (row[i] != null && row[i].equals("0")) {
+				row[i] = "N/A";
+			}
+		}
 		rowData.add(row[0]);
 		rowData.add(row[1]);
 		rowData.add(row[2]);
@@ -106,7 +113,10 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 		public void valueChanged(ListSelectionEvent e) {
 			if (dataTable.getSelectedRow() != -1) {
 				ce.populateComments((String) dataTable.getModel()
-						.getValueAt(dataTable.getSelectedRow(), 10));
+						.getValueAt(
+								dataTable.getSelectedRow(),
+								isAdmin ? columnNamesAdmin.length - 1
+										: columnNamesUser.length - 1));
 			}
 			else {
 				ce.populateComments("");
@@ -119,7 +129,18 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 	 * @param trim
 	 */
 	public void updateComment(String trim) {
-		// TODO SOMETHING
+		ArrayList<AttributeValue> atts = new ArrayList<AttributeValue>();
+		atts.add(new AttributeValue("Comments", trim));
+		ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
+		Review r = reviews.get(dataTable.getSelectedRow());
+		filters.add(new AttributeValue("SID", r.getSid()));
+		filters.add(new AttributeValue("PID", r.getPid()));
+		filters.add(new AttributeValue("CID", r.getCid()));
+		filters.add(new AttributeValue("Year", r.getYear()));
+		filters.add(new AttributeValue("Semester", r.getSemester()));
+		if (SQLDatabaseProxy.update("Review", atts, filters) > 0) {
+			sqlChanged();
+		}
 
 	}
 
@@ -130,9 +151,11 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 	 */
 	@Override
 	protected void updateSelectors() {
+		model.setRowCount(0);
+		reviews.clear();
 		ArrayList<String> atts = new ArrayList<String>();
-		atts.add("SID");
-		atts.add("PID");
+		atts.add("Distinct Review.SID");
+		atts.add("Review.PID");
 		atts.add("CID");
 		atts.add("Year");
 		atts.add("Semester");
@@ -143,13 +166,66 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 		atts.add("TeachingStyle");
 		atts.add("Comments");
 
-		ArrayList<String[]> updated = SQLDatabaseProxy.select(
-				"Review", atts, currentFilters);
+		ArrayList<String[]> updated;
+		if (currentFilters.isEmpty()) {
+			updated = SQLDatabaseProxy.select("Review", atts);
+		}
+		else {
+			updated = SQLDatabaseProxy.select(
+					"Review,Course,Professor", atts, currentFilters);
+		}
 
 		for (int i = 0; i < updated.size(); i++) {
 			reviews.add(new Review(updated.get(i)));
-			// addRow(updated.get(i));
 		}
 
+		atts.clear();
+		updated.clear();
+		atts.add("PName");
+		atts.add("CIdentifier");
+		for (Review r : reviews) {
+			updated.clear();
+			ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
+			filters.add(new AttributeValue("PID", r.getPid()));
+			filters.add(new AttributeValue("UniqueId", r.getCid()));
+			updated = SQLDatabaseProxy.select("Professor,Course",
+					atts, filters);
+			String values[] = new String[isAdmin ? 11 : 10];
+			int x = 0;
+			if (isAdmin) {
+				values[x++] = "" + r.getSid();
+			}
+			values[x++] = updated.get(0)[0];
+			values[x++] = updated.get(0)[1];
+			values[x++] = "" + r.getYear();
+			values[x++] = r.getSemester();
+			values[x++] = "" + r.getEngagement();
+			values[x++] = "" + r.getFairness();
+			values[x++] = "" + r.getDifficultyWork();
+			values[x++] = "" + r.getEaseLearning();
+			String teachingStyleConversion;
+			switch (r.getTeachingStyle()) {
+			case 1:
+				teachingStyleConversion = "Entirely Lab";
+				break;
+			case 2:
+				teachingStyleConversion = "Mostly Lab";
+				break;
+			case 3:
+				teachingStyleConversion = "Lab/Lecture";
+				break;
+			case 4:
+				teachingStyleConversion = "Mostly Lecture";
+				break;
+			case 5:
+				teachingStyleConversion = "Entirely Lecture";
+				break;
+			default:
+				teachingStyleConversion = "N/A";
+			}
+			values[x++] = teachingStyleConversion;
+			values[x++] = r.getComments();
+			addRow(values);
+		}
 	}
 }
