@@ -31,7 +31,7 @@ public class PRSFrame extends JFrame {
 	 * Used to initialize all of the settings for a PRSFrame
 	 */
 	private void setup() {
-		vrt = new ViewReviewTab();
+		vrt = new ViewReviewTab(isAdmin);
 		if (isAdmin) {
 			adminTabs = new JTabbedPane();
 			sm = new StudentManager();

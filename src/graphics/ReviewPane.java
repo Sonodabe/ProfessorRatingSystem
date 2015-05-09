@@ -33,12 +33,13 @@ public class ReviewPane extends CallRespondSqlEvent {
 	ArrayList<Object> values;
 	ArrayList<String> attributes;
 
+	// ArrayList<Student> students;
+
 	public ReviewPane(ReviewTab rt) {
 		parent = rt;
 		submit = new JButton("Submit");
 		submit.addActionListener(new ButtonResponder());
 		username = new JComboBox<String>();
-		username.addItemListener(new ItemResponder());
 		courseSelector = new JComboBox<String>();
 		courseSelector.addItemListener(new ItemResponder());
 		professorSelector = new JComboBox<String>();
@@ -325,15 +326,15 @@ public class ReviewPane extends CallRespondSqlEvent {
 		initializeLists();
 
 		attributes.add("SID");
-		// since DB is 1 based indexing
-		values.add(username.getSelectedIndex() + 1);
+
+		values.add(getStudentId());
 
 		attributes.add("PID");
 		values.add(getProfessorId(professorSelector
 				.getItemAt(professorSelector.getSelectedIndex())));
 
 		attributes.add("CID");
-		values.add(courseSelector.getSelectedItem());
+		values.add(getCourse());
 
 		attributes.add("Semester");
 		values.add(semester.getSelectedItem());
@@ -366,21 +367,50 @@ public class ReviewPane extends CallRespondSqlEvent {
 	}
 
 	/**
+	 * @return
+	 */
+	private Integer getStudentId() {
+		ArrayList<String> atts = new ArrayList<String>();
+		atts.add("SID");
+		ArrayList<AttributeValue> filter = new ArrayList<AttributeValue>();
+		filter.add(new AttributeValue("Username", username
+				.getSelectedItem()));
+		ArrayList<String[]> results = SQLDatabaseProxy.select(
+				"Student", attributes, filter);
+		return Integer.parseInt((results.get(0))[0]);
+	}
+
+	/**
+	 * @return
+	 */
+	private Integer getCourse() {
+		ArrayList<String> atts = new ArrayList<String>();
+		atts.add("UniqueId");
+		ArrayList<AttributeValue> filter = new ArrayList<AttributeValue>();
+		filter.add(new AttributeValue("CIdentifier", courseSelector
+				.getSelectedItem()));
+		filter.add(new AttributeValue("University",
+				universitySelector.getSelectedItem()));
+		ArrayList<String[]> results = SQLDatabaseProxy.select(
+				"Course", atts, filter);
+		return Integer.parseInt((results.get(0))[0]);
+	}
+
+	/**
 	 * @param itemAt
 	 * @return
 	 */
 	private Integer getProfessorId(String itemAt) {
 		ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
 		filters.add(new AttributeValue("PName", itemAt));
-		filters.add(new AttributeValue("Course.CIdentifier",
-				courseSelector.getItemAt(courseSelector
-						.getSelectedIndex())));
 		filters.add(new AttributeValue("Teaches.PID",
 				"Professor.PID", AttributeValue.JOIN));
+		filters.add(new AttributeValue("CNumber", getCourse()));
+
 		ArrayList<String> atts = new ArrayList<String>();
 		atts.add("Professor.PID");
 		ArrayList<String[]> results = SQLDatabaseProxy.select(
-				"Professor,Course,Teaches", atts, filters);
+				"Professor,Teaches", atts, filters);
 		return Integer.parseInt((results.get(0))[0]);
 	}
 
@@ -410,12 +440,6 @@ public class ReviewPane extends CallRespondSqlEvent {
 					refreshUniversityList();
 				}
 			}
-			else if (e.getSource() == username) {
-				if (username.getItemCount() > 0) {
-					refreshCourseList();
-					// refreshProfList();
-				}
-			}
 			else if (e.getSource() == universitySelector) {
 				if (universitySelector.getItemCount() > 0) {
 					refreshProfList();
@@ -425,13 +449,10 @@ public class ReviewPane extends CallRespondSqlEvent {
 		}
 	}
 
-	// TODO Rethink how this works w/o student-university relation
 	protected void refreshProfList() {
 		ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
 
-		filters.add(new AttributeValue("Teaches.CNumber",
-				courseSelector.getItemAt(courseSelector
-						.getSelectedIndex()), AttributeValue.EQUAL));
+		filters.add(new AttributeValue("CNumber", getCourse()));
 
 		filters.add(new AttributeValue("Teaches.PID",
 				"Professor.PID", AttributeValue.JOIN));
@@ -443,25 +464,12 @@ public class ReviewPane extends CallRespondSqlEvent {
 	/**
 	 * 
 	 */
-	// TODO Rethink how this works w/o student-university relation
 	protected void refreshUniversityList() {
 		ArrayList<AttributeValue> courseFilt = new ArrayList<AttributeValue>();
 		courseFilt.add(new AttributeValue("CIdentifier",
 				courseSelector.getSelectedItem()));
 		PRSFrame.updateSelector(universitySelector, "Course",
 				"University", courseFilt);
-	}
-
-	/**
-	 * 
-	 */
-	protected void refreshCourseList() {
-		ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
-		// TODO get student background data
-		filters.add(new AttributeValue("SID", username
-				.getSelectedIndex() + 1));
-		PRSFrame.updateSelector(courseSelector, "Student,Course",
-				"CIdentifier", filters);
 	}
 
 	/*
@@ -472,7 +480,10 @@ public class ReviewPane extends CallRespondSqlEvent {
 	@Override
 	protected void updateSelectors() {
 		PRSFrame.updateSelector(username, "Student", "Username");
-		PRSFrame.updateSelector(courseSelector, "Teaches",
-				"Distinct CNumber");
+		ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
+		filters.add(new AttributeValue("Teaches.CNumber",
+				"Course.UniqueId", AttributeValue.JOIN));
+		PRSFrame.updateSelector(courseSelector, "Course,Teaches",
+				"Distinct CIdentifier");
 	}
 }

@@ -162,8 +162,7 @@ public class TeachesEditor extends CallRespondSqlEvent {
 		initializeLists();
 		attributes.add("CNumber");
 		attributes.add("PID");
-		values.add(availableCourses.get(
-				courseSelector.getSelectedIndex()).getUniqueId());
+		values.add(getCourse());
 		values.add(profIds.get(professorSelector.getSelectedIndex()));
 		if (SQLDatabaseProxy.insert("Teaches", attributes, values)) {
 			super.sqlChanged();
@@ -173,6 +172,19 @@ public class TeachesEditor extends CallRespondSqlEvent {
 	private void initializeLists() {
 		values = new ArrayList<Object>();
 		attributes = new ArrayList<String>();
+	}
+
+	private Integer getCourse() {
+		ArrayList<String> atts = new ArrayList<String>();
+		atts.add("UniqueId");
+		ArrayList<AttributeValue> filter = new ArrayList<AttributeValue>();
+		filter.add(new AttributeValue("CIdentifier", courseSelector
+				.getSelectedItem()));
+		filter.add(new AttributeValue("University",
+				universitySelector.getSelectedItem()));
+		ArrayList<String[]> results = SQLDatabaseProxy.select(
+				"Course", atts, filter);
+		return Integer.parseInt((results.get(0))[0]);
 	}
 
 	/**
