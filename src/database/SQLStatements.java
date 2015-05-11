@@ -107,7 +107,7 @@ public class SQLStatements {
 				statement += AttributeValue.where(filter);
 			}
 			
-			if (groupBy != null && !groupBy.trim().empty()) {
+			if (groupBy != null && !groupBy.trim().isEmpty()) {
 				statement += " GROUP BY" + groupBy;
 			}
 
