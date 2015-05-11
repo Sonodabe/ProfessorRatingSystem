@@ -83,7 +83,7 @@ public class SQLStatements {
 	 *         attributes
 	 */
 	public static PreparedStatement select(Connection dbc,
-			ArrayList<String> attributes, String table,
+			ArrayList<String> attributes, String table, String groupBy,
 			ArrayList<AttributeValue> filter) {
 		if (dbc == null || attributes == null || attributes.isEmpty()) {
 			return null;
@@ -105,6 +105,10 @@ public class SQLStatements {
 
 			if (filter != null && !filter.isEmpty()) {
 				statement += AttributeValue.where(filter);
+			}
+			
+			if (groupBy != null && !groupBy.trim().empty()) {
+				statement += " GROUP BY" + groupBy;
 			}
 
 			PreparedStatement pstmt = dbc.prepareStatement(statement);

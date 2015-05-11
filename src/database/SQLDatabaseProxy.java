@@ -55,8 +55,15 @@ public class SQLDatabaseProxy {
 			ArrayList<String> attributes,
 			ArrayList<AttributeValue> filter) {
 
+		return select(table, attributes, null, filter);
+	}
+	
+	public static ArrayList<String[]> select(String table,
+			ArrayList<String> attributes, String groupBy,
+			ArrayList<AttributeValue> filter) {
+
 		PreparedStatement pstmt = SQLStatements.select(dbc,
-				attributes, table, filter);
+				attributes, table, groupBy, filter);
 
 		try {
 			ArrayList<String[]> results = new ArrayList<String[]>();
