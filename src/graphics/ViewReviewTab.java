@@ -76,7 +76,9 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 	}
 
 	private void addRow(String[] row) {
-
+		// TODO FIX SOME STUFF...probably have a number of different
+		// models, so that group by doesn't show columns that wouldn't
+		// be averaged...
 		Vector<Object> rowData = new Vector<Object>();
 		for (int i = 0; i < row.length; i++) {
 			if (row[i] != null && row[i].equals("0")) {
@@ -93,7 +95,7 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 		rowData.add(row[7]);
 		rowData.add(row[8]);
 		rowData.add(row[9]);
-		if (isAdmin) {
+		if (isAdmin && row.length == 11) {
 			rowData.add(row[10]);
 		}
 		model.addRow(rowData);
@@ -159,16 +161,18 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 		atts.add("CID");
 		atts.add("Year");
 		atts.add("Semester");
-		atts.add("Engagement");
-		atts.add("Fairness");
-		atts.add("DifficultyWork");
-		atts.add("EaseLearning");
-		atts.add("TeachingStyle");
-		atts.add("Comments");
+		atts.add("AVG(Engagement)");
+		atts.add("AVG(Fairness)");
+		atts.add("AVG(DifficultyWork)");
+		atts.add("AVG(EaseLearning)");
+		atts.add("AVG(TeachingStyle)");
+		// atts.add("Comments");
 
 		ArrayList<String[]> updated;
+		// TODO FIX SOME STUFF
 		if (currentFilters.isEmpty()) {
-			updated = SQLDatabaseProxy.select("Review", atts);
+			updated = SQLDatabaseProxy.select("Review", atts, "PID",
+					null);
 		}
 		else {
 			updated = SQLDatabaseProxy.select(

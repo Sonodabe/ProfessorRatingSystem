@@ -57,7 +57,7 @@ public class SQLDatabaseProxy {
 
 		return select(table, attributes, null, filter);
 	}
-	
+
 	public static ArrayList<String[]> select(String table,
 			ArrayList<String> attributes, String groupBy,
 			ArrayList<AttributeValue> filter) {
