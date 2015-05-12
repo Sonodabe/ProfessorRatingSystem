@@ -5,6 +5,7 @@ package graphics;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.*;
 import data.Student;
@@ -122,8 +123,14 @@ public class StudentCreator extends CallRespondSqlEvent {
 			values.add(major.getText());
 		}
 
-		if (SQLDatabaseProxy.insert("Student", attributes, values)) {
-			super.sqlChanged();
+		try {
+			if (SQLDatabaseProxy
+					.insert("Student", attributes, values)) {
+				super.sqlChanged();
+			}
+		}
+		catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
 	}
 

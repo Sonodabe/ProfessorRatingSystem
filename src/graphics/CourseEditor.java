@@ -5,6 +5,7 @@ package graphics;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.*;
 import data.Course;
@@ -196,11 +197,12 @@ public class CourseEditor extends CallRespondSqlEvent {
 	protected void buildModify() {
 		ArrayList<AttributeValue> info = new ArrayList<AttributeValue>();
 		ArrayList<AttributeValue> filter = new ArrayList<AttributeValue>();
-
-		info.add(new AttributeValue("CIdentifier", courseIdentifier
-				.getText().trim()));
-		info.add(new AttributeValue("CName", courseName.getText()
-				.trim()));
+		String cidentifer = courseIdentifier.getText().trim();
+		info.add(new AttributeValue("CIdentifier", cidentifer
+				.isEmpty() ? null : cidentifer));
+		String cname = courseName.getText().trim();
+		info.add(new AttributeValue("CName", cname.isEmpty() ? null
+				: cname));
 		info.add(new AttributeValue("University", universitySelector
 				.getSelectedItem()));
 
@@ -211,9 +213,14 @@ public class CourseEditor extends CallRespondSqlEvent {
 				.get(courseSelector.getSelectedIndex())
 				.getUniversity()));
 
-		if (SQLDatabaseProxy.update("Course", info, filter) > 0) {
+		try {
+			SQLDatabaseProxy.update("Course", info, filter);
 			operationSelector.setSelectedIndex(ADD);
 			sqlChanged();
+
+		}
+		catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
 
 	}
@@ -248,9 +255,13 @@ public class CourseEditor extends CallRespondSqlEvent {
 		values.add(universitySelector.getItemAt(universitySelector
 				.getSelectedIndex()));
 
-		if (SQLDatabaseProxy.insert("Course", attributes, values)) {
+		try {
+			SQLDatabaseProxy.insert("Course", attributes, values);
 			super.sqlChanged();
 			clearTextFields();
+		}
+		catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
 
 	}
@@ -308,12 +319,12 @@ public class CourseEditor extends CallRespondSqlEvent {
 		atts.add(fieldName);
 
 		records = SQLDatabaseProxy.select(tableName, atts);
-
 		profIds.clear();
 
 		for (String[] arr : records) {
 			profIds.add(Integer.parseInt(arr[0]));
 		}
+
 	}
 
 	/**

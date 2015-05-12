@@ -2,6 +2,7 @@ package graphics;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.util.*;
 import javax.swing.*;
 import database.*;
@@ -363,9 +364,14 @@ public class ReviewPane extends CallRespondSqlEvent {
 		else {
 			values.add(null);
 		}
-		if (SQLDatabaseProxy.insert("Review", attributes, values)) {
-			sqlChanged();
-			comments.setText("");
+		try {
+			if (SQLDatabaseProxy.insert("Review", attributes, values)) {
+				sqlChanged();
+				comments.setText("");
+			}
+		}
+		catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
 	}
 

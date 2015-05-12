@@ -1,5 +1,8 @@
 package data;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 public class Review {
 
 	private int sid, year, cid, engagement, fairness, difficultyWork,
@@ -44,18 +47,21 @@ public class Review {
 		pid = Integer.parseInt(s[1]);
 		cid = Integer.parseInt(s[2]);
 		year = Integer.parseInt(s[3]);
+		DecimalFormat df = new DecimalFormat("#");
+		df.setRoundingMode(RoundingMode.HALF_UP);
 		semester = s[4];
-		engagement = s[5] == null ? 0 : (int) Double
-				.parseDouble(s[5]);
-		fairness = s[6] == null ? 0 : (int) Double.parseDouble(s[6]);
-		difficultyWork = s[7] == null ? 0 : (int) Double
-				.parseDouble(s[7]);
-		easeLearning = s[8] == null ? 0 : (int) Double
-				.parseDouble(s[8]);
-		teachingStyle = s[9] == null ? 0 : (int) Double
-				.parseDouble(s[9]);
+		engagement = s[5] == null ? 0 : Integer.parseInt(df
+				.format(Double.parseDouble(s[5])));
+		fairness = s[6] == null ? 0 : Integer.parseInt(df
+				.format(Double.parseDouble(s[6])));
+		difficultyWork = s[7] == null ? 0 : Integer.parseInt(df
+				.format(Double.parseDouble(s[7])));
+		easeLearning = s[8] == null ? 0 : Integer.parseInt(df
+				.format(Double.parseDouble(s[8])));
+		teachingStyle = s[9] == null ? 0 : Integer.parseInt(df
+				.format(Double.parseDouble(s[9])));
 		if (s.length == 11)
-			comments = /* s[10] == null ? "" : */s[10];
+			comments = s[10];
 
 	}
 

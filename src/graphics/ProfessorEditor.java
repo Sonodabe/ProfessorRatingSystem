@@ -5,6 +5,7 @@ package graphics;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.*;
 import data.Professor;
@@ -272,24 +273,33 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 		}
 		attributes.add("YearsWorked");
 		values.add(yearsWorked.getValue());
-		if (SQLDatabaseProxy.insert("Professor", attributes, values)) {
-			// Notify all JPanels that the database has changed in
-			// some way.
-			super.sqlChanged();
-			clearFields();
+		try {
+			if (SQLDatabaseProxy.insert("Professor", attributes,
+					values)) {
+
+				super.sqlChanged();
+				clearFields();
+			}
+		}
+		catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
 	}
 
 	/**
-	 * 
+	 * Builds a modify request to update a professor's information
 	 */
 	protected void buildModify() {
 		ArrayList<AttributeValue> info = new ArrayList<AttributeValue>();
-		info.add(new AttributeValue("PName", professorName.getText()
-				.trim()));
-		info.add(new AttributeValue("ResearchArea", researchArea
-				.getText().trim()));
-		info.add(new AttributeValue("Bio", bio.getText().trim()));
+		String pname = professorName.getText().trim();
+		info.add(new AttributeValue("PName", pname.isEmpty() ? null
+				: pname));
+		String researchAreaStr = researchArea.getText().trim();
+		info.add(new AttributeValue("ResearchArea", researchAreaStr
+				.isEmpty() ? null : researchAreaStr));
+		String bioStr = bio.getText().trim();
+		info.add(new AttributeValue("Bio", bioStr.isEmpty() ? null
+				: bioStr));
 		info.add(new AttributeValue("YearsWorked", yearsWorked
 				.getValue()));
 
@@ -297,9 +307,14 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 		filter.add(new AttributeValue("PID", availableProfessors.get(
 				professorSelector.getSelectedIndex()).getId()));
 
-		if (SQLDatabaseProxy.update("Professor", info, filter) > 0) {
-			operationSelector.setSelectedIndex(ADD);
-			sqlChanged();
+		try {
+			if (SQLDatabaseProxy.update("Professor", info, filter) > 0) {
+				operationSelector.setSelectedIndex(ADD);
+				sqlChanged();
+			}
+		}
+		catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
 	}
 
@@ -307,6 +322,18 @@ public class ProfessorEditor extends CallRespondSqlEvent {
 	 * 
 	 */
 	protected void buildDelete() {
+		ArrayList<AttributeValue> condition = new ArrayList<AttributeValue>();
+		condition.add(new AttributeValue("PID", availableProfessors
+				.get(professorSelector.getSelectedIndex()).getId()));
+		try {
+			SQLDatabaseProxy.delete("Professor", condition);
+			clearFields();
+			operationSelector.setSelectedItem("Add");
+			sqlChanged();
+		}
+		catch (SQLException e1) {
+			JOptionPane.showMessageDialog(null, e1.getMessage());
+		}
 	}
 
 	/*

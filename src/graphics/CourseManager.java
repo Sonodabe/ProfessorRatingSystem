@@ -242,7 +242,6 @@ public class CourseManager extends CallRespondSqlEvent {
 
 			filter.add(new AttributeValue("University",
 					universityFilter.getSelectedItem()));
-			// TODO Consider order by/group by
 
 		}
 		if (!courseIdFilter.getText().trim().isEmpty()) {

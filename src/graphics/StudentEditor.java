@@ -5,6 +5,7 @@ package graphics;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.*;
 import database.*;
@@ -76,8 +77,14 @@ public class StudentEditor extends CallRespondSqlEvent {
 			condition.add(new AttributeValue("SID", Integer
 					.parseInt((String) studentSelector
 							.getSelectedItem())));
-			SQLDatabaseProxy.delete("Student", condition);
-			sqlChanged();
+			try {
+				SQLDatabaseProxy.delete("Student", condition);
+				sqlChanged();
+			}
+			catch (SQLException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage());
+			}
+
 		}
 	}
 

@@ -121,6 +121,77 @@ public class AttributeValue {
 	}
 
 	public static String set(ArrayList<AttributeValue> arr) {
-		return String.format(" SET %s", list(arr, COMMA));
+		return String.format(" SET %s", listUpdate(arr, COMMA));
+	}
+
+	public static String listUpdate(ArrayList<AttributeValue> arr,
+			String delimeter) {
+		if (arr == null || arr.isEmpty())
+			return "";
+
+		StringBuilder ret = new StringBuilder();
+
+		ret.append(" ");
+		ret.append(arr.get(0).toStringUpdate());
+
+		for (int i = 1; i < arr.size(); i++) {
+			ret.append(delimeter);
+			ret.append(arr.get(i).toString());
+
+		}
+
+		ret.append(" ");
+
+		return ret.toString();
+	}
+
+	public String toStringUpdate() {
+		if (comparison == JOIN) {
+			return String.format("%s = %s", attribute, value);
+		}
+
+		StringBuilder ret = new StringBuilder();
+
+		ret.append(attribute);
+		ret.append(" ");
+
+		switch (comparison) {
+		case EQUAL:
+			ret.append("=");
+			break;
+
+		case NOT_EQUAL:
+			ret.append("<>");
+			break;
+
+		case GREATER:
+			ret.append(">");
+			break;
+
+		case GREATER_OR_EQUAL:
+			ret.append(">=");
+			break;
+
+		case LESS:
+			ret.append("<");
+			break;
+
+		case LESS_OR_EQUAL:
+			ret.append("<=");
+			break;
+
+		case LIKE:
+			ret.append("LIKE");
+			break;
+		}
+
+		if (value == null) {
+			ret.append(" NULL");
+		}
+		else {
+			ret.append(" ?");
+		}
+
+		return ret.toString();
 	}
 }

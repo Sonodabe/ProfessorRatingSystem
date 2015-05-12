@@ -1,6 +1,7 @@
 package graphics;
 
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -20,28 +21,29 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 	private JTable dataTable;
 	private DefaultTableModel model;
 	private ViewReviewPane vrp;
-	private String columnNamesAdmin[] = { "SID", "PID", "CID",
+	private String columnNamesAdmin[] = { "SID", "Professor", "CID",
 			"Year", "Semester", "Engagement", "Fairness",
 			"Difficulty of Work", "Ease of Learning",
 			"Teaching Style", "Comments" };
 
-	private String columnNamesGroupByProf[] = { "PID", "Engagement",
-			"Fairness", "Difficulty of Work", "Ease of Learning",
-			"Teaching Style" };
-
-	private String columnNamesGroupByProfAndClass[] = { "PID", "CID",
+	private String columnNamesGroupByProf[] = { "Professor",
 			"Engagement", "Fairness", "Difficulty of Work",
 			"Ease of Learning", "Teaching Style" };
 
-	private String columnNamesGroupByStudent[] = { "SID", "Fairness",
+	private String columnNamesGroupByProfAndClass[] = { "Professor",
+			"CID", "Engagement", "Fairness", "Difficulty of Work",
+			"Ease of Learning", "Teaching Style" };
+
+	private String columnNamesGroupByStudent[] = { "SID",
+			"Engagement", "Fairness", "Difficulty of Work",
+			"Ease of Learning", "Teaching Style" };
+
+	private String columnNamesGroupByCourse[] = { "CID",
+			"University", "Engagement", "Fairness",
 			"Difficulty of Work", "Ease of Learning",
 			"Teaching Style" };
 
-	private String columnNamesGroupByCourse[] = { "CID",
-			"Engagement", "Fairness", "Difficulty of Work",
-			"Ease of Learning", "Teaching Style", "Comments" };
-
-	private String columnNamesUser[] = { "PID", "CID", "Year",
+	private String columnNamesUser[] = { "Professor", "CID", "Year",
 			"Semester", "Engagement", "Fairness",
 			"Difficulty of Work", "Ease of Learning",
 			"Teaching Style", "Comments" };
@@ -166,8 +168,13 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 			filters.add(new AttributeValue("Year", r.getYear()));
 			filters.add(new AttributeValue("Semester", r
 					.getSemester()));
-			if (SQLDatabaseProxy.update("Review", atts, filters) > 0) {
-				sqlChanged();
+			try {
+				if (SQLDatabaseProxy.update("Review", atts, filters) > 0) {
+					sqlChanged();
+				}
+			}
+			catch (SQLException e) {
+				JOptionPane.showMessageDialog(null, e.getMessage());
 			}
 		}
 
@@ -204,7 +211,7 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 	}
 
 	/**
-	 * 
+	 * Calls for review data to be grouped by Course.
 	 */
 	private void drawGroupByCourse() {
 		clearModel();
@@ -231,6 +238,7 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 		}
 		atts.clear();
 		atts.add("CIdentifier");
+		atts.add("University");
 		for (Review r : reviews) {
 			updated.clear();
 			ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
@@ -239,6 +247,7 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 					.select("Course", atts, filters);
 			ArrayList<String> vals = new ArrayList<String>();
 			vals.add(updated.get(0)[0]);
+			vals.add(updated.get(0)[1]);
 			vals.add("" + r.getEngagement());
 			vals.add("" + r.getFairness());
 			vals.add("" + r.getDifficultyWork());
@@ -251,7 +260,8 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 	}
 
 	/**
-	 * 
+	 * Calls for review data to be averaged by the Professor and
+	 * course s/he teaches.
 	 */
 	private void drawGroupByProfCourse() {
 		clearModel();
@@ -476,9 +486,50 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 	}
 
 	/**
-	 * 
+	 * Clears the data from the table
 	 */
 	private void clearModel() {
 		model.setRowCount(0);
 	}
+
+	/**
+	 * 
+	 */
+	public void setRegularMode() {
+		mode = REGULAR_MODE;
+		updateSelectors();
+	}
+
+	/**
+	 * 
+	 */
+	public void setProfessorMode() {
+		mode = GROUP_BY_PROF;
+		updateSelectors();
+	}
+
+	/**
+	 * 
+	 */
+	public void setCourseMode() {
+		mode = GROUP_BY_COURSE;
+		updateSelectors();
+	}
+
+	/**
+	 * 
+	 */
+	public void setStudentMode() {
+		mode = GROUP_BY_SID;
+		updateSelectors();
+	}
+
+	/**
+	 * 
+	 */
+	public void setProfCourseMode() {
+		mode = GROUP_BY_PROF_AND_COURSE;
+		updateSelectors();
+	}
+
 }

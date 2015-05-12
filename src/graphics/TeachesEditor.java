@@ -5,6 +5,7 @@ package graphics;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.*;
 import data.Course;
@@ -164,8 +165,14 @@ public class TeachesEditor extends CallRespondSqlEvent {
 		attributes.add("PID");
 		values.add(getCourse());
 		values.add(profIds.get(professorSelector.getSelectedIndex()));
-		if (SQLDatabaseProxy.insert("Teaches", attributes, values)) {
-			super.sqlChanged();
+		try {
+			if (SQLDatabaseProxy
+					.insert("Teaches", attributes, values)) {
+				super.sqlChanged();
+			}
+		}
+		catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
 	}
 

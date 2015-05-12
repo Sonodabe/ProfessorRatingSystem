@@ -26,14 +26,34 @@ public class ViewReviewPane extends CallRespondSqlEvent {
 	private JCheckBox yearFilterEnabled;
 	private boolean isAdmin;
 
+	private JRadioButton regular, professor, student, course,
+			courseProf;
+	private ButtonGroup buttons;
+
 	public ViewReviewPane(ViewReviewTab rt, boolean isAdmin) {
 		this.isAdmin = isAdmin;
 		parent = rt;
-		// search = new JButton("Search");
+		// search = new JRadioButton("Search");
 		// search.addActionListener(new ButtonResponder());
-
+		regular = new JRadioButton("No Averages");
+		regular.addActionListener(new ButtonResponder());
+		professor = new JRadioButton("Professor");
+		professor.addActionListener(new ButtonResponder());
+		student = new JRadioButton("Students");
+		student.addActionListener(new ButtonResponder());
+		course = new JRadioButton("Course");
+		course.addActionListener(new ButtonResponder());
+		courseProf = new JRadioButton("Professor AND Course");
+		courseProf.addActionListener(new ButtonResponder());
 		studentSelector = new JComboBox<String>();
 		studentSelector.addItemListener(new ItemResponder());
+		buttons = new ButtonGroup();
+		buttons.add(regular);
+		buttons.add(course);
+		buttons.add(courseProf);
+		buttons.add(professor);
+		buttons.add(student);
+		regular.doClick();
 
 		className = new JTextField();
 		className.setEditable(true);
@@ -77,9 +97,15 @@ public class ViewReviewPane extends CallRespondSqlEvent {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = y++;
+		gbc.gridy = y;
 
 		add(new JLabel("Search by any of the below criteria"), gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 8;
+		gbc.gridy = y++;
+		add(new JLabel("Show averages of scores by..."), gbc);
 
 		if (isAdmin) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -93,10 +119,16 @@ public class ViewReviewPane extends CallRespondSqlEvent {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 0.5;
 			gbc.gridx = 1;
-			gbc.gridy = y++;
+			gbc.gridy = y;
 			gbc.gridwidth = 6;
 
 			add(studentSelector, gbc);
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+			gbc.weightx = 0.5;
+			gbc.gridx = 8;
+			gbc.gridwidth = 1;
+			gbc.gridy = y++;
+			add(student, gbc);
 		}
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -105,15 +137,21 @@ public class ViewReviewPane extends CallRespondSqlEvent {
 		gbc.gridy = y;
 		gbc.gridwidth = 1;
 
-		add(new JLabel("Class: "), gbc);
+		add(new JLabel("Course: "), gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = y++;
+		gbc.gridy = y;
 		gbc.gridwidth = 6;
 
 		add(className, gbc);
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 8;
+		gbc.gridy = y++;
+		gbc.gridwidth = 1;
+		add(course, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -126,10 +164,17 @@ public class ViewReviewPane extends CallRespondSqlEvent {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = y++;
+		gbc.gridy = y;
 		gbc.gridwidth = 6;
 
 		add(professorName, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 8;
+		gbc.gridy = y++;
+		gbc.gridwidth = 1;
+		add(professor, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -149,9 +194,16 @@ public class ViewReviewPane extends CallRespondSqlEvent {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = y++;
+		gbc.gridy = y;
 		gbc.gridwidth = 6;
 		add(year, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 8;
+		gbc.gridy = y++;
+		gbc.gridwidth = 1;
+		add(courseProf, gbc);
 
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -163,10 +215,18 @@ public class ViewReviewPane extends CallRespondSqlEvent {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 1;
-		gbc.gridy = y++;
+		gbc.gridy = y;
 		gbc.gridwidth = 6;
 
 		add(semester, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		gbc.gridx = 8;
+		gbc.gridy = y;
+		gbc.gridwidth = 1;
+
+		add(regular, gbc);
 		y += 3;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
@@ -217,7 +277,32 @@ public class ViewReviewPane extends CallRespondSqlEvent {
 
 	private class ItemResponder implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
-			applyFilters();
+			if (e.getSource() == studentSelector
+					&& studentSelector.getItemCount() == 0) {
+
+			}
+			else applyFilters();
+		}
+	}
+
+	private class ButtonResponder implements ActionListener {
+
+		public void actionPerformed(ActionEvent e) {
+			if (e.getSource() == regular) {
+				parent.setRegularMode();
+			}
+			else if (e.getSource() == professor) {
+				parent.setProfessorMode();
+			}
+			else if (e.getSource() == course) {
+				parent.setCourseMode();
+			}
+			else if (e.getSource() == student) {
+				parent.setStudentMode();
+			}
+			else if (e.getSource() == courseProf) {
+				parent.setProfCourseMode();
+			}
 		}
 	}
 

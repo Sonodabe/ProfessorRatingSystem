@@ -30,7 +30,8 @@ public class SQLDatabaseProxy {
 	}
 
 	public static boolean insert(String table,
-			ArrayList<String> attributes, ArrayList<Object> values) {
+			ArrayList<String> attributes, ArrayList<Object> values)
+			throws SQLException {
 
 		PreparedStatement pstmt = SQLStatements.insert(dbc, table,
 				attributes, values);
@@ -41,8 +42,7 @@ public class SQLDatabaseProxy {
 			return numRows != 0;
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+			throw e;
 		}
 	}
 
@@ -91,7 +91,7 @@ public class SQLDatabaseProxy {
 	}
 
 	public static int delete(String table,
-			ArrayList<AttributeValue> filter) {
+			ArrayList<AttributeValue> filter) throws SQLException {
 		try {
 			PreparedStatement pstmt = SQLStatements.delete(dbc,
 					table, filter);
@@ -100,15 +100,15 @@ public class SQLDatabaseProxy {
 
 			return numDeleted;
 		}
-		catch (Exception e) {
+		catch (SQLException e) {
 			e.printStackTrace();
-			return -1;
+			throw e;
 		}
 	}
 
 	public static int update(String table,
 			ArrayList<AttributeValue> atts,
-			ArrayList<AttributeValue> filter) {
+			ArrayList<AttributeValue> filter) throws SQLException {
 		try {
 			PreparedStatement pstmt = SQLStatements.update(dbc,
 					table, atts, filter);
@@ -117,9 +117,9 @@ public class SQLDatabaseProxy {
 
 			return numUpdated;
 		}
-		catch (Exception e) {
+		catch (SQLException e) {
 			e.printStackTrace();
-			return -1;
+			throw e;
 		}
 	}
 }
