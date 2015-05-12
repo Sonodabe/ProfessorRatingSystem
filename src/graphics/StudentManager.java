@@ -27,7 +27,7 @@ public class StudentManager extends CallRespondSqlEvent {
 	private JTable dataTable;
 	private DefaultTableModel model;
 	private StudentEditor studentFieldsPane;
-	private String[] columnNames = { "SID", "Major", "University" };
+	private String[] columnNames = { "SID", "Major" };
 	private JComboBox<String> universityFilter;
 
 	/**
@@ -99,7 +99,6 @@ public class StudentManager extends CallRespondSqlEvent {
 		Vector<Object> rowData = new Vector<Object>();
 		rowData.add(row[0]);
 		rowData.add(row[1]);
-		rowData.add(row[2]);
 
 		model.addRow(rowData);
 
@@ -116,7 +115,6 @@ public class StudentManager extends CallRespondSqlEvent {
 
 		atts.add("SID");
 		atts.add("Major");
-		atts.add("University");
 
 		ArrayList<String[]> updated = SQLDatabaseProxy.select(
 				"Student", atts, currentFilters);
