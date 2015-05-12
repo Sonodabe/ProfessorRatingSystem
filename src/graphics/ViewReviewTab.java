@@ -25,6 +25,22 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 			"Difficulty of Work", "Ease of Learning",
 			"Teaching Style", "Comments" };
 
+	private String columnNamesGroupByProf[] = { "PID", "Engagement",
+			"Fairness", "Difficulty of Work", "Ease of Learning",
+			"Teaching Style" };
+
+	private String columnNamesGroupByProfAndClass[] = { "PID", "CID",
+			"Engagement", "Fairness", "Difficulty of Work",
+			"Ease of Learning", "Teaching Style" };
+
+	private String columnNamesGroupByStudent[] = { "SID", "Fairness",
+			"Difficulty of Work", "Ease of Learning",
+			"Teaching Style" };
+
+	private String columnNamesGroupByCourse[] = { "CID",
+			"Engagement", "Fairness", "Difficulty of Work",
+			"Ease of Learning", "Teaching Style", "Comments" };
+
 	private String columnNamesUser[] = { "PID", "CID", "Year",
 			"Semester", "Engagement", "Fairness",
 			"Difficulty of Work", "Ease of Learning",
@@ -34,8 +50,16 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 	private ArrayList<Review> reviews = new ArrayList<Review>();
 	private boolean isAdmin;
 
+	private static final int REGULAR_MODE = 0;
+	private static final int GROUP_BY_PROF = 1;
+	private static final int GROUP_BY_SID = 2;
+	private static final int GROUP_BY_COURSE = 3;
+	private static final int GROUP_BY_PROF_AND_COURSE = 4;
+	private int mode;
+
 	@SuppressWarnings("serial")
 	public ViewReviewTab(boolean admin) {
+		mode = REGULAR_MODE;
 		setLayout(new GridLayout(3, 0));
 		reviews = new ArrayList<Review>();
 		isAdmin = admin;
@@ -49,6 +73,7 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 				return false;
 			}
 		};
+
 		dataTable = new JTable(model);
 
 		dataTable.setName("ReviewView");
@@ -75,28 +100,21 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 		updateSelectors();
 	}
 
+	/**
+	 * Adds a row of data to the table.
+	 * 
+	 * @param row
+	 *            The array of data to be added.
+	 */
 	private void addRow(String[] row) {
-		// TODO FIX SOME STUFF...probably have a number of different
-		// models, so that group by doesn't show columns that wouldn't
-		// be averaged...
 		Vector<Object> rowData = new Vector<Object>();
 		for (int i = 0; i < row.length; i++) {
 			if (row[i] != null && row[i].equals("0")) {
 				row[i] = "N/A";
 			}
 		}
-		rowData.add(row[0]);
-		rowData.add(row[1]);
-		rowData.add(row[2]);
-		rowData.add(row[3]);
-		rowData.add(row[4]);
-		rowData.add(row[5]);
-		rowData.add(row[6]);
-		rowData.add(row[7]);
-		rowData.add(row[8]);
-		rowData.add(row[9]);
-		if (isAdmin && row.length == 11) {
-			rowData.add(row[10]);
+		for (String s : row) {
+			rowData.add(s);
 		}
 		model.addRow(rowData);
 
@@ -113,35 +131,44 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 		 */
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
-			if (dataTable.getSelectedRow() != -1) {
-				ce.populateComments((String) dataTable.getModel()
-						.getValueAt(
-								dataTable.getSelectedRow(),
-								isAdmin ? columnNamesAdmin.length - 1
-										: columnNamesUser.length - 1));
-			}
-			else {
-				ce.populateComments("");
+			if (mode == REGULAR_MODE) {
+				if (dataTable.getSelectedRow() != -1) {
+					ce.populateComments((String) dataTable
+							.getModel()
+							.getValueAt(
+									dataTable.getSelectedRow(),
+									isAdmin ? columnNamesAdmin.length - 1
+											: columnNamesUser.length - 1));
+				}
+				else {
+					ce.populateComments("");
+				}
 			}
 		}
 
 	}
 
 	/**
-	 * @param trim
+	 * Updates a comment for the selected tuple
+	 * 
+	 * @param newComment
+	 *            The new comment.
 	 */
-	public void updateComment(String trim) {
-		ArrayList<AttributeValue> atts = new ArrayList<AttributeValue>();
-		atts.add(new AttributeValue("Comments", trim));
-		ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
-		Review r = reviews.get(dataTable.getSelectedRow());
-		filters.add(new AttributeValue("SID", r.getSid()));
-		filters.add(new AttributeValue("PID", r.getPid()));
-		filters.add(new AttributeValue("CID", r.getCid()));
-		filters.add(new AttributeValue("Year", r.getYear()));
-		filters.add(new AttributeValue("Semester", r.getSemester()));
-		if (SQLDatabaseProxy.update("Review", atts, filters) > 0) {
-			sqlChanged();
+	public void updateComment(String newComment) {
+		if (mode == REGULAR_MODE) {
+			ArrayList<AttributeValue> atts = new ArrayList<AttributeValue>();
+			atts.add(new AttributeValue("Comments", newComment));
+			ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
+			Review r = reviews.get(dataTable.getSelectedRow());
+			filters.add(new AttributeValue("SID", r.getSid()));
+			filters.add(new AttributeValue("PID", r.getPid()));
+			filters.add(new AttributeValue("CID", r.getCid()));
+			filters.add(new AttributeValue("Year", r.getYear()));
+			filters.add(new AttributeValue("Semester", r
+					.getSemester()));
+			if (SQLDatabaseProxy.update("Review", atts, filters) > 0) {
+				sqlChanged();
+			}
 		}
 
 	}
@@ -153,8 +180,35 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 	 */
 	@Override
 	protected void updateSelectors() {
-		model.setRowCount(0);
+		clearModel();
+
 		reviews.clear();
+		switch (mode) {
+		case REGULAR_MODE:
+			drawRegularTable();
+			break;
+		case GROUP_BY_PROF:
+			drawGroupByProf();
+			break;
+		case GROUP_BY_SID:
+			drawGroupBySid();
+			break;
+		case GROUP_BY_COURSE:
+			drawGroupByCourse();
+			break;
+		case GROUP_BY_PROF_AND_COURSE:
+			drawGroupByProfCourse();
+			break;
+		}
+
+	}
+
+	/**
+	 * 
+	 */
+	private void drawGroupByCourse() {
+		clearModel();
+		model.setColumnIdentifiers(columnNamesGroupByCourse);
 		ArrayList<String> atts = new ArrayList<String>();
 		atts.add("Distinct Review.SID");
 		atts.add("Review.PID");
@@ -166,18 +220,226 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 		atts.add("AVG(DifficultyWork)");
 		atts.add("AVG(EaseLearning)");
 		atts.add("AVG(TeachingStyle)");
-		// atts.add("Comments");
+		atts.add("Comments");
 
 		ArrayList<String[]> updated;
-		// TODO FIX SOME STUFF
-		if (currentFilters.isEmpty()) {
-			updated = SQLDatabaseProxy.select("Review", atts, "PID",
-					null);
+		updated = SQLDatabaseProxy.select("Review", atts, "CID",
+				currentFilters);
+
+		for (int i = 0; i < updated.size(); i++) {
+			reviews.add(new Review(updated.get(i)));
 		}
-		else {
-			updated = SQLDatabaseProxy.select(
-					"Review,Course,Professor", atts, currentFilters);
+		atts.clear();
+		atts.add("CIdentifier");
+		for (Review r : reviews) {
+			updated.clear();
+			ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
+			filters.add(new AttributeValue("UniqueId", r.getCid()));
+			updated = SQLDatabaseProxy
+					.select("Course", atts, filters);
+			ArrayList<String> vals = new ArrayList<String>();
+			vals.add(updated.get(0)[0]);
+			vals.add("" + r.getEngagement());
+			vals.add("" + r.getFairness());
+			vals.add("" + r.getDifficultyWork());
+			vals.add("" + r.getEaseLearning());
+			vals.add(convertTeachingStyle(r.getTeachingStyle()));
+			String values[] = new String[vals.size()];
+			vals.toArray(values);
+			addRow(values);
 		}
+	}
+
+	/**
+	 * 
+	 */
+	private void drawGroupByProfCourse() {
+		clearModel();
+		model.setColumnIdentifiers(columnNamesGroupByProfAndClass);
+		ArrayList<String> atts = new ArrayList<String>();
+		atts.add("Distinct Review.SID");
+		atts.add("Review.PID");
+		atts.add("CID");
+		atts.add("Year");
+		atts.add("Semester");
+		atts.add("AVG(Engagement)");
+		atts.add("AVG(Fairness)");
+		atts.add("AVG(DifficultyWork)");
+		atts.add("AVG(EaseLearning)");
+		atts.add("AVG(TeachingStyle)");
+		atts.add("Comments");
+
+		ArrayList<String[]> updated;
+		updated = SQLDatabaseProxy.select("Review", atts, "PID,CID",
+				currentFilters);
+
+		for (int i = 0; i < updated.size(); i++) {
+			reviews.add(new Review(updated.get(i)));
+		}
+		atts.clear();
+		atts.add("PName");
+		atts.add("CIdentifier");
+		for (Review r : reviews) {
+			updated.clear();
+			ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
+			filters.add(new AttributeValue("PID", r.getPid()));
+			filters.add(new AttributeValue("UniqueId", r.getCid()));
+			updated = SQLDatabaseProxy.select("Professor,Course",
+					atts, filters);
+			ArrayList<String> vals = new ArrayList<String>();
+			vals.add(updated.get(0)[0]);
+			vals.add(updated.get(0)[1]);
+			vals.add("" + r.getEngagement());
+			vals.add("" + r.getFairness());
+			vals.add("" + r.getDifficultyWork());
+			vals.add("" + r.getEaseLearning());
+			vals.add(convertTeachingStyle(r.getTeachingStyle()));
+			String values[] = new String[vals.size()];
+			vals.toArray(values);
+			addRow(values);
+		}
+	}
+
+	/**
+	 * Calls for review data grouped by Student ID - so we can see the
+	 * averages of how a student evaluates all professors, mainly to
+	 * see if the reviews can be trusted or not.
+	 */
+	private void drawGroupBySid() {
+		clearModel();
+		model.setColumnIdentifiers(columnNamesGroupByStudent);
+		ArrayList<String> atts = new ArrayList<String>();
+		atts.add("Distinct Review.SID");
+		atts.add("Review.PID");
+		atts.add("CID");
+		atts.add("Year");
+		atts.add("Semester");
+		atts.add("AVG(Engagement)");
+		atts.add("AVG(Fairness)");
+		atts.add("AVG(DifficultyWork)");
+		atts.add("AVG(EaseLearning)");
+		atts.add("AVG(TeachingStyle)");
+		atts.add("Comments");
+
+		ArrayList<String[]> updated;
+		updated = SQLDatabaseProxy.select("Review", atts, "SID",
+				currentFilters);
+
+		for (int i = 0; i < updated.size(); i++) {
+			reviews.add(new Review(updated.get(i)));
+		}
+
+		atts.clear();
+		updated.clear();
+		for (Review r : reviews) {
+			ArrayList<String> vals = new ArrayList<String>();
+			vals.add("" + r.getSid());
+			vals.add("" + r.getEngagement());
+			vals.add("" + r.getFairness());
+			vals.add("" + r.getDifficultyWork());
+			vals.add("" + r.getEaseLearning());
+			vals.add(convertTeachingStyle(r.getTeachingStyle()));
+			String values[] = new String[vals.size()];
+			vals.toArray(values);
+			addRow(values);
+		}
+	}
+
+	/**
+	 * Calls for review data that is grouped by professor - ie the
+	 * averages of their scores are calculated.
+	 */
+	private void drawGroupByProf() {
+		clearModel();
+		model.setColumnIdentifiers(columnNamesGroupByProf);
+		ArrayList<String> atts = new ArrayList<String>();
+		atts.add("Distinct Review.SID");
+		atts.add("Review.PID");
+		atts.add("CID");
+		atts.add("Year");
+		atts.add("Semester");
+		atts.add("AVG(Engagement)");
+		atts.add("AVG(Fairness)");
+		atts.add("AVG(DifficultyWork)");
+		atts.add("AVG(EaseLearning)");
+		atts.add("AVG(TeachingStyle)");
+		atts.add("Comments");
+
+		ArrayList<String[]> updated;
+		updated = SQLDatabaseProxy.select("Review", atts, "PID",
+				currentFilters);
+
+		for (int i = 0; i < updated.size(); i++) {
+			reviews.add(new Review(updated.get(i)));
+		}
+
+		atts.clear();
+		updated.clear();
+		atts.add("PName");
+		for (Review r : reviews) {
+			updated.clear();
+			ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
+			filters.add(new AttributeValue("PID", r.getPid()));
+			updated = SQLDatabaseProxy.select("Professor", atts,
+					filters);
+			ArrayList<String> vals = new ArrayList<String>();
+
+			vals.add(updated.get(0)[0]);
+			vals.add("" + r.getEngagement());
+			vals.add("" + r.getFairness());
+			vals.add("" + r.getDifficultyWork());
+			vals.add("" + r.getEaseLearning());
+			vals.add(convertTeachingStyle(r.getTeachingStyle()));
+			String values[] = new String[vals.size()];
+			vals.toArray(values);
+			addRow(values);
+		}
+	}
+
+	/**
+	 * @param teachingStyle
+	 * @return
+	 */
+	private String convertTeachingStyle(int teachingStyle) {
+		switch (teachingStyle) {
+		case 1:
+			return "Entirely Lab";
+		case 2:
+			return "Mostly Lab";
+		case 3:
+			return "Lab/Lecture";
+		case 4:
+			return "Mostly Lecture";
+		case 5:
+			return "Entirely Lecture";
+		default:
+			return "N/A";
+		}
+	}
+
+	/**
+	 * Generates the regular table view and populates the background
+	 * data with appropriate info.
+	 */
+	private void drawRegularTable() {
+		model.setColumnIdentifiers(isAdmin ? columnNamesAdmin
+				: columnNamesUser);
+		ArrayList<String> atts = new ArrayList<String>();
+		atts.add("Distinct Review.SID");
+		atts.add("Review.PID");
+		atts.add("CID");
+		atts.add("Year");
+		atts.add("Semester");
+		atts.add("Engagement");
+		atts.add("Fairness");
+		atts.add("DifficultyWork");
+		atts.add("EaseLearning");
+		atts.add("TeachingStyle");
+		atts.add("Comments");
+
+		ArrayList<String[]> updated;
+		updated = SQLDatabaseProxy.select("Review,Course,Professor",
+				atts, currentFilters);
 
 		for (int i = 0; i < updated.size(); i++) {
 			reviews.add(new Review(updated.get(i)));
@@ -194,7 +456,7 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 			filters.add(new AttributeValue("UniqueId", r.getCid()));
 			updated = SQLDatabaseProxy.select("Professor,Course",
 					atts, filters);
-			String values[] = new String[isAdmin ? 11 : 10];
+			String values[] = new String[model.getColumnCount()];
 			int x = 0;
 			if (isAdmin) {
 				values[x++] = "" + r.getSid();
@@ -207,29 +469,16 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 			values[x++] = "" + r.getFairness();
 			values[x++] = "" + r.getDifficultyWork();
 			values[x++] = "" + r.getEaseLearning();
-			String teachingStyleConversion;
-			switch (r.getTeachingStyle()) {
-			case 1:
-				teachingStyleConversion = "Entirely Lab";
-				break;
-			case 2:
-				teachingStyleConversion = "Mostly Lab";
-				break;
-			case 3:
-				teachingStyleConversion = "Lab/Lecture";
-				break;
-			case 4:
-				teachingStyleConversion = "Mostly Lecture";
-				break;
-			case 5:
-				teachingStyleConversion = "Entirely Lecture";
-				break;
-			default:
-				teachingStyleConversion = "N/A";
-			}
-			values[x++] = teachingStyleConversion;
+			values[x++] = convertTeachingStyle(r.getTeachingStyle());
 			values[x++] = r.getComments();
 			addRow(values);
 		}
+	}
+
+	/**
+	 * 
+	 */
+	private void clearModel() {
+		model.setRowCount(0);
 	}
 }

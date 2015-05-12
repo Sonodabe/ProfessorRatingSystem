@@ -36,9 +36,7 @@ public class CommentEditor extends JPanel {
 	}
 
 	public void populateComments(String text) {
-		if (text != null) {
-			commentsEditor.setText(text);
-		}
+		commentsEditor.setText(text);
 	}
 
 	private class ButtonResponder implements ActionListener {
