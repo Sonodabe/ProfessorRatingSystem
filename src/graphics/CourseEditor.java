@@ -243,13 +243,22 @@ public class CourseEditor extends CallRespondSqlEvent {
 	 */
 	protected void buildAdd() {
 		initializeLists();
+		attributes.add("CName");
 		if (!courseName.getText().trim().isEmpty()) {
-			attributes.add("CName");
+
 			values.add(courseName.getText());
 		}
+		else {
+			values.add(null);
+		}
+		attributes.add("CIdentifier");
+
 		if (!courseIdentifier.getText().trim().isEmpty()) {
-			attributes.add("CIdentifier");
+
 			values.add(courseIdentifier.getText());
+		}
+		else {
+			values.add(null);
 		}
 		attributes.add("University");
 		values.add(universitySelector.getItemAt(universitySelector

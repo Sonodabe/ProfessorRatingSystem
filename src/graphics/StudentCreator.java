@@ -110,17 +110,29 @@ public class StudentCreator extends CallRespondSqlEvent {
 	 */
 	public void buildAdd() {
 		initializeLists();
+		attributes.add("SName");
 		if (!studentName.getText().trim().isEmpty()) {
-			attributes.add("SName");
+
 			values.add(studentName.getText());
 		}
+		else {
+			values.add(null);
+		}
+		attributes.add("Username");
 		if (!userName.getText().trim().isEmpty()) {
-			attributes.add("Username");
+
 			values.add(userName.getText());
 		}
+		else {
+			values.add(null);
+		}
+		attributes.add("Major");
 		if (!major.getText().trim().isEmpty()) {
-			attributes.add("Major");
+
 			values.add(major.getText());
+		}
+		else {
+			values.add(null);
 		}
 
 		try {

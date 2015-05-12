@@ -10,8 +10,7 @@ CREATE TABLE Student(
 SName    varchar NOT NULL,
 Major        varchar,
 Username    varchar UNIQUE,
-SID        INTEGER PRIMARY KEY,
-foreign key(University) references University(UName) ON DELETE CASCADE ON UPDATE CASCADE
+SID        INTEGER PRIMARY KEY
 );
 
 CREATE TABLE Review (
