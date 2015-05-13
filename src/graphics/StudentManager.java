@@ -4,13 +4,11 @@
 package graphics;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
-import database.*;
-import database.AttributeValue;
+import database.SQLDatabaseProxy;
 
 /**
  * @author Doug Blase
@@ -28,7 +26,6 @@ public class StudentManager extends CallRespondSqlEvent {
 	private DefaultTableModel model;
 	private StudentEditor studentFieldsPane;
 	private String[] columnNames = { "SID", "Major" };
-	private JComboBox<String> universityFilter;
 
 	/**
 	 * 
@@ -36,12 +33,7 @@ public class StudentManager extends CallRespondSqlEvent {
 	@SuppressWarnings("serial")
 	public StudentManager() {
 		setLayout(new GridBagLayout());
-		universityFilter = new JComboBox<String>();
-		PRSFrame.updateSelector(universityFilter, "University",
-				"UName");
-		universityFilter.addItem("NONE");
-		universityFilter.setSelectedItem("NONE");
-		universityFilter.addItemListener(new ItemResponder());
+
 		model = new DefaultTableModel(columnNames, 0) {
 
 			@Override
@@ -75,20 +67,6 @@ public class StudentManager extends CallRespondSqlEvent {
 		gbc.gridx = 1;
 		gbc.gridy = y;
 		add(studentFieldsPane, gbc);
-
-		y++;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = y;
-		add(new JLabel("University Filter:"), gbc);
-
-		y++;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = y;
-		add(universityFilter, gbc);
 
 		super.addPanel(this);
 		updateSelectors();
@@ -124,28 +102,4 @@ public class StudentManager extends CallRespondSqlEvent {
 		}
 	}
 
-	private class ItemResponder implements ItemListener {
-		public void itemStateChanged(ItemEvent e) {
-			if (e.getSource() == universityFilter) {
-				applyFilters();
-			}
-		}
-	}
-
-	/**
-	 * Creates a filter based on the JComboBox(es) in the table view,
-	 * and sends it to the form side of this Panel.
-	 */
-	protected void applyFilters() {
-		ArrayList<AttributeValue> filter = new ArrayList<AttributeValue>();
-		if (!universityFilter.getSelectedItem().equals("NONE")) {
-
-			filter.add(new AttributeValue("University",
-					universityFilter.getSelectedItem()));
-			// TODO Consider order by/group by
-
-		}
-		this.updateFilters(filter);
-		studentFieldsPane.updateFilters(filter);
-	}
 }

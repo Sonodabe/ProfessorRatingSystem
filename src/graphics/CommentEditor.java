@@ -33,6 +33,9 @@ public class CommentEditor extends JPanel {
 		if (admin) {
 			add(submit);
 		}
+		if (!admin) {
+			commentsEditor.setEditable(false);
+		}
 	}
 
 	public void populateComments(String text) {
