@@ -160,19 +160,26 @@ public class TeachesEditor extends CallRespondSqlEvent {
 	 * 
 	 */
 	protected void buildAdd() {
-		initializeLists();
-		attributes.add("CNumber");
-		attributes.add("PID");
-		values.add(getCourse());
-		values.add(profIds.get(professorSelector.getSelectedIndex()));
-		try {
-			if (SQLDatabaseProxy
-					.insert("Teaches", attributes, values)) {
-				super.sqlChanged();
+		if (availableCourses.size() > 0) {
+			initializeLists();
+			attributes.add("CNumber");
+			attributes.add("PID");
+			values.add(getCourse());
+			values.add(profIds.get(professorSelector
+					.getSelectedIndex()));
+			try {
+				if (SQLDatabaseProxy.insert("Teaches", attributes,
+						values)) {
+					super.sqlChanged();
+				}
+			}
+			catch (SQLException e) {
+				JOptionPane.showMessageDialog(null, e.getMessage());
 			}
 		}
-		catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, e.getMessage());
+		else {
+			JOptionPane.showMessageDialog(null,
+					"No available courses to add a professor to.");
 		}
 	}
 
