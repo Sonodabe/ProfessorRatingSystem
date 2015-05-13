@@ -5,8 +5,9 @@ import java.text.DecimalFormat;
 
 public class Review {
 
-	private int sid, year, cid, engagement, fairness, difficultyWork,
-			easeLearning, teachingStyle, pid;
+	private int sid, year, cid, pid;
+	private double engagement, fairness, difficultyWork, easeLearning,
+			teachingStyle;
 	private String semester, comments;
 
 	/**
@@ -22,10 +23,9 @@ public class Review {
 	 * @param semester
 	 * @param comments
 	 */
-	public Review(int sid, int year, int cid, int engagement,
-			int fairness, int difficultyWork, int easeLearning,
-			int teachingStyle, int pid, String semester,
-			String comments) {
+	public Review(int sid, int year, int cid, int engagement, int fairness,
+			int difficultyWork, int easeLearning, int teachingStyle, int pid,
+			String semester, String comments) {
 		this.sid = sid;
 		this.year = year;
 		this.cid = cid;
@@ -47,22 +47,22 @@ public class Review {
 		pid = Integer.parseInt(s[1]);
 		cid = Integer.parseInt(s[2]);
 		year = Integer.parseInt(s[3]);
-		DecimalFormat df = new DecimalFormat("#");
-		df.setRoundingMode(RoundingMode.HALF_UP);
+
 		semester = s[4];
-		engagement = s[5] == null ? 0 : Integer.parseInt(df
-				.format(Double.parseDouble(s[5])));
-		fairness = s[6] == null ? 0 : Integer.parseInt(df
-				.format(Double.parseDouble(s[6])));
-		difficultyWork = s[7] == null ? 0 : Integer.parseInt(df
-				.format(Double.parseDouble(s[7])));
-		easeLearning = s[8] == null ? 0 : Integer.parseInt(df
-				.format(Double.parseDouble(s[8])));
-		teachingStyle = s[9] == null ? 0 : Integer.parseInt(df
-				.format(Double.parseDouble(s[9])));
+
+		engagement = s[5] == null ? 0 : parseDouble(s[5]);
+		fairness = s[6] == null ? 0 : parseDouble(s[6]);
+		difficultyWork = s[7] == null ? 0 : parseDouble(s[7]);
+		easeLearning = s[8] == null ? 0 : parseDouble(s[8]);
+		teachingStyle = s[9] == null ? 0 : parseDouble(s[9]);
+
 		if (s.length == 11)
 			comments = s[10];
+	}
 
+	private static final double parseDouble(String str) {
+		return Double
+				.parseDouble(String.format("%.2f", Double.parseDouble(str)));
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class Review {
 	 * 
 	 * @return engagement
 	 */
-	public int getEngagement() {
+	public double getEngagement() {
 		return engagement;
 	}
 
@@ -128,7 +128,7 @@ public class Review {
 	 * @param engagement
 	 *            the engagement to set
 	 */
-	public void setEngagement(int engagement) {
+	public void setEngagement(double engagement) {
 		this.engagement = engagement;
 	}
 
@@ -136,7 +136,7 @@ public class Review {
 	 * 
 	 * @return fairness
 	 */
-	public int getFairness() {
+	public double getFairness() {
 		return fairness;
 	}
 
@@ -145,7 +145,7 @@ public class Review {
 	 * @param fairness
 	 *            the fairness to set
 	 */
-	public void setFairness(int fairness) {
+	public void setFairness(double fairness) {
 		this.fairness = fairness;
 	}
 
@@ -153,7 +153,7 @@ public class Review {
 	 * 
 	 * @return difficultyWork
 	 */
-	public int getDifficultyWork() {
+	public double getDifficultyWork() {
 		return difficultyWork;
 	}
 
@@ -162,7 +162,7 @@ public class Review {
 	 * @param difficultyWork
 	 *            the difficultyWork to set
 	 */
-	public void setDifficultyWork(int difficultyWork) {
+	public void setDifficultyWork(double difficultyWork) {
 		this.difficultyWork = difficultyWork;
 	}
 
@@ -170,7 +170,7 @@ public class Review {
 	 * 
 	 * @return easeLearning
 	 */
-	public int getEaseLearning() {
+	public double getEaseLearning() {
 		return easeLearning;
 	}
 
@@ -179,7 +179,7 @@ public class Review {
 	 * @param easeLearning
 	 *            the easeLearning to set
 	 */
-	public void setEaseLearning(int easeLearning) {
+	public void setEaseLearning(double easeLearning) {
 		this.easeLearning = easeLearning;
 	}
 
@@ -187,7 +187,7 @@ public class Review {
 	 * 
 	 * @return teachingStyle
 	 */
-	public int getTeachingStyle() {
+	public double getTeachingStyle() {
 		return teachingStyle;
 	}
 
@@ -196,7 +196,7 @@ public class Review {
 	 * @param teachingStyle
 	 *            the teachingStyle to set
 	 */
-	public void setTeachingStyle(int teachingStyle) {
+	public void setTeachingStyle(double teachingStyle) {
 		this.teachingStyle = teachingStyle;
 	}
 
