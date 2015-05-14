@@ -348,7 +348,10 @@ public class ViewReviewPane extends CallRespondSqlEvent {
 	 */
 	@Override
 	protected void updateSelectors() {
-		PRSFrame.updateSelector(studentSelector, "Student", "SID");
-		studentSelector.addItem("ALL");
+		if (isAdmin) {
+			PRSFrame.updateSelector(studentSelector, "Student", "SID");
+			studentSelector.addItem("ALL");
+			studentSelector.setSelectedItem("ALL");
+		}
 	}
 }

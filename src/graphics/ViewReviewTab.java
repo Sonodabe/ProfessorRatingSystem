@@ -21,29 +21,32 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 	private JTable dataTable;
 	private DefaultTableModel model;
 	private ViewReviewPane vrp;
-	private String columnNamesAdmin[] = { "SID", "Professor", "CID", "Year",
-			"Semester", "Engagement", "Fairness", "Difficulty of Work",
-			"Ease of Learning", "Teaching Style", "Comments" };
+	private String columnNamesAdmin[] = { "SID", "Professor", "CID",
+			"Year", "Semester", "Engagement", "Fairness",
+			"Difficulty of Work", "Ease of Learning",
+			"Teaching Style", "Comments" };
 
-	private String columnNamesGroupByProf[] = { "Professor", "Engagement",
-			"Fairness", "Difficulty of Work", "Ease of Learning",
-			"Teaching Style" };
+	private String columnNamesGroupByProf[] = { "Professor",
+			"Engagement", "Fairness", "Difficulty of Work",
+			"Ease of Learning", "Teaching Style" };
 
-	private String columnNamesGroupByProfAndClass[] = { "Professor", "CID",
-			"Engagement", "Fairness", "Difficulty of Work", "Ease of Learning",
-			"Teaching Style" };
+	private String columnNamesGroupByProfAndClass[] = { "Professor",
+			"CID", "Engagement", "Fairness", "Difficulty of Work",
+			"Ease of Learning", "Teaching Style" };
 
-	private String columnNamesGroupByStudent[] = { "SID", "Engagement",
-			"Fairness", "Difficulty of Work", "Ease of Learning",
-			"Teaching Style" };
+	private String columnNamesGroupByStudent[] = { "SID",
+			"Engagement", "Fairness", "Difficulty of Work",
+			"Ease of Learning", "Teaching Style" };
 
-	private String columnNamesGroupByCourse[] = { "CID", "University",
-			"Engagement", "Fairness", "Difficulty of Work", "Ease of Learning",
+	private String columnNamesGroupByCourse[] = { "CID",
+			"University", "Engagement", "Fairness",
+			"Difficulty of Work", "Ease of Learning",
 			"Teaching Style" };
 
 	private String columnNamesUser[] = { "Professor", "CID", "Year",
-			"Semester", "Engagement", "Fairness", "Difficulty of Work",
-			"Ease of Learning", "Teaching Style", "Comments" };
+			"Semester", "Engagement", "Fairness",
+			"Difficulty of Work", "Ease of Learning",
+			"Teaching Style", "Comments" };
 
 	private CommentEditor ce;
 	private ArrayList<Review> reviews = new ArrayList<Review>();
@@ -78,7 +81,8 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 		dataTable.setName("ReviewView");
 		dataTable.setRowSelectionAllowed(true);
 		dataTable.setColumnSelectionAllowed(false);
-		dataTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		dataTable
+				.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPane = new JScrollPane(dataTable);
 		dataTable.setFillsViewportHeight(true);
 		dataTable.setShowGrid(true);
@@ -123,19 +127,22 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax
+		 * @see
+		 * javax.swing.event.ListSelectionListener#valueChanged(javax
 		 * .swing.event.ListSelectionEvent)
 		 */
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			if (mode == REGULAR_MODE) {
 				if (dataTable.getSelectedRow() != -1) {
-					ce.populateComments((String) dataTable.getModel()
+					ce.populateComments((String) dataTable
+							.getModel()
 							.getValueAt(
 									dataTable.getSelectedRow(),
 									isAdmin ? columnNamesAdmin.length - 1
 											: columnNamesUser.length - 1));
-				} else {
+				}
+				else {
 					ce.populateComments("");
 				}
 			}
@@ -159,12 +166,14 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 			filters.add(new AttributeValue("PID", r.getPid()));
 			filters.add(new AttributeValue("CID", r.getCid()));
 			filters.add(new AttributeValue("Year", r.getYear()));
-			filters.add(new AttributeValue("Semester", r.getSemester()));
+			filters.add(new AttributeValue("Semester", r
+					.getSemester()));
 			try {
 				if (SQLDatabaseProxy.update("Review", atts, filters) > 0) {
 					sqlChanged();
 				}
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				JOptionPane.showMessageDialog(null, e.getMessage());
 			}
 		}
@@ -221,8 +230,8 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 		atts.add("Comments");
 
 		ArrayList<String[]> updated;
-		updated = SQLDatabaseProxy
-				.select("Review", atts, "CID", currentFilters);
+		updated = SQLDatabaseProxy.select("Review", atts, "CID",
+				currentFilters);
 
 		for (int i = 0; i < updated.size(); i++) {
 			reviews.add(new Review(updated.get(i)));
@@ -234,7 +243,8 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 			updated.clear();
 			ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
 			filters.add(new AttributeValue("UniqueId", r.getCid()));
-			updated = SQLDatabaseProxy.select("Course", atts, filters);
+			updated = SQLDatabaseProxy
+					.select("Course", atts, filters);
 			ArrayList<String> vals = new ArrayList<String>();
 			vals.add(updated.get(0)[0]);
 			vals.add(updated.get(0)[1]);
@@ -250,8 +260,8 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 	}
 
 	/**
-	 * Calls for review data to be averaged by the Professor and course s/he
-	 * teaches.
+	 * Calls for review data to be averaged by the Professor and
+	 * course s/he teaches.
 	 */
 	private void drawGroupByProfCourse() {
 		clearModel();
@@ -284,8 +294,8 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 			ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
 			filters.add(new AttributeValue("PID", r.getPid()));
 			filters.add(new AttributeValue("UniqueId", r.getCid()));
-			updated = SQLDatabaseProxy
-					.select("Professor,Course", atts, filters);
+			updated = SQLDatabaseProxy.select("Professor,Course",
+					atts, filters);
 			ArrayList<String> vals = new ArrayList<String>();
 			vals.add(updated.get(0)[0]);
 			vals.add(updated.get(0)[1]);
@@ -301,9 +311,9 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 	}
 
 	/**
-	 * Calls for review data grouped by Student ID - so we can see the averages
-	 * of how a student evaluates all professors, mainly to see if the reviews
-	 * can be trusted or not.
+	 * Calls for review data grouped by Student ID - so we can see the
+	 * averages of how a student evaluates all professors, mainly to
+	 * see if the reviews can be trusted or not.
 	 */
 	private void drawGroupBySid() {
 		clearModel();
@@ -322,8 +332,8 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 		atts.add("Comments");
 
 		ArrayList<String[]> updated;
-		updated = SQLDatabaseProxy
-				.select("Review", atts, "SID", currentFilters);
+		updated = SQLDatabaseProxy.select("Review", atts, "SID",
+				currentFilters);
 
 		for (int i = 0; i < updated.size(); i++) {
 			reviews.add(new Review(updated.get(i)));
@@ -346,8 +356,8 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 	}
 
 	/**
-	 * Calls for review data that is grouped by professor - ie the averages of
-	 * their scores are calculated.
+	 * Calls for review data that is grouped by professor - ie the
+	 * averages of their scores are calculated.
 	 */
 	private void drawGroupByProf() {
 		clearModel();
@@ -366,8 +376,8 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 		atts.add("Comments");
 
 		ArrayList<String[]> updated;
-		updated = SQLDatabaseProxy
-				.select("Review", atts, "PID", currentFilters);
+		updated = SQLDatabaseProxy.select("Review", atts, "PID",
+				currentFilters);
 
 		for (int i = 0; i < updated.size(); i++) {
 			reviews.add(new Review(updated.get(i)));
@@ -380,7 +390,8 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 			updated.clear();
 			ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
 			filters.add(new AttributeValue("PID", r.getPid()));
-			updated = SQLDatabaseProxy.select("Professor", atts, filters);
+			updated = SQLDatabaseProxy.select("Professor", atts,
+					filters);
 			ArrayList<String> vals = new ArrayList<String>();
 
 			vals.add(updated.get(0)[0]);
@@ -418,13 +429,14 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 	}
 
 	/**
-	 * Generates the regular table view and populates the background data with
-	 * appropriate info.
+	 * Generates the regular table view and populates the background
+	 * data with appropriate info.
 	 */
 	private void drawRegularTable() {
-		model.setColumnIdentifiers(isAdmin ? columnNamesAdmin : columnNamesUser);
+		model.setColumnIdentifiers(isAdmin ? columnNamesAdmin
+				: columnNamesUser);
 		ArrayList<String> atts = new ArrayList<String>();
-		atts.add("Distinct Review.SID");
+		atts.add("Review.SID");
 		atts.add("Review.PID");
 		atts.add("CID");
 		atts.add("Year");
@@ -437,7 +449,7 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 		atts.add("Comments");
 
 		ArrayList<String[]> updated;
-		updated = SQLDatabaseProxy.select("Review,Course,Professor", atts,
+		updated = SQLDatabaseProxy.select("Review", atts,
 				currentFilters);
 
 		for (int i = 0; i < updated.size(); i++) {
@@ -453,8 +465,8 @@ public class ViewReviewTab extends CallRespondSqlEvent {
 			ArrayList<AttributeValue> filters = new ArrayList<AttributeValue>();
 			filters.add(new AttributeValue("PID", r.getPid()));
 			filters.add(new AttributeValue("UniqueId", r.getCid()));
-			updated = SQLDatabaseProxy
-					.select("Professor,Course", atts, filters);
+			updated = SQLDatabaseProxy.select("Professor,Course",
+					atts, filters);
 			String values[] = new String[model.getColumnCount()];
 			int x = 0;
 			if (isAdmin) {
