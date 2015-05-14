@@ -92,8 +92,6 @@ public class ReviewPane extends CallRespondSqlEvent {
 		gbc.gridx = 0;
 		gbc.gridy = y++;
 
-		add(new JLabel("0 - N/A, 1 - Bad, 5 - Good"), gbc);
-
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		gbc.gridx = 0;
@@ -192,7 +190,7 @@ public class ReviewPane extends CallRespondSqlEvent {
 		gbc.gridx = 0;
 		gbc.gridy = y;
 		gbc.gridwidth = 1;
-		add(new JLabel("Engagement: "), gbc);
+		add(new JLabel("Engagement (1 - Poor Engagement, 5 - Full Engagement): "), gbc);
 
 		for (int i = 0; i < engagement.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -209,7 +207,7 @@ public class ReviewPane extends CallRespondSqlEvent {
 		gbc.gridx = 0;
 		gbc.gridy = y;
 
-		add(new JLabel("Fairness: "), gbc);
+		add(new JLabel("Fairness (1 - Unfair Teacher, 5 - Fair Teacher): "), gbc);
 
 		for (int i = 0; i < fairness.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -242,7 +240,7 @@ public class ReviewPane extends CallRespondSqlEvent {
 		gbc.gridx = 0;
 		gbc.gridy = y;
 
-		add(new JLabel("Ease of Learning: "), gbc);
+		add(new JLabel("Ease of Learning (1 - Hard to learn, 5 - Easy to learn): "), gbc);
 
 		for (int i = 0; i < easeOfLearning.length; i++) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
