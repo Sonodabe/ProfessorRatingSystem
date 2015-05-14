@@ -6,8 +6,6 @@ import database.*;
 
 public class PRSFrame extends JFrame {
 
-	public static boolean JDBC = false;
-
 	private static final long serialVersionUID = 6762556961886566340L;
 
 	private boolean isAdmin;
